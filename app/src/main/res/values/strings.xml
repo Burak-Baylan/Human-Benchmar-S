@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Human Benchmark S</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+
+    <string name="firstLogin">Hello dear user,\n
+        it looks like you are logging in for the first time.\n
+        You can sign up with click the button below.\n
+        Optionally, when you skip this screen, you can register by clicking the button in the left corner."
+    </string>
+</resources>

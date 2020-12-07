@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/c"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/custom_background_for_trying_ui_design"
+    tools:context=".ChangePp">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/ppChangeImage"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
+        android:layout_marginTop="15dp"
+        android:src="@drawable/ic_change_pp_circle"
+        app:civ_border_color="#FFFFFFFF"
+        app:civ_border_width="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/chooseImageButton"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/yellow_background_for_reaction_time_button1"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"
+        android:text="Choose a picture"
+        android:textColor="#000000"
+        app:layout_constraintEnd_toEndOf="@+id/ppChangeImage"
+        app:layout_constraintStart_toStartOf="@+id/ppChangeImage"
+        app:layout_constraintTop_toBottomOf="@+id/ppChangeImage" />
+
+    <Button
+        android:id="@+id/saveProfilePhotoButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/change_pp_save_button"
+        android:text="SAVE THIS PHOTO"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="visible" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

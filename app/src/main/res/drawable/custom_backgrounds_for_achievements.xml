@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+
+    <!--
+
+    * ShowAchievements Background
+
+    -->
+
+    <gradient
+        android:angle="270"
+        android:startColor="#803918"
+        android:centerColor="#AA3E1D"
+        android:endColor="#EF6F2A"/>
+
+    <!--gradient
+        android:angle="270"
+        android:startColor="#682E13"
+        android:centerColor="#AA3E1D"
+        android:endColor="#EF6F2A"/>-->
+
+    <!--gradient
+        android:angle="270"
+        android:startColor="#44570E"
+        android:centerColor="#80AA1D"
+        android:endColor="#9DEF2A"/>-->
+
+</shape>

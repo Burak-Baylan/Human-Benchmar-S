@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+
+    <!--
+
+    * MainActivity Background
+    * NumbersMemoryMenu Background
+    * ReactionTime Background
+
+    -->
+
+    <gradient
+    android:startColor="#222831"
+    android:endColor="#222831"
+    android:angle="315"/>
+
+    <!--<gradient android:startColor="#6EDAFF"
+    android:endColor="#0B3D65"
+    android:angle="315"/>-->
+
+</shape>

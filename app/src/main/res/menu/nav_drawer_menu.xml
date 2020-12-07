@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item android:title="Games" android:id="@+id/gamesGroup">
+        <menu>
+            <item
+                android:id="@+id/reactionTime"
+                android:icon="@drawable/ic_lightning"
+                android:title="Reaction Time"/>
+
+            <item
+                android:id="@+id/numberMemory"
+                android:icon="@drawable/ic_numbers"
+                android:title="Numbers Memory"/>
+        </menu>
+    </item>
+
+    <item android:title="Scores" android:id="@+id/scoresGroup">
+        <menu>
+            <item android:id="@+id/scoreboard"
+                android:title="Scoreboard"
+                android:icon="@drawable/ic_scoreboard"/>
+
+            <item android:id="@+id/myScores"
+                android:title="My Scores"
+                android:icon="@drawable/ic_myscores"/>
+        </menu>
+    </item>
+
+    <item android:title="Profile" android:id="@+id/profileGroup">
+        <menu>
+            <item
+                android:id="@+id/profile"
+                android:icon="@drawable/ic_profile"
+                android:title="Profile"/>
+
+            <item
+                android:id="@+id/achievementsInMenu"
+                android:icon="@drawable/ic_achivement"
+                android:title="Achievements"/>
+
+            <item
+                android:id="@+id/bossMenuItem"
+                android:title="Boss"
+                android:visible="false"/>
+        </menu>
+    </item>
+
+    <item android:title="Others" android:id="@+id/othersGroup">
+        <menu>
+            <item
+                android:id="@+id/feedback"
+                android:title="Send Feedback"
+                android:icon="@drawable/ic_feedback"/>
+
+            <item
+                android:id="@+id/share"
+                android:title="Share"
+                android:icon="@drawable/ic_share"/>
+
+            <!--item
+                android:id="@+id/donate"
+                android:title="Donate"
+                android:icon="@drawable/ic_donate"/>-->
+
+            <item
+                android:id="@+id/logout"
+                android:title="Log Out"
+                android:icon="@drawable/ic_logout"/>
+        </menu>
+    </item>
+
+</menu>

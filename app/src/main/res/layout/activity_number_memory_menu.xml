@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/reaction_time_background"
+    tools:context=".ForNumbersMemory.NumberMemoryMenu">
+
+    <ScrollView
+        android:id="@+id/numbersAchievementsScrollView"
+        android:layout_width="155dp"
+        android:layout_height="265dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="5dp"
+        android:background="@drawable/cust_scroll_view_bckgrnd"
+        android:paddingStart="3dp"
+        android:paddingTop="20dp"
+        android:paddingEnd="5dp"
+        android:paddingBottom="5dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:id="@+id/achievementsLinearLayoutNumberMemory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="10dp"
+            android:paddingTop="10dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="10dp"
+            android:scrollbarStyle="insideInset"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView8" />
+
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/achievementsCounterText2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/achievements_background"
+        android:fontFamily="@font/denk_one"
+        android:paddingStart="7dp"
+        android:paddingTop="5dp"
+        android:paddingEnd="7dp"
+        android:paddingBottom="5dp"
+        android:text="Achievements: 0/5"
+        android:textColor="#FFFFFF"
+        android:textSize="15sp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@+id/numbersAchievementsScrollView"
+        app:layout_constraintStart_toStartOf="@+id/numbersAchievementsScrollView"
+        app:layout_constraintTop_toTopOf="@+id/textView13" />
+
+    <ScrollView
+        android:id="@+id/dsadas"
+        android:layout_width="0dp"
+        android:layout_height="265dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="15dp"
+        android:background="@drawable/cust_scroll_view_bckgrnd"
+        android:paddingStart="3dp"
+        android:paddingTop="20dp"
+        android:paddingEnd="5dp"
+        android:paddingBottom="5dp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <GridLayout
+            android:id="@+id/leaderBoardLayoutNumberMemory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="1"
+            android:orientation="vertical"
+            android:paddingStart="10dp"
+            android:paddingTop="10dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="10dp"
+            android:scrollbarStyle="insideInset"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView8" />
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/tryConnectTextRealNumbersMemory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:fontFamily="@font/lilita_one"
+        android:text="Try Again"
+        android:textColor="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="@+id/progressForLeaderRealNumbersMemory"
+        app:layout_constraintStart_toStartOf="@+id/progressForLeaderRealNumbersMemory"
+        app:layout_constraintTop_toBottomOf="@+id/progressForLeaderRealNumbersMemory" />
+
+    <TextView
+        android:id="@+id/textView13"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/cust_start_button_no_stroke"
+        android:fontFamily="@font/denk_one"
+        android:paddingStart="5dp"
+        android:paddingTop="5dp"
+        android:paddingRight="5dp"
+        android:paddingBottom="5dp"
+        android:text="Leaders"
+        android:textColor="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="@+id/dsadas"
+        app:layout_constraintStart_toStartOf="@+id/dsadas"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/progressForLeaderRealNumbersMemory"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/dsadas"
+        app:layout_constraintEnd_toEndOf="@+id/dsadas"
+        app:layout_constraintStart_toStartOf="@+id/dsadas"
+        app:layout_constraintTop_toTopOf="@+id/dsadas" />
+
+    <TextView
+        android:id="@+id/textView16"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"
+        android:layout_marginStart="35dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/cust_start_button_no_stroke"
+        android:paddingStart="5dp"
+        android:paddingTop="1dp"
+        android:paddingEnd="5dp"
+        android:text="digit"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/textView13"
+        app:layout_constraintTop_toTopOf="@+id/textView13" />
+
+    <Button
+        android:id="@+id/buttonrtButtonNumberMemory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="15dp"
+        android:background="@drawable/number_memory_start_button"
+        android:onClick="startClick"
+        android:text="Start"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/deleteMeOnLeaderBoardImageNumbersMemory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="28dp"
+        android:background="@drawable/cust_start_button_no_stroke"
+        android:drawableStart="@drawable/ic_delete_box"
+        android:padding="1dp"
+        app:layout_constraintEnd_toStartOf="@+id/textView13"
+        app:layout_constraintTop_toTopOf="@+id/textView13" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

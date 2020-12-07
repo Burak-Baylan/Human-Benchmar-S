@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#11495C</color>
+    <color name="colorPrimaryDark">#11495C</color>
+    <color name="colorAccent">#FFFFFF</color>
+    <color name="myGray">#6E6E6E</color>
+    <color name="myDark">#2B2B2B</color>
+
+    <color name="snackSuccess">#246C5D</color>
+    <color name="snackFail">#570F0F</color>
+    <color name="white">#FFFFFF</color>
+
+    <color name="leaderBoardActivitySupportActionbarColor">#4B2588</color>
+
+    <color name="colorForDarkGreen">#4BBC59</color>
+
+    <color name="statusBarColorForProfile">#1E354E</color>
+</resources>

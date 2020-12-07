@@ -1,0 +1,505 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#364f6b"
+    tools:context=".LeaderBoard">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/reaction_time_laders_background"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <!-- IIIIIIIIIIIIIIIIIIIIIIII ||ST1|| IIIIIIIIIIIIIIIIIIIII -->
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/st3Imagesadsadasdas"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+
+                    android:background="@drawable/circle_color_for_lader_activity_raction_time"
+                    app:civ_border_width="2dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/st3Imagesadsadasdas2"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@drawable/circle_color_for_lader_activity_raction_time"
+                    app:civ_border_width="2dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/st1ReactionConsLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/reaction_time_leaders_background_for_persons"
+                    android:padding="10dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView27"
+                    app:layout_constraintVertical_bias="0.032">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/st1Image"
+                        android:layout_width="140dp"
+                        android:layout_height="140dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_gravity="center|top"
+                        android:src="@drawable/questionmark"
+                        app:civ_border_color="#58a4b0"
+                        app:civ_border_width="2dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/st1Username"
+                        android:layout_width="130dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="10dp"
+                        android:gravity="center"
+                        android:maxLength="13"
+                        android:text=" ? "
+                        android:textColor="#ff6464"
+                        android:textSize="19sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="@+id/st1Image"
+                        app:layout_constraintStart_toStartOf="@+id/st1Image"
+                        app:layout_constraintTop_toBottomOf="@+id/st1Image"
+                        tools:text="Burak 1" />
+
+                    <TextView
+                        android:id="@+id/st1Score"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center|bottom"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center"
+                        android:text=" ? "
+                        android:textAllCaps="false"
+                        android:textColor="#ffd460"
+                        android:textSize="20dp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="@+id/st1Username"
+                        app:layout_constraintStart_toStartOf="@+id/st1Username"
+                        app:layout_constraintTop_toBottomOf="@+id/st1Username"
+                        tools:text="310ms" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <!-- IIIIIIIIIIIIIIIIIIIIIIII ||ST1|| IIIIIIIIIIIIIIIIIIIII -->
+
+                <!-- IIIIIIIIIIIIIIIIIIIIIIII ||ST2|| IIIIIIIIIIIIIIIIIIIII -->
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/st2ReactionConsLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:background="@drawable/reaction_time_leaders_background_for_persons"
+                    android:padding="10dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/st1ReactionConsLayout">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/st2Image"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_alignParentEnd="true"
+                        android:src="@drawable/questionmark"
+                        app:civ_border_color="#58a4b0"
+                        app:civ_border_width="2dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/st2Username"
+                        android:layout_width="90dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:gravity="center"
+                        android:maxLength="13"
+                        android:text=" ? "
+                        android:textColor="#ff6464"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="@+id/st2Image"
+                        app:layout_constraintStart_toStartOf="@+id/st2Image"
+                        app:layout_constraintTop_toBottomOf="@+id/st2Image"
+                        tools:text="Baylan 2" />
+
+                    <TextView
+                        android:id="@+id/st2Score"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center"
+                        android:text=" ? "
+                        android:textColor="#ffd460"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="@+id/st2Username"
+                        app:layout_constraintStart_toStartOf="@+id/st2Username"
+                        app:layout_constraintTop_toBottomOf="@+id/st2Username"
+                        tools:text="348ms" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+                <!-- IIIIIIIIIIIIIIIIIIIIIIII ||ST2|| IIIIIIIIIIIIIIIIIIIII -->
+
+                <!-- IIIIIIIIIIIIIIIIIIIIIIII ||ST3|| IIIIIIIIIIIIIIIIIIIII -->
+
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/st3ReactionConsLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="20dp"
+                    android:background="@drawable/reaction_time_leaders_background_for_persons"
+                    android:padding="10dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/st2ReactionConsLayout">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/st3Image"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_alignParentEnd="true"
+                        android:src="@drawable/questionmark"
+                        app:civ_border_color="#58a4b0"
+                        app:civ_border_width="2dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/st3Username"
+                        android:layout_width="90dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:gravity="center"
+                        android:maxLength="13"
+                        android:text=" ? "
+                        android:textColor="#ff6464"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="@+id/st3Image"
+                        app:layout_constraintStart_toStartOf="@+id/st3Image"
+                        app:layout_constraintTop_toBottomOf="@+id/st3Image"
+                        tools:text="Baylan 3" />
+
+                    <TextView
+                        android:id="@+id/st3Score"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center"
+                        android:text=" ? "
+                        android:textColor="#ffd460"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="@+id/st3Username"
+                        app:layout_constraintStart_toStartOf="@+id/st3Username"
+                        app:layout_constraintTop_toBottomOf="@+id/st3Username"
+                        tools:text="415ms" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <TextView
+                    android:id="@+id/textView27"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:fontFamily="@font/lemon"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="9dp"
+                    android:text="Reaction Time"
+                    android:textColor="#FFFFFF"
+                    android:textSize="20sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <!-- IIIIIIIIIIIIIIIIIIIIIIII ||ST3|| IIIIIIIIIIIIIIIIIIIII -->
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="500dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="30dp"
+                android:background="@drawable/numbers_memory_leaders_background"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <!-- IIIIIIIIIIIIIIIIIIIIIIII ||ST1|| IIIIIIIIIIIIIIIIIIIII -->
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/st3Imagesadsadasdas4"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@drawable/circle_color_for_leader_activity"
+                    app:civ_border_width="2dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/st3Imagesadsadasdas3"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+
+                    android:background="@drawable/circle_color_for_leader_activity"
+                    app:civ_border_width="2dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraintLayouto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/numbers_memory_leaders_background_for_person"
+                    android:padding="10dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView2kl7">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/st1ImageNumbersMemory"
+                        android:layout_width="140dp"
+                        android:layout_height="140dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_gravity="center|top"
+                        android:src="@drawable/questionmark"
+                        app:civ_border_color="#B06558"
+                        app:civ_border_width="2dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/st1UsernameText"
+                        android:layout_width="130dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="10dp"
+                        android:gravity="center"
+                        android:maxLength="13"
+                        android:text=" ? "
+                        android:textColor="#ff6464"
+                        android:textSize="19sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="@+id/st1ImageNumbersMemory"
+                        app:layout_constraintStart_toStartOf="@+id/st1ImageNumbersMemory"
+                        app:layout_constraintTop_toBottomOf="@+id/st1ImageNumbersMemory"
+                        tools:text="Burak 1" />
+
+                    <TextView
+                        android:id="@+id/st1ScoreNumbers"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center|bottom"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center"
+                        android:text=" ? "
+                        android:textAllCaps="false"
+                        android:textColor="#ffd460"
+                        android:textSize="20dp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="@+id/st1UsernameText"
+                        app:layout_constraintStart_toStartOf="@+id/st1UsernameText"
+                        app:layout_constraintTop_toBottomOf="@+id/st1UsernameText"
+                        tools:text="310ms" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <TextView
+                    android:id="@+id/textView2kl7"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:fontFamily="@font/lemon"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="9dp"
+                    android:text="Numbers Memory"
+                    android:textColor="#FFFFFF"
+                    android:textSize="20sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+                <!-- IIIIIIIIIIIIIIIIIIIIIIII ||ST1|| IIIIIIIIIIIIIIIIIIIII -->
+
+                <!-- IIIIIIIIIIIIIIIIIIIIIIII ||ST2|| IIIIIIIIIIIIIIIIIIIII -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraintLayoutds"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:background="@drawable/numbers_memory_leaders_background_for_person"
+                    android:padding="10dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/constraintLayouto">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/st2ImageNumbersMemory"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_alignParentEnd="true"
+                        android:src="@drawable/questionmark"
+                        app:civ_border_color="#B06558"
+                        app:civ_border_width="2dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/st2UsernaneText"
+                        android:layout_width="90dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:gravity="center"
+                        android:maxLength="13"
+                        android:text=" ? "
+                        android:textColor="#ff6464"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="@+id/st2ImageNumbersMemory"
+                        app:layout_constraintStart_toStartOf="@+id/st2ImageNumbersMemory"
+                        app:layout_constraintTop_toBottomOf="@+id/st2ImageNumbersMemory"
+                        tools:text="Baylan 2" />
+
+                    <TextView
+                        android:id="@+id/st2ScoreNumbers"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center"
+                        android:text=" ? "
+                        android:textColor="#ffd460"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="@+id/st2UsernaneText"
+                        app:layout_constraintStart_toStartOf="@+id/st2UsernaneText"
+                        app:layout_constraintTop_toBottomOf="@+id/st2UsernaneText"
+                        tools:text="348ms" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+                <!-- IIIIIIIIIIIIIIIIIIIIIIII ||ST2|| IIIIIIIIIIIIIIIIIIIII -->
+
+                <!-- IIIIIIIIIIIIIIIIIIIIIIII ||ST3|| IIIIIIIIIIIIIIIIIIIII -->
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraintLayodsautddas"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="20dp"
+                    android:background="@drawable/numbers_memory_leaders_background_for_person"
+                    android:padding="10dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/constraintLayoutds">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/st3ImageNumbersMemory"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_alignParentEnd="true"
+                        android:src="@drawable/questionmark"
+                        app:civ_border_color="#B06558"
+                        app:civ_border_width="2dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/st3UsernameText"
+                        android:layout_width="90dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:gravity="center"
+                        android:maxLength="13"
+                        android:text=" ? "
+                        android:textColor="#ff6464"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="@+id/st3ImageNumbersMemory"
+                        app:layout_constraintStart_toStartOf="@+id/st3ImageNumbersMemory"
+                        app:layout_constraintTop_toBottomOf="@+id/st3ImageNumbersMemory"
+                        tools:text="Baylan 3" />
+
+                    <TextView
+                        android:id="@+id/st3ScoreNumbers"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center"
+                        android:text=" ? "
+                        android:textColor="#ffd460"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="@+id/st3UsernameText"
+                        app:layout_constraintStart_toStartOf="@+id/st3UsernameText"
+                        app:layout_constraintTop_toBottomOf="@+id/st3UsernameText"
+                        tools:text="415ms" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <!-- IIIIIIIIIIIIIIIIIIIIIIII ||ST3|| IIIIIIIIIIIIIIIIIIIII -->
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

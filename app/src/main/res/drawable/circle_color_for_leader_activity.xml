@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
+
+    <!--
+
+    * LeaderBoardActivity NumbersMemory
+
+    -->
+
+    <gradient android:type="sweep" android:startColor="#222831" android:endColor="#FFFFFF"/>
+    <stroke android:color="#B06558" android:width="2dp"/>
+    <corners android:radius="500dp"/>
+
+</shape>

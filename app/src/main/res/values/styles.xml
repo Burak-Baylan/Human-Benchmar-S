@@ -1,0 +1,90 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="AppNoActionBarTheme" parent="Theme.Design.Light.NoActionBar">
+        <item name="colorPrimary">#232222</item>
+        <item name="colorPrimaryDark">#232222</item>
+    </style>
+
+    <style name="CustomAlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/popup_background</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:fontFamily"> @font/lilita_one </item>
+        <item name="android:textColorHint"> #FFFFFF </item>
+        <item name="android:animateOnClick"> true </item>
+        <item name="colorAccent"> #FFFFFF </item> <!-- #FFE289 -->
+        <item name="android:textColorPrimary"> #FFFFFF </item>
+    </style>
+
+    <style name="NeutralButtonStyle" parent="Theme.AppCompat.Dialog.Alert">
+        <item name="android:textSize"> 5sp </item>
+    </style>
+
+    <style name="saveScoreCustomAlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/save_score_custom_alert_dialog</item>
+        <item name="android:textColor"> #FFFFFF </item>
+        <item name="android:fontFamily"> @font/lilita_one </item>
+        <item name="android:textColorHint"> #FFFFFF </item>
+        <item name="colorAccent"> #FFFFFF </item>
+        <item name="android:textColorPrimary"> #FFFFFF </item>
+    </style>
+
+    <style name="fullScreenLoadingAlertDialogForStartUp" parent="android:Theme.Dialog">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowBackground">@drawable/save_score_custom_alert_dialog</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowIsFloating">false</item>
+    </style>
+
+
+    <style name="RedCustomAlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/red_popup_backgrounds</item>
+        <item name="android:textColor"> #FFFFFF </item>
+        <!--item name="android:fontFamily"> @font/lilita_one </item>-->
+        <item name="android:textColorHint"> #FFFFFF </item>
+        <item name="android:animateOnClick"> true </item>
+        <item name="colorAccent"> #FFFFFF </item>
+        <item name="android:textColorPrimary"> #FFFFFF </item>
+    </style>
+
+
+    <style name="GreenCustomAlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/green_popup_backgrounds</item>
+        <item name="android:textColor"> #FFFFFF </item>
+        <!--item name="android:fontFamily"> @font/lilita_one </item>-->
+        <item name="android:textColorHint"> #FFFFFF </item>
+        <item name="android:animateOnClick"> true </item>
+        <item name="colorAccent"> #FFFFFF </item>
+        <item name="android:textColorPrimary"> #FFFFFF </item>
+    </style>
+
+    <style name="CustomAlertDialogForHistoriesNumbersMemory" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/orange_background_for_reaction_time_button</item>
+        <item name="android:textColor"> #FFFFFF </item>
+        <item name="android:fontFamily"> @font/lilita_one </item>
+        <item name="android:textColorHint"> #FFFFFF </item>
+        <item name="android:animateOnClick"> true </item>
+        <item name="colorAccent"> #FFFFFF </item>
+        <item name="android:textColorPrimary"> #FFFFFF </item>
+    </style>
+
+    <style name="CustomAlertDialogForHistories" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/blue_background_for_reaction_time_button</item>
+        <item name="android:textColor"> #FFFFFF </item>
+        <item name="android:fontFamily"> @font/lilita_one </item>
+        <item name="android:textColorHint"> #FFFFFF </item>
+        <item name="android:animateOnClick"> true </item>
+        <item name="colorAccent"> #FFFFFF </item>
+        <item name="android:textColorPrimary"> #FFFFFF </item>
+    </style>
+
+</resources>
+
+
+<!-- B06558 -->
