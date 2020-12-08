@@ -30,7 +30,7 @@ class NumbersMemoryAchievementsAvailableControler (context : Context, activity :
 
         if (NumberMemory.skipFastBool){
             if (!impatientBool!!){
-                numbersMemoryAchievementsUpdater.updateTrueAnAchievements("Impatient", "impatient")
+                numbersMemoryAchievementsUpdater.updateTrueAnAchievements("impatient", "Impatient")
             }
             NumberMemory.skipFastBool = false
         }
@@ -38,22 +38,21 @@ class NumbersMemoryAchievementsAvailableControler (context : Context, activity :
         if (levelCounter.toInt() + 1 == 7) {
             /** ROOKIE **/
             if (!rookieBool!!) {
-                numbersMemoryAchievementsUpdater.updateTrueAnAchievements("Rookie", "rookie")
+                numbersMemoryAchievementsUpdater.updateTrueAnAchievements("rookie", "Rookie")
             }
         }
 
         if (levelCounter.toInt() + 1 == 10) {
             /** SMART **/
             if (!smartBool!!) {
-                numbersMemoryAchievementsUpdater.updateTrueAnAchievements("Smart", "smart")
+                numbersMemoryAchievementsUpdater.updateTrueAnAchievements("smart", "Smart")
             }
         }
-
 
         if (levelCounter.toInt() + 1 == 18) {
             /** BRAIN STORM **/
             if (!brainStormBool!!) {
-                numbersMemoryAchievementsUpdater.updateTrueAnAchievements("Brain Storm", "brainStorm")
+                numbersMemoryAchievementsUpdater.updateTrueAnAchievements("brainStorm", "Brain Storm")
             }
         }
     }

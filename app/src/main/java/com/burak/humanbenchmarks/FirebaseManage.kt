@@ -62,7 +62,7 @@ class FirebaseManage {
             val gidecekText = TextView(mCtx)
             getOldPassword(gidecekText, currentEmail)
         }
-        val oylesineLinearLayout = LinearLayout(context)
+        val oylesineLinearLayout = GridLayout(context)
         val oylesineTextView = TextView(context)
         loadLeaderScores(oylesineLinearLayout, false, userNameControl, oylesineTextView, 15)
 
@@ -116,7 +116,7 @@ class FirebaseManage {
     }*/
 
     fun loadLeaderScores(
-        leaderLayout: LinearLayout,
+        leaderLayout: GridLayout,
         nameColorControl: Boolean,
         myNameControlTextView: TextView,
         deleteMeOnLeaderBoardButton: TextView,
@@ -142,6 +142,9 @@ class FirebaseManage {
 
                     leaderLayout.removeAllViews()
                     val documents = snapshot.documents
+
+                    var countAchievement : Int
+                    var countAllAchievement: Int
                     for (document in documents)
                     {
                         /** Burası bir for döngüsü olduğu için ve biz başta görünürlüğü sıfırladığımız için aşşağıda isim eşleşse de for dögüsü döndüğü için
@@ -158,71 +161,116 @@ class FirebaseManage {
                         leaderScoresText.setTextColor(Color.rgb(255, 255, 255))
                         var usernameCurrent : String = document.get("Username") as String
                         val averageScore: Number = document.get("ScoreAverage") as Number
+                        val uid : String = document.get("Uid") as String
                         var isimDegisBool = false
                         if (averageScore.toInt() > 0) {
-                            if (!nameColorControl)
-                            /** Eğer ismi kontrol ederek kullanıcıya kullanıcının adıyla aynı birisi varsa yeşil renkte sunmak istiyorsa **/
-                            {
-                                if (usernameCurrent == currentRealUsername)
-                                /** DB'den çekilen isim currenUsername ile aynıysa yeşil yap ve deleteMeOnLeaderBoard button visibility **/
-                                {
-                                    isimDegisBool = true
-                                    leaderScoresText.setTextColor(Color.parseColor("#66E66B"))
-                                    myNameControlTextView.text = "true"
-                                    deleteMeOnLeaderBoardButton.visibility = View.VISIBLE
-                                    deleteMeOnLeaderBoardButtonVisibilityControl = true
+
+                            firebase.collection("Users").document(uid).collection("Achievements").document(
+                                "allAchievements"
+                            ).addSnapshotListener { snapshot, excepiton ->
+                                if (exception != null) {
+                                    snackbarCreater.createFailSnack(
+                                        "Leader Board cannot be installed.",
+                                        mView!!
+                                    )
                                 }
-                            } else if (nameColorControl)
-                            /** Eğer ismi sadece beyaz istiyorsa **/
-                            {
-                                leaderScoresText.setTextColor(Color.parseColor("#FFFFFF"))
-                            }
+                                else{
+                                    countAllAchievement = 0
+                                    countAchievement = 0
+                                    if (snapshot != null && snapshot.exists()) {
+                                        val st1 = snapshot.get("1st") as Boolean
+                                        val round20Row = snapshot.get("20roundsRow") as Boolean
+                                        val areYouRobot = snapshot.get("areYouRobot") as Boolean
+                                        val tooLucky = snapshot.get("tooLucky") as Boolean
+                                        val tooSlow = snapshot.get("tooSlow") as Boolean
+                                        val turtle = snapshot.get("turtle") as Boolean
 
-                            if (usernameCurrent.length > 8)
-                            /** LeaderBoard'da aşşağıya taşmaması için alınmış isim kısaltma önlemi. **/
-                            {
-                                usernameCurrent = "${usernameCurrent.substring(0, 6)}.."
-                            }
+                                        fun kontrolEt(bool : Boolean){
+                                            if (bool){
+                                                countAchievement++
+                                            }
+                                            countAllAchievement++
+                                        }
+                                        kontrolEt(st1)
+                                        kontrolEt(round20Row)
+                                        kontrolEt(areYouRobot)
+                                        kontrolEt(tooLucky)
+                                        kontrolEt(tooSlow)
+                                        kontrolEt(turtle)
 
-                            if (kisi >= 1)
-                            /** Her isimden sonra çizgi eklemek.
-                             * Buradaki kontrol ilk resmin üzerine çizgiyi eklememek için. Nedeni kötü gözükmesi. **/
-                            {
-                                val imageForCizgi = TextView(mCtx)
-                                imageForCizgi.setBackgroundColor(Color.parseColor("#EDC755"))
-                                imageForCizgi.width = 900
-                                imageForCizgi.height = 3
-                                imageForCizgi.setPadding(0, 2, 0, 2)
-                                leaderLayout.addView(imageForCizgi)
-                            }
 
-                            kisi++
-                            if (isimDegisBool){usernameCurrent = "You"}
-                            var scoreString = "$kisi- $usernameCurrent: $averageScore"
+                                        val getLinearLayout = leadersBoardDesign.createLinearLayout()
+                                        val getScoreTextView = leadersBoardDesign.createScoreTextView()
+                                        val getAchievementsTextView = leadersBoardDesign.createAchievementsCountTextView()
+                                        val getUsernameTextView = leadersBoardDesign.createUsernameTextView()
 
-                            if (kisi == 1){
-                                if (usernameCurrent == currentRealUsername){
 
+                                        if (!nameColorControl)
+                                        /** Eğer ismi kontrol ederek kullanıcıya kullanıcının adıyla aynı birisi varsa yeşil renkte sunmak istiyorsa **/
+                                        {
+                                            if (usernameCurrent == currentRealUsername)
+                                            /** DB'den çekilen isim currenUsername ile aynıysa yeşil yap ve deleteMeOnLeaderBoard button visibility **/
+                                            {
+                                                isimDegisBool = true
+                                                leaderScoresText.setTextColor(Color.parseColor("#66E66B"))
+                                                myNameControlTextView.text = "true"
+                                                deleteMeOnLeaderBoardButton.visibility = View.VISIBLE
+                                                deleteMeOnLeaderBoardButtonVisibilityControl = true
+                                            }
+                                        } else if (nameColorControl)
+                                        /** Eğer ismi sadece beyaz istiyorsa **/
+                                        {
+                                            leaderScoresText.setTextColor(Color.parseColor("#FFFFFF"))
+                                        }
+
+                                        if (usernameCurrent.length > 8)
+                                        /** LeaderBoard'da aşşağıya taşmaması için alınmış isim kısaltma önlemi. **/
+                                        {
+                                            usernameCurrent = "${usernameCurrent.substring(0, 6)}.."
+                                        }
+
+                                        if (kisi >= 1)
+                                        /** Her isimden sonra çizgi eklemek.
+                                         * Buradaki kontrol ilk resmin üzerine çizgiyi eklememek için. Nedeni kötü gözükmesi. **/
+                                        {
+                                            val imageForCizgi = TextView(mCtx)
+                                            imageForCizgi.setBackgroundColor(Color.parseColor("#EDC755"))
+                                            imageForCizgi.width = 900
+                                            imageForCizgi.height = 3
+                                            imageForCizgi.setPadding(0, 2, 0, 2)
+                                            leaderLayout.addView(imageForCizgi)
+                                        }
+
+                                        kisi++
+                                        if (isimDegisBool){usernameCurrent = "You"}
+                                        var scoreString = "$kisi- $usernameCurrent: $averageScore"
+
+                                        if (kisi == 1){
+                                            if (usernameCurrent == currentRealUsername){
+
+                                            }
+                                        }
+                                        val averageInt = averageScore.toInt()
+                                        if (averageInt > 9999)
+                                        /** Alt satıra taşmaması için yapılmış skor kısaltma önlemi. **/
+                                        {
+                                            leaderScoresText.textSize = 14f
+                                            scoreString = "$kisi- $usernameCurrent: 10k+"
+                                        }
+
+                                        val spannableString = SpannableString(scoreString)
+                                        spannableString.setSpan(
+                                            StyleSpan(Typeface.BOLD),
+                                            0,
+                                            spannableString.length,
+                                            0
+                                        )
+
+                                        leaderScoresText.text = spannableString
+                                        leaderLayout.addView(leaderScoresText)
+                                    }
                                 }
                             }
-                            val averageInt = averageScore.toInt()
-                            if (averageInt > 9999)
-                            /** Alt satıra taşmaması için yapılmış skor kısaltma önlemi. **/
-                            {
-                                leaderScoresText.textSize = 14f
-                                scoreString = "$kisi- $usernameCurrent: 10k+"
-                            }
-
-                            val spannableString = SpannableString(scoreString)
-                            spannableString.setSpan(
-                                StyleSpan(Typeface.BOLD),
-                                0,
-                                spannableString.length,
-                                0
-                            )
-
-                            leaderScoresText.text = spannableString
-                            leaderLayout.addView(leaderScoresText)
                         }
                     }
                 }
@@ -363,7 +411,7 @@ class FirebaseManage {
                                             0
                                         )
 
-                                        val spannableString2 = SpannableString("$kisi- $usernameCurrent")
+                                        val spannableString2 = SpannableString("#$kisi $usernameCurrent: ")
                                         spannableString2.setSpan(
                                             StyleSpan(Typeface.BOLD),
                                             0,

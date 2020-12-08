@@ -25,20 +25,22 @@
 
     <ScrollView
         android:id="@+id/dsadas"
-        android:layout_width="165dp"
+        android:layout_width="0dp"
         android:layout_height="265dp"
-        android:layout_marginStart="5dp"
+        android:layout_marginStart="15dp"
         android:layout_marginTop="25dp"
+        android:layout_marginEnd="15dp"
         android:background="@drawable/cust_start_button"
         android:paddingStart="3dp"
         android:paddingTop="20dp"
         android:paddingEnd="5dp"
         android:paddingBottom="5dp"
         android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
+        <GridLayout
             android:id="@+id/leaderBoardLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -120,8 +122,7 @@
         android:paddingBottom="5dp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible">
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:id="@+id/achievementsLinearLayout"
@@ -151,6 +152,7 @@
         android:text="Achievements: 0/5"
         android:textColor="#FFFFFF"
         android:textSize="15sp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@+id/achievementsScrollView"
         app:layout_constraintStart_toStartOf="@+id/achievementsScrollView"
         app:layout_constraintTop_toTopOf="@+id/textView14" />

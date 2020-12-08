@@ -13,7 +13,7 @@ class LeadersBoardDesign(val context: Context) {
 
     fun createLinearLayout() : LinearLayout{
         val mLinearLayout = LinearLayout(context)
-        mLinearLayout.orientation = LinearLayout.VERTICAL
+        mLinearLayout.orientation = LinearLayout.HORIZONTAL
         val linearParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
@@ -21,12 +21,7 @@ class LeadersBoardDesign(val context: Context) {
         mLinearLayout.layoutParams = linearParams
         mLinearLayout.setPadding(20, 5, 20, 5)
         mLinearLayout.setBackgroundResource(R.drawable.numbers_memory_linear_layout_for_persons)
-
         return mLinearLayout
-
-        /*val params = LinearLayout.LayoutParams(/*width*/LinearLayout.LayoutParams.MATCH_PARENT, /*height*/ LinearLayout.LayoutParams.WRAP_CONTENT)
-        params.setMargins(30, 20, 30, 0)
-        feedbackEditText.layoutParams = params*/
     }
 
     fun getRealGridLayout(
@@ -36,42 +31,43 @@ class LeadersBoardDesign(val context: Context) {
         achievementsCountTextView: TextView,
         usernameText: SpannableString,
         scoreText: SpannableString,
-        achievementsCountText: SpannableString
+        achievementsCountText: SpannableString,
     ) : LinearLayout{
-        /********************************************************/
-        val mGridLayout = LinearLayout(context)
-        /*mGridLayout.columnCount = 2
-        mGridLayout.rowCount = 1*/
-        //mGridLayout.setBackgroundResource(R.drawable.numbers_memory_linear_layout_for_persons)
-        mGridLayout.setPadding(20, 5, 20, 5)
 
-        val params = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        )
-        mGridLayout.layoutParams = params
-        /********************************************************/
-        /*val mGridLayout2 = GridLayout(context)
-        mGridLayout2.columnCount = 2
-        mGridLayout2.rowCount = 1
-        val params2 = LinearLayout.LayoutParams(
+        val txtView = TextView(context)
+        txtView.textSize = 20f
+        txtView.text = "OFFLINE"
+        txtView.setTextColor(Color.parseColor("#000000"))
+        /******************************************************************************************/
+        val linear2 = LinearLayout(context)
+        linear2.orientation = LinearLayout.VERTICAL
+        val paramsForLinear2 = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
-        mGridLayout2.layoutParams = params2
-        //mGridLayout2.setBackgroundResource(R.drawable.numbers_memory_linear_layout_for_persons)
-        mGridLayout2.setPadding(20, 5, 20, 5)*/
-        /********************************************************/
+        linear2.layoutParams = paramsForLinear2
+        /******************************************************************************************/
+        val linear3 = LinearLayout(context)
+        linear3.orientation = LinearLayout.VERTICAL
+        linear3.addView(txtView)
+        /******************************************************************************************/
+
+        val mGridLayout = GridLayout(context)
+        mGridLayout.columnCount = 2
+        mGridLayout.setPadding(20, 5, 20, 5)
+        val params = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+        mGridLayout.layoutParams = params
+        /******************************************************************************************/
         val mGridLayout3 = GridLayout(context)
-        mGridLayout3.columnCount = 1
-        mGridLayout3.rowCount = 1
-        //mGridLayout2.setBackgroundResource(R.drawable.numbers_memory_linear_layout_for_persons)
+        mGridLayout3.columnCount = 2
         mGridLayout3.setPadding(20, 5, 20, 5)
-        /********************************************************/
+        /******************************************************************************************/
         usernameTextView.text = usernameText
         scoreTextView.text = scoreText
         achievementsCountTextView.text = achievementsCountText
-
         val params6 = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
@@ -79,29 +75,19 @@ class LeadersBoardDesign(val context: Context) {
             gravity = Gravity.END
         }
         usernameTextView.layoutParams = params6
-
-        /********************************************************/
-        mGridLayout.addView(usernameTextView)
-        //usernameTextView.gravity = Gravity.END
-        mGridLayout.addView(scoreTextView)
-
+        /******************************************************************************************/
+        mGridLayout.addView(usernameTextView, GridLayout.LayoutParams(GridLayout.spec(0), GridLayout.spec(0)))
+        mGridLayout.addView(scoreTextView, GridLayout.LayoutParams(GridLayout.spec(0), GridLayout.spec(1)))
         //scoreTextView.gravity = Gravity.END
-
-        val params4 = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.WRAP_CONTENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        ).apply {
-            gravity = Gravity.END
-        }
-        scoreTextView.layoutParams = params4
-        scoreTextView.gravity = Gravity.END
-
         mGridLayout3.addView(achievementsCountTextView)
-        achievementsCountTextView.gravity = Gravity.CENTER
 
-        linearLayout.addView(mGridLayout)
-        //linearLayout.addView(mGridLayout2)
-        linearLayout.addView(mGridLayout3)
+
+
+        linear2.addView(mGridLayout)
+        linear2.addView(mGridLayout3)
+
+        linearLayout.addView(linear2)
+        linearLayout.addView(linear3)
 
         return linearLayout
     }
@@ -110,20 +96,6 @@ class LeadersBoardDesign(val context: Context) {
         val usernameTextView = TextView(context)
         usernameTextView.setTextColor(Color.parseColor("#142A4E"))
         usernameTextView.textSize = 18f
-        val params = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.WRAP_CONTENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        )
-        params.setMargins(30, 20, 30, 0)
-        usernameTextView.layoutParams = params
-
-        /*val spannableString = SpannableString("$lastInit-Digit")
-        spannableString.setSpan(
-            StyleSpan(Typeface.BOLD),
-            0,
-            spannableString.length,
-            0
-        )*/
         return usernameTextView
     }
 
@@ -138,7 +110,6 @@ class LeadersBoardDesign(val context: Context) {
         )
         params.setMargins(30, 20, 30, 0)
         scoreTextView.layoutParams = params
-
         return scoreTextView
     }
 
@@ -146,32 +117,13 @@ class LeadersBoardDesign(val context: Context) {
         val achievementsCountTextView = TextView(context)
         achievementsCountTextView.setTextColor(Color.parseColor("#DC3B50"))
         achievementsCountTextView.textSize = 18f
-        /*val params = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.WRAP_CONTENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        ).apply {
-            gravity = Gravity.CENTER
-        }
-        achievementsCountTextView.layoutParams = params*/
-        achievementsCountTextView.gravity = Gravity.CENTER
         val params = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
         params.setMargins(30, 20, 30, 0)
         achievementsCountTextView.layoutParams = params
-
         return achievementsCountTextView
-
     }
 
 }
-
-/*{
-    val params = LinearLayout.LayoutParams(
-        LinearLayout.LayoutParams.WRAP_CONTENT,
-        LinearLayout.LayoutParams.WRAP_CONTENT
-    )
-    params.setMargins(30, 20, 30, 0)
-    feedbackEditText.layoutParams = params
-}*/

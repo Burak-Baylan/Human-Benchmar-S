@@ -32,6 +32,8 @@ class NumberMemoryMenu : AppCompatActivity() {
     private var currentUser : FirebaseUser? = null
     private lateinit var numbersMemoryAchievementsUpdater: NumbersMemoryAchievementsUpdater
 
+    private var isFabOpen : Boolean = false
+
     var achievementScrollViewVisibilityControlBool = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,6 +50,7 @@ class NumberMemoryMenu : AppCompatActivity() {
         currentUser = auth.currentUser
 
         viewReal = window.decorView.rootView
+        fabListener()
 
         numbersMemoryAchievementsUpdater = NumbersMemoryAchievementsUpdater(this,this,viewReal)
         numbersMemoryAchievementsUpdater.getAchievementsForShowAchievementListInMenu(achievementsCounterText2, achievementsLinearLayoutNumberMemory)
@@ -117,4 +120,37 @@ class NumberMemoryMenu : AppCompatActivity() {
         spannableString.setSpan(UnderlineSpan(), 0, spannableString.length, 0)
         textView.text = spannableString
     }
+
+    private fun fabListener(){
+        firstFab.setOnClickListener{ view ->
+            if (!isFabOpen){//Kapalıysa
+                showFabMenu()
+            }
+            else{//Açıksa
+                closeFabMenu()
+            }
+        }
+
+        refreshFab.setOnClickListener {
+            closeFabMenu()
+            firebaseManage.getNumbersMemoryLeader(leaderBoardLayoutNumberMemory, false, 15, deleteMeOnLeaderBoardImageNumbersMemory)
+        }
+
+    }
+
+    private fun showFabMenu(){
+        isFabOpen = true
+        firstFab.setImageResource(R.drawable.ic_up_arrow)
+
+        swapFab.animate().translationY(+resources.getDimension(R.dimen.standard_55))
+        refreshFab.animate().translationY(+resources.getDimension(R.dimen.standard_105))
+    }
+
+    private fun closeFabMenu(){
+        isFabOpen = false
+        firstFab.setImageResource(R.drawable.ic_down_arrow)
+        swapFab.animate().translationY(0F )
+        refreshFab.animate().translationY(0F )
+    }
+
 }

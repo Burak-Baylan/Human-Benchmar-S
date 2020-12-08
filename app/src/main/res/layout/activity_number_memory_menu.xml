@@ -60,15 +60,16 @@
         android:layout_width="0dp"
         android:layout_height="265dp"
         android:layout_marginStart="15dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="15dp"
         android:background="@drawable/cust_scroll_view_bckgrnd"
         android:paddingStart="3dp"
         android:paddingTop="20dp"
         android:paddingEnd="5dp"
-        android:paddingBottom="5dp"
+        android:paddingBottom="3dp"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -169,5 +170,59 @@
         android:padding="1dp"
         app:layout_constraintEnd_toStartOf="@+id/textView13"
         app:layout_constraintTop_toTopOf="@+id/textView13" />
+
+    <TextView
+        android:id="@+id/textView30"
+        android:layout_width="wrap_content"
+        android:layout_height="2dp"
+        android:layout_marginBottom="10dp"
+        android:text="."
+        app:layout_constraintBottom_toBottomOf="@+id/dsadas"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/refreshFab"
+        app:fabSize="mini"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:src="@drawable/ic_refresh"
+        app:backgroundTint="#00ADFF"
+        app:rippleColor="#758B91"
+        app:layout_constraintBottom_toBottomOf="@+id/firstFab"
+        app:layout_constraintEnd_toEndOf="@+id/firstFab"
+        app:layout_constraintStart_toStartOf="@+id/firstFab"
+        app:layout_constraintTop_toTopOf="@+id/firstFab"
+        app:srcCompat="@drawable/bckgrnd" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/swapFab"
+        app:fabSize="mini"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        app:backgroundTint="#00ADFF"
+        app:rippleColor="#758B91"
+        android:src="@drawable/ic_change_achievement_leader_board"
+        app:borderWidth="1dp"
+        app:layout_constraintBottom_toBottomOf="@+id/firstFab"
+        app:layout_constraintEnd_toEndOf="@+id/firstFab"
+        app:layout_constraintStart_toStartOf="@+id/firstFab"
+        app:layout_constraintTop_toTopOf="@+id/firstFab"
+        app:srcCompat="@drawable/ach_icon_for_profile" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/firstFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        app:backgroundTint="#002E73"
+        app:rippleColor="#758B91"
+        app:srcCompat="@drawable/ic_down_arrow"
+        app:borderWidth="1dp"
+        app:layout_constraintEnd_toEndOf="@+id/dsadas"
+        app:layout_constraintStart_toStartOf="@+id/dsadas"
+        app:layout_constraintTop_toBottomOf="@+id/textView30" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
