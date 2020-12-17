@@ -1,6 +1,5 @@
 package com.burak.humanbenchmarks
 
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
@@ -10,6 +9,7 @@ import android.view.Window
 import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -21,29 +21,37 @@ class LeaderBoard : AppCompatActivity() {
     private var firebase = FirebaseFirestore.getInstance()
     private var auth = FirebaseAuth.getInstance()
     private lateinit var viewReal : View
-
+    private var animationControl : animationControl = animationControl(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_leader_board)
         supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor("#252a34")))
+        animationControl.forOnCreate(savedInstanceState)
 
         val window : Window = window
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
         window.statusBarColor = Color.parseColor("#252a34")
 
         supportActionBar?.title = "Scoreboard"
+        supportActionBar?.hide()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         viewReal = window.decorView.rootView
         getNumbersMemoryLeader()
         getReactionTimeLeader()
+        goBackButtonInToolbar3.setOnClickListener { finish() }
     }
 
     private fun getReactionTimeLeader(){
-        val snackbarCreater = SnackbarCreater()
+        val snackbarCreater = PopupMessageCreator()
         firebase.collection("Scores").orderBy("ScoreAverage", Query.Direction.ASCENDING).limit(3).addSnapshotListener{ snapshot, exception ->
             if (exception != null) {
-                snackbarCreater.createFailSnack("Leader Board cannot be installed.", viewReal)
+                snackbarCreater.customToast(
+                    this, this, null, Toast.LENGTH_SHORT,
+                    "Leader Board cannot bet installed.",
+                    R.drawable.custom_toast_error, R.drawable.ic_error_image
+                )
+                //snackbarCreater.createFailSnack("Leader Board cannot be installed.", viewReal)
             }
             else {
                 if (snapshot != null) {
@@ -96,10 +104,15 @@ class LeaderBoard : AppCompatActivity() {
     }
 
     private fun getNumbersMemoryLeader(){
-        val snackbarCreator = SnackbarCreater()
+        val snackbarCreator = PopupMessageCreator()
         firebase.collection("Scores").orderBy("NumbersScore", Query.Direction.DESCENDING).limit(3).addSnapshotListener{ snapshot, exception ->
             if (exception != null) {
-                snackbarCreator.createFailSnack("Leader Board cannot be installed.", viewReal)
+                snackbarCreator.customToast(
+                    this, this, null, Toast.LENGTH_SHORT,
+                    "Leader Board cannot bet installed.",
+                    R.drawable.custom_toast_error, R.drawable.ic_error_image
+                )
+                //snackbarCreator.createFailSnack("Leader Board cannot be installed.", viewReal)
             }
             else {
                 if (snapshot != null) {

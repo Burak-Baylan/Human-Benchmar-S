@@ -9,10 +9,11 @@
 
     <ScrollView
         android:id="@+id/numbersAchievementsScrollView"
-        android:layout_width="155dp"
+        android:layout_width="0dp"
         android:layout_height="265dp"
+        android:layout_marginStart="15dp"
         android:layout_marginTop="25dp"
-        android:layout_marginEnd="5dp"
+        android:layout_marginEnd="15dp"
         android:background="@drawable/cust_scroll_view_bckgrnd"
         android:paddingStart="3dp"
         android:paddingTop="20dp"
@@ -20,7 +21,8 @@
         android:paddingBottom="5dp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
 
         <LinearLayout
             android:id="@+id/achievementsLinearLayoutNumberMemory"
@@ -56,7 +58,7 @@
         app:layout_constraintTop_toTopOf="@+id/textView13" />
 
     <ScrollView
-        android:id="@+id/dsadas"
+        android:id="@+id/numbersMemoryTimeLeadersScroll"
         android:layout_width="0dp"
         android:layout_height="265dp"
         android:layout_marginStart="15dp"
@@ -71,7 +73,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
 
         <GridLayout
             android:id="@+id/leaderBoardLayoutNumberMemory"
@@ -96,6 +98,7 @@
         android:fontFamily="@font/lilita_one"
         android:text="Try Again"
         android:textColor="#FFFFFF"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="@+id/progressForLeaderRealNumbersMemory"
         app:layout_constraintStart_toStartOf="@+id/progressForLeaderRealNumbersMemory"
         app:layout_constraintTop_toBottomOf="@+id/progressForLeaderRealNumbersMemory" />
@@ -113,19 +116,21 @@
         android:paddingBottom="5dp"
         android:text="Leaders"
         android:textColor="#FFFFFF"
-        app:layout_constraintEnd_toEndOf="@+id/dsadas"
-        app:layout_constraintStart_toStartOf="@+id/dsadas"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="@+id/numbersMemoryTimeLeadersScroll"
+        app:layout_constraintStart_toStartOf="@+id/numbersMemoryTimeLeadersScroll"
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
     <ProgressBar
         android:id="@+id/progressForLeaderRealNumbersMemory"
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@+id/dsadas"
-        app:layout_constraintEnd_toEndOf="@+id/dsadas"
-        app:layout_constraintStart_toStartOf="@+id/dsadas"
-        app:layout_constraintTop_toTopOf="@+id/dsadas" />
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/numbersMemoryTimeLeadersScroll"
+        app:layout_constraintEnd_toEndOf="@+id/numbersMemoryTimeLeadersScroll"
+        app:layout_constraintStart_toStartOf="@+id/numbersMemoryTimeLeadersScroll"
+        app:layout_constraintTop_toTopOf="@+id/numbersMemoryTimeLeadersScroll" />
 
     <TextView
         android:id="@+id/textView16"
@@ -140,8 +145,9 @@
         android:text="digit"
         android:textColor="#FFFFFF"
         android:textStyle="bold"
+        android:visibility="visible"
         app:layout_constraintStart_toEndOf="@+id/textView13"
-        app:layout_constraintTop_toTopOf="@+id/textView13" />
+            app:layout_constraintTop_toTopOf="@+id/textView13" />
 
     <Button
         android:id="@+id/buttonrtButtonNumberMemory"
@@ -168,6 +174,7 @@
         android:background="@drawable/cust_start_button_no_stroke"
         android:drawableStart="@drawable/ic_delete_box"
         android:padding="1dp"
+        android:visibility="visible"
         app:layout_constraintEnd_toStartOf="@+id/textView13"
         app:layout_constraintTop_toTopOf="@+id/textView13" />
 
@@ -177,7 +184,7 @@
         android:layout_height="2dp"
         android:layout_marginBottom="10dp"
         android:text="."
-        app:layout_constraintBottom_toBottomOf="@+id/dsadas"
+        app:layout_constraintBottom_toBottomOf="@+id/numbersMemoryTimeLeadersScroll"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -188,8 +195,8 @@
         android:layout_height="wrap_content"
         android:clickable="true"
         android:src="@drawable/ic_refresh"
-        app:backgroundTint="#00ADFF"
-        app:rippleColor="#758B91"
+        app:backgroundTint="#FFC107"
+        app:rippleColor="#6BB8B18E"
         app:layout_constraintBottom_toBottomOf="@+id/firstFab"
         app:layout_constraintEnd_toEndOf="@+id/firstFab"
         app:layout_constraintStart_toStartOf="@+id/firstFab"
@@ -202,8 +209,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"
-        app:backgroundTint="#00ADFF"
-        app:rippleColor="#758B91"
+        app:backgroundTint="#FFC107"
+        app:rippleColor="#6BB8B18E"
         android:src="@drawable/ic_change_achievement_leader_board"
         app:borderWidth="1dp"
         app:layout_constraintBottom_toBottomOf="@+id/firstFab"
@@ -217,12 +224,54 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"
-        app:backgroundTint="#002E73"
-        app:rippleColor="#758B91"
+        app:backgroundTint="#873600"
+        app:rippleColor="#6BB8B18E"
         app:srcCompat="@drawable/ic_down_arrow"
         app:borderWidth="1dp"
-        app:layout_constraintEnd_toEndOf="@+id/dsadas"
-        app:layout_constraintStart_toStartOf="@+id/dsadas"
+        app:layout_constraintEnd_toEndOf="@+id/numbersMemoryTimeLeadersScroll"
+        app:layout_constraintStart_toStartOf="@+id/numbersMemoryTimeLeadersScroll"
         app:layout_constraintTop_toBottomOf="@+id/textView30" />
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:backgroundTint="#393e46"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/goBackButtonInToolbar2"
+            style="@style/zoptirik"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="?android:attr/actionBarItemBackground"
+            android:src="@drawable/ic_back_arrow" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:maxLines="1"
+            android:text="Numbers Memory"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            tools:layout_editor_absoluteX="80dp"
+            tools:layout_editor_absoluteY="16dp" />
+    </androidx.appcompat.widget.Toolbar>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="@drawable/drop_shadow"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

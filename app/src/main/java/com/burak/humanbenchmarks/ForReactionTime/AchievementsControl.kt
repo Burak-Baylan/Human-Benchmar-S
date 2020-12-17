@@ -12,22 +12,31 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import com.burak.humanbenchmarks.R
-import com.burak.humanbenchmarks.SnackbarCreater
+import com.burak.humanbenchmarks.PopupMessageCreator
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 
 class AchievementsControl(context: Context, activity: Activity, view: View) {
 
-    private var snackCreator : SnackbarCreater = SnackbarCreater()
+    private var snackCreator : PopupMessageCreator = PopupMessageCreator()
     private var firebase : FirebaseFirestore = FirebaseFirestore.getInstance()
     private var auth : FirebaseAuth = FirebaseAuth.getInstance()
     private var currentUser : FirebaseUser? = auth.currentUser
     private var mCtx = context
+    private var mActivity = activity
     private var mView = view
     private var howManyAchievements = 0
     private lateinit var alert : AlertDialog.Builder
+
+    /*private var row20Rounds : Boolean = false
+    private var tooSlow : Boolean = false
+    private var tooLuck : Boolean = false
+    private var st1 : Boolean = false
+    private var turtle : Boolean = false
+    private var robotOr : Boolean = false*/
 
     fun getAchievementsForShowNumber(putText: TextView, getLinear : LinearLayout, oylesineCardView : TextView, oylesineCardView2 : TextView, oylesineCardView3 : TextView, oylesineCardView4 : TextView, oylesineCardView5 : TextView, oylesineCardView6 : TextView){
         if (currentUser != null) {
@@ -77,8 +86,6 @@ class AchievementsControl(context: Context, activity: Activity, view: View) {
 
                     showAchievementsDetails(getLinear, row20Rounds, tooSlow, tooLuck, st1, turtle, robotOr, true, oylesineCardView, oylesineCardView2, oylesineCardView3, oylesineCardView4, oylesineCardView5, oylesineCardView6)
 
-                } else {
-                    snackCreator.createFailSnack("Boş", mView)
                 }
             }
         }
@@ -87,27 +94,79 @@ class AchievementsControl(context: Context, activity: Activity, view: View) {
         }
     }
 
+    private fun createClickListenerForAchievementsDetail(layout : LinearLayout, detail : Int, style : Int){
+        layout.setOnClickListener {
+            println("$detail")
+            val alert = AlertDialog.Builder(mCtx, style)
+            alert.setTitle("Detail")
+            alert.setMessage(detail)
+            alert.setPositiveButton("Okay") {dialog : DialogInterface, _ : Int ->
+                dialog.cancel()
+            }
+            alert.show()
+        }
+    }
+
     var achievementsLinearCounter = 0
-    private fun textViewFun(text : String, color : String, lyt : LinearLayout){
+    private fun addAchievements(text : String, color : String, lyt : LinearLayout, achievementDetail : Int, style : Int){
+        /******************************************************************************************/
+        val linearLayoutForImage = LinearLayout(mCtx)
+        /******************************************************************************************/
+        val linearLayoutForTextView = LinearLayout(mCtx)
+        linearLayoutForTextView.gravity = Gravity.CENTER
+        val params2 = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT)
+        linearLayoutForTextView.layoutParams = params2
+        /******************************************************************************************/
+        val mainLinearLayoutForAchievements = LinearLayout(mCtx)
+        mainLinearLayoutForAchievements.setBackgroundResource(R.drawable.numbers_memory_linear_layout_for_persons)
+        val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT)
+        mainLinearLayoutForAchievements.layoutParams = params
+        mainLinearLayoutForAchievements.setPadding(20, 15, 20, 15)
+        /******************************************************************************************/
         val txtView = TextView(mCtx)
         txtView.text = text
-        txtView.textSize = 15f
+        txtView.textSize = 25f
+        txtView.gravity = Gravity.CENTER
         txtView.typeface = Typeface.DEFAULT_BOLD
-
-
-        //Toast.makeText(mCtx, "Zibirop", Toast.LENGTH_SHORT).show()
+        /******************************************************************************************/
+        val imgView = ImageView(mCtx)
+        imgView.setPadding(20, 0, 0, 0)
+        /******************************************************************************************/
+        when (text){
+            "Be Leader" -> { imgView.setImageResource(R.drawable.st1_place_ic) }
+            "20 rounds in a row" -> { imgView.setImageResource(R.drawable.in_a_row_ic) }
+            "Are you robot?" -> { imgView.setImageResource(R.drawable.robot_ic) }
+            "Too Lucky" -> { imgView.setImageResource(R.drawable.too_luck_ic) }
+            "Too slow" -> { imgView.setImageResource(R.drawable.too_slow_ic) }
+            "Turtle" -> { imgView.setImageResource(R.drawable.turtle_ic) }
+        }
+        /******************************************************************************************/
         txtView.setTextColor(Color.parseColor(color))
-
-        if (achievementsLinearCounter >= 1) {
+        txtView.gravity = Gravity.CENTER
+        /******************************************************************************************/
+        if (achievementsLinearCounter >= 1) { // Boşluk için.
             val imageForLine = TextView(mCtx)
-            imageForLine.setBackgroundColor(Color.parseColor("#EDC755"))
+            imageForLine.setBackgroundColor(Color.parseColor("#00adb5"))
             imageForLine.width = 900
-            imageForLine.height = 3
+            imageForLine.height = 15
             imageForLine.setPadding(0, 2, 0, 2)
             lyt.addView(imageForLine)
         }
-        lyt.addView(txtView)
+        /******************************************************************************************/
+        linearLayoutForImage.addView(imgView)
+        linearLayoutForTextView.addView(txtView)
+        /******************************************************************************************/
+        mainLinearLayoutForAchievements.addView(linearLayoutForImage)
+        mainLinearLayoutForAchievements.addView(linearLayoutForTextView)
+        /******************************************************************************************/
+        imgView.layoutParams.height = 100
+        imgView.layoutParams.width = 100
+        /******************************************************************************************/
+        lyt.addView(mainLinearLayoutForAchievements)
         achievementsLinearCounter++
+        /******************************************************************************************/
+        createClickListenerForAchievementsDetail(mainLinearLayoutForAchievements, achievementDetail, style)
+        /******************************************************************************************/
     }
 
     /** Javadaki static ile aynı **/
@@ -132,7 +191,12 @@ class AchievementsControl(context: Context, activity: Activity, view: View) {
                     .document("allAchievements").addSnapshotListener { snapshot, e ->
 
                     if (e != null) {
-                        achievementsControl.snackCreator.showToastShort(achievementsControl.mCtx, e.localizedMessage!!)
+
+                        achievementsControl.snackCreator.customToast(
+                            achievementsControl.mActivity, achievementsControl.mCtx, null, Toast.LENGTH_SHORT,
+                            e.localizedMessage!!, R.drawable.custom_toast_error, R.drawable.ic_error_image
+                        )
+                        //achievementsControl.snackCreator.showToastShort(achievementsControl.mCtx, e.localizedMessage!!)
                     }
 
                     if (snapshot != null && snapshot.exists()) {
@@ -159,76 +223,79 @@ class AchievementsControl(context: Context, activity: Activity, view: View) {
     // Kırmızı a50629
     private fun showAchievementsDetails (putLayout : LinearLayout, row20Rounds : Boolean, tooSlow : Boolean, tooLuck : Boolean, st1 : Boolean, turtle : Boolean, robotOr : Boolean, colorControl : Boolean, card1St : TextView, card20Rounds : TextView, cardAreYouRobob : TextView, cardTooLuck : TextView, cardTooSlow : TextView, cardTurtle : TextView){
         putLayout.removeAllViews()
-        val yesilRenk = "#61ff1e"
-        val kirmiziRenk = "#FFFFFF"
+        val yesilRenk = "#387E3B"
+        val kirmiziRenk = "#000000"
 
         val cardIcınKırmızıRenk = "#AF4C4C"
         val cardIcınYesilRenk = "#4CAF50"
         achievementsLinearCounter = 0
 
 
+
+
+
         if (row20Rounds){ // Row 20 Rounds
-            textViewFun("20 rounds in a row", yesilRenk, putLayout)
+            addAchievements("20 rounds in a row", yesilRenk, putLayout, R.string.rounds20Row, R.style.GreenCustomAlertDialog)
             card20Rounds.setTextColor(Color.parseColor(cardIcınYesilRenk))
             row20BckClr = R.style.GreenCustomAlertDialog
         }
         else{
-            textViewFun("20 rounds in a row", kirmiziRenk, putLayout)
+            addAchievements("20 rounds in a row", kirmiziRenk, putLayout, R.string.rounds20Row, R.style.RedCustomAlertDialog)
             card20Rounds.setTextColor(Color.parseColor(cardIcınKırmızıRenk))
             row20BckClr = R.style.RedCustomAlertDialog
         }
 
         if (tooSlow){ // Too Slow
-            textViewFun("Too slow", yesilRenk, putLayout)
+            addAchievements("Too slow", yesilRenk, putLayout, R.string.tooSlow, R.style.GreenCustomAlertDialog)
             cardTooSlow.setTextColor(Color.parseColor(cardIcınYesilRenk))
             tooSlowBckClr = R.style.GreenCustomAlertDialog
         }
         else{
-            textViewFun("Too slow", kirmiziRenk, putLayout)
+            addAchievements("Too slow", kirmiziRenk, putLayout, R.string.tooSlow, R.style.RedCustomAlertDialog)
             cardTooSlow.setTextColor(Color.parseColor(cardIcınKırmızıRenk))
             tooSlowBckClr = R.style.RedCustomAlertDialog
         }
 
         if (tooLuck){ // Too Luck
-            textViewFun("Too lucky", yesilRenk, putLayout)
+            addAchievements("Too lucky", yesilRenk, putLayout, R.string.tooLucky, R.style.GreenCustomAlertDialog)
             cardTooLuck.setTextColor(Color.parseColor(cardIcınYesilRenk))
             tooLuckBckClr = R.style.GreenCustomAlertDialog
         }
         else{
-            textViewFun("Too Lucky", kirmiziRenk, putLayout)
+            addAchievements("Too Lucky", kirmiziRenk, putLayout, R.string.tooLucky, R.style.RedCustomAlertDialog)
             cardTooLuck.setTextColor(Color.parseColor(cardIcınKırmızıRenk))
             tooLuckBckClr = R.style.RedCustomAlertDialog
         }
 
         if (st1){ // Get in 1st
-            textViewFun("Be Leader", yesilRenk, putLayout)
+            addAchievements("Be Leader", yesilRenk, putLayout, R.string.beLeaderDetail, R.style.GreenCustomAlertDialog)
             card1St.setTextColor(Color.parseColor(cardIcınYesilRenk))
             st1BckClr = R.style.GreenCustomAlertDialog
         }
         else{
-            textViewFun("Be Leader", kirmiziRenk, putLayout)
+            addAchievements("Be Leader", kirmiziRenk, putLayout, R.string.beLeaderDetail, R.style.RedCustomAlertDialog)
             card1St.setTextColor(Color.parseColor(cardIcınKırmızıRenk))
             st1BckClr = R.style.RedCustomAlertDialog
         }
 
         if (turtle){ // Turtle
-            textViewFun("Turtle", yesilRenk, putLayout)
+            addAchievements("Turtle", yesilRenk, putLayout, R.string.turtle, R.style.GreenCustomAlertDialog)
             cardTurtle.setTextColor(Color.parseColor(cardIcınYesilRenk))
             turtleBckClr = R.style.GreenCustomAlertDialog
         }
         else{
-            textViewFun("Turtle" , kirmiziRenk, putLayout)
+            addAchievements("Turtle" , kirmiziRenk, putLayout, R.string.turtle, R.style.RedCustomAlertDialog)
             cardTurtle.setTextColor(Color.parseColor(cardIcınKırmızıRenk))
             turtleBckClr = R.style.RedCustomAlertDialog
         }
 
         if (robotOr){ // Are You Robot
-            textViewFun("Are you robot?", yesilRenk, putLayout)
+            addAchievements("Are you robot?", yesilRenk, putLayout, R.string.areYouRobot, R.style.GreenCustomAlertDialog)
             cardAreYouRobob.setTextColor(Color.parseColor(cardIcınYesilRenk))
             robotBckClr = R.style.GreenCustomAlertDialog
         }
         else{
-            textViewFun("Are you robot?",kirmiziRenk, putLayout)
+            addAchievements("Are you robot?",kirmiziRenk, putLayout, R.string.areYouRobot, R.style.RedCustomAlertDialog)
             cardAreYouRobob.setTextColor(Color.parseColor(cardIcınKırmızıRenk))
             robotBckClr = R.style.RedCustomAlertDialog
         }
@@ -280,7 +347,7 @@ class AchievementsControl(context: Context, activity: Activity, view: View) {
         }.addOnFailureListener{
             //firebaseManage.loadingScreenDestroyer(false)
 
-            snackCreator.createFailSnack("Updatelenemedi", mView)
+            //snackCreator.createFailSnack("Updatelenemedi", mView)
         }
     }
 

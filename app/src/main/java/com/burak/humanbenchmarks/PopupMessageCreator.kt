@@ -1,17 +1,22 @@
 package com.burak.humanbenchmarks
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.Color
+import android.text.Layout
 import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.android.synthetic.main.custom_toast.*
+import kotlinx.android.synthetic.main.custom_toast.view.*
 
 
-class SnackbarCreater {
+class PopupMessageCreator {
 
-    var toast : Toast? = null
+    private var toast : Toast? = null
 
     fun createFailSnack(message : String, view : View){
         createSnack(message,view,"#570F0F", "#FFFFFF")
@@ -65,12 +70,45 @@ class SnackbarCreater {
         toast!!.setGravity(Gravity.TOP ,0,0)
         toast!!.show()
     }
-    fun showToastBottom(context : Context, sentence : String){
+    fun showToastBottom(context : Context, sentence : String) {
+        if (toast != null) {
+            toast!!.cancel()
+        }
+        toast = Toast.makeText(context, sentence, Toast.LENGTH_LONG)
+        toast!!.setGravity(Gravity.BOTTOM, 0, 0)
+        toast!!.show()
+    }
+
+    fun customToast(
+        activity : Activity, context : Context, gravity : Int?, toastDuration : Int,
+        message : String, background : Int, image : Int?
+    ){
+        val inflater = activity.layoutInflater.inflate(R.layout.custom_toast,  activity.findViewById(R.id.custom_toast_layout))
+        inflater.custom_toast_text.text = message
+        inflater.custom_toast_image.visibility = View.GONE
+
+        inflater.setOnClickListener {
+            println("Toast Clicked")
+        }
+
+        inflater.custom_toast_layout.setBackgroundResource(background)
+        inflater.custom_toast_image.visibility = View.VISIBLE
+
+        image?.let {
+            inflater.custom_toast_image.setImageResource(image)
+        }
+
         if (toast != null){
             toast!!.cancel()
         }
-        toast = Toast.makeText(context, sentence,Toast.LENGTH_LONG)
-        toast!!.setGravity(Gravity.BOTTOM ,0,0)
-        toast!!.show()
+
+        toast = Toast(context).apply {
+            duration = toastDuration
+            if (gravity != null) {
+                setGravity(gravity, 0, 0)
+            }
+            view = inflater
+        }
+        toast?.show()
     }
 }

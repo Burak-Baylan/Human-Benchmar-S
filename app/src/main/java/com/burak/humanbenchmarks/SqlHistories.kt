@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.DialogInterface
 import android.database.sqlite.SQLiteDatabase
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 
@@ -16,13 +17,13 @@ class SqlHistories(activity: Activity, context: Context, view : View) {
     private var viewReal : View = view
 
     private lateinit var mSQL : SQLiteDatabase
-    private lateinit var snackCreater: SnackbarCreater
+    private lateinit var snackCreater: PopupMessageCreator
     private lateinit var firebaseManage: FirebaseManage
 
     @SuppressLint("Recycle")
     fun myHistories (){
         createSQL()
-        snackCreater = SnackbarCreater()
+        snackCreater = PopupMessageCreator()
         try {
             var gelenString = ""
 
@@ -55,10 +56,20 @@ class SqlHistories(activity: Activity, context: Context, view : View) {
                 alert2.setPositiveButton("Delete"){ _: DialogInterface, _: Int ->
                     try {
                         mSQL.execSQL("DELETE FROM reactionhistory")
-                        snackCreater.showToastBottom(mCtx, "Deleted")
+                        snackCreater.customToast(
+                            mActivity, mCtx, null, Toast.LENGTH_SHORT,
+                            "Deleted",
+                            R.drawable.custom_toast_success, R.drawable.ic_success_image
+                        )
+                        //snackCreater.showToastBottom(mCtx, "Deleted")
                     }
                     catch (e: Exception){
-                        snackCreater.showToastBottom(mCtx, "Delete Fail!")
+                        snackCreater.customToast(
+                            mActivity, mCtx, null, Toast.LENGTH_SHORT,
+                            "Delete Fail!",
+                            R.drawable.custom_toast_error, R.drawable.ic_error_image
+                        )
+                        //snackCreater.showToastBottom(mCtx, "Delete Fail!")
                     }
                 }
                 alert2.setNegativeButton("Cancel"){ _: DialogInterface, _: Int ->
@@ -73,14 +84,19 @@ class SqlHistories(activity: Activity, context: Context, view : View) {
             alert.show()
 
         } catch (e: Exception) {
-            snackCreater.createFailSnack("History could not be shown.", viewReal)
+            snackCreater.customToast(
+                mActivity, mCtx, null, Toast.LENGTH_SHORT,
+                "History could not be shown.",
+                R.drawable.custom_toast_error, R.drawable.ic_error_image
+            )
+            //snackCreater.createFailSnack("History could not be shown.", viewReal)
         }
     }
 
     @SuppressLint("Recycle")
     fun saveReactionHistory (previouslyScore : String){
         createSQL()
-        snackCreater = SnackbarCreater()
+        snackCreater = PopupMessageCreator()
         try {
             var gelenString = ""
             try {
@@ -110,7 +126,7 @@ class SqlHistories(activity: Activity, context: Context, view : View) {
     }
 
     private fun createSQL (){
-        snackCreater = SnackbarCreater()
+        snackCreater = PopupMessageCreator()
         firebaseManage = FirebaseManage(mCtx,viewReal,mActivity)
         val currentId = firebaseManage.getUserId()
         try {
@@ -118,6 +134,8 @@ class SqlHistories(activity: Activity, context: Context, view : View) {
             mSQL.execSQL("CREATE TABLE IF NOT EXISTS reactionhistory (id INTEGER PRIMARY KEY, history VARCHAR)")
             mSQL.execSQL("CREATE TABLE IF NOT EXISTS reactionhistoryaverage (id INTEGER PRIMARY KEY, history VARCHAR)")
         }
-        catch (e: Exception){snackCreater.showToastCenter(mCtx,"oluşturulamadı")}
+        catch (e: Exception){
+            //snackCreater.showToastCenter(mCtx,"oluşturulamadı")
+        }
     }
 }

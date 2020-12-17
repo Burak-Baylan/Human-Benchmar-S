@@ -3,15 +3,19 @@ package com.burak.humanbenchmarks.ForNumbersMemory
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.Typeface
 import android.media.MediaPlayer
+import android.view.Gravity
 import android.view.View
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import com.burak.humanbenchmarks.ForReactionTime.AchievementsControl
 import com.burak.humanbenchmarks.R
-import com.burak.humanbenchmarks.SnackbarCreater
+import com.burak.humanbenchmarks.PopupMessageCreator
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
@@ -25,7 +29,7 @@ class NumbersMemoryAchievementsUpdater (context : Context, activity: Activity, v
     private val firebase : FirebaseFirestore = FirebaseFirestore.getInstance()
     private val auth : FirebaseAuth = FirebaseAuth.getInstance()
     private val currentUser : FirebaseUser? = auth.currentUser
-    private val snackCreator : SnackbarCreater = SnackbarCreater()
+    private val snackCreator : PopupMessageCreator = PopupMessageCreator()
     private val achievementsControl : AchievementsControl = AchievementsControl(mCtx, mActivity, viewReal)
 
     fun updateTrueAnAchievements(whichAchievement : String, title : String){
@@ -48,11 +52,19 @@ class NumbersMemoryAchievementsUpdater (context : Context, activity: Activity, v
                 ring.start()
 
             }.addOnFailureListener {
-                snackCreator.showToastCenter(mCtx, "NO UPDATED")
+                snackCreator.customToast(
+                    mActivity, mCtx, null, Toast.LENGTH_SHORT, "Achievement could not update.",
+                    R.drawable.custom_toast_error, R.drawable.ic_error_image
+                )
+                //snackCreator.showToastCenter(mCtx, "NO UPDATED")
             }
         }
         else{
-            snackCreator.showToastCenter(mCtx, "USER NULL")
+            snackCreator.customToast(
+                mActivity, mCtx, null, Toast.LENGTH_SHORT, "User Null",
+                R.drawable.custom_toast_error, R.drawable.ic_error_image
+            )
+            //snackCreator.showToastCenter(mCtx, "USER NULL")
         }
     }
 
@@ -130,31 +142,31 @@ class NumbersMemoryAchievementsUpdater (context : Context, activity: Activity, v
                     if (youAddThisOnAchievementsBoard) {
                         layoutForAchievements.removeAllViews()
                         achievementsLinearCounter = 0
-                        val yesilRenk = "#61ff1e"
-                        val kirmiziRenk = "#FFFFFF"
+                        val yesilRenk = "#387E3B"
+                        val siyahRenk = "#000000"
 
                         if (brainStorm) {
-                            textViewFun("Brain Storm", yesilRenk, layoutForAchievements)
+                            addAchievements("Brain Storm", yesilRenk, layoutForAchievements, R.string.brainStorm, R.style.GreenCustomAlertDialog)
                         } else if (!brainStorm) {
-                            textViewFun("Brain Storm", kirmiziRenk, layoutForAchievements)
+                            addAchievements("Brain Storm", siyahRenk, layoutForAchievements, R.string.brainStorm, R.style.RedCustomAlertDialog)
                         }
 
                         if (impatient) {
-                            textViewFun("Impatient", yesilRenk, layoutForAchievements)
+                            addAchievements("Impatient", yesilRenk, layoutForAchievements, R.string.impatient, R.style.GreenCustomAlertDialog)
                         } else if (!impatient) {
-                            textViewFun("Impatient", kirmiziRenk, layoutForAchievements)
+                            addAchievements("Impatient", siyahRenk, layoutForAchievements, R.string.impatient, R.style.RedCustomAlertDialog)
                         }
 
                         if (rookie) {
-                            textViewFun("Rookie", yesilRenk, layoutForAchievements)
+                            addAchievements("Rookie", yesilRenk, layoutForAchievements, R.string.rookie, R.style.GreenCustomAlertDialog)
                         } else if (!rookie) {
-                            textViewFun("Rookie", kirmiziRenk, layoutForAchievements)
+                            addAchievements("Rookie", siyahRenk, layoutForAchievements, R.string.rookie, R.style.RedCustomAlertDialog)
                         }
 
                         if (smart) {
-                            textViewFun("Smart", yesilRenk, layoutForAchievements)
+                            addAchievements("Smart", yesilRenk, layoutForAchievements, R.string.smart, R.style.GreenCustomAlertDialog)
                         } else if (!smart) {
-                            textViewFun("Smart", kirmiziRenk, layoutForAchievements)
+                            addAchievements("Smart", siyahRenk, layoutForAchievements, R.string.smart, R.style.RedCustomAlertDialog)
                         }
                     }
                 }
@@ -243,24 +255,76 @@ class NumbersMemoryAchievementsUpdater (context : Context, activity: Activity, v
         }
     }
 
-    var achievementsLinearCounter = 0
-    private fun textViewFun(text : String, color : String, lyt : LinearLayout){
+    private var achievementsLinearCounter = 0
+    private fun addAchievements(text : String, color : String, lyt : LinearLayout, detail : Int, style : Int){
+        /******************************************************************************************/
+        val linearLayoutForImage = LinearLayout(mCtx)
+        /******************************************************************************************/
+        val linearLayoutForTextView = LinearLayout(mCtx)
+        linearLayoutForTextView.gravity = Gravity.CENTER
+        val params2 = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT)
+        linearLayoutForTextView.layoutParams = params2
+        /******************************************************************************************/
+        val mainLinearLayoutForAchievements = LinearLayout(mCtx)
+        mainLinearLayoutForAchievements.setBackgroundResource(R.drawable.numbers_memory_linear_layout_for_persons)
+        val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT)
+        mainLinearLayoutForAchievements.layoutParams = params
+        mainLinearLayoutForAchievements.setPadding(20, 15, 20, 15)
+        /******************************************************************************************/
         val txtView = TextView(mCtx)
         txtView.text = text
-        txtView.textSize = 15f
+        txtView.textSize = 25f
+        txtView.gravity = Gravity.CENTER
         txtView.typeface = Typeface.DEFAULT_BOLD
-
+        /******************************************************************************************/
+        val imgView = ImageView(mCtx)
+        imgView.setPadding(20, 0, 0, 0)
+        /******************************************************************************************/
+        when (text){
+            "Brain Storm" -> { imgView.setImageResource(R.drawable.brain_storm_ic) }
+            "Impatient" -> { imgView.setImageResource(R.drawable.impatient_ic) }
+            "Rookie" -> { imgView.setImageResource(R.drawable.rookie_ic) }
+            "Smart" -> { imgView.setImageResource(R.drawable.smart_ic) }
+        }
+        /******************************************************************************************/
         txtView.setTextColor(Color.parseColor(color))
-
-        if (achievementsLinearCounter >= 1) {
+        txtView.gravity = Gravity.CENTER
+        /******************************************************************************************/
+        if (achievementsLinearCounter >= 1) { // Boşluk için.
             val imageForLine = TextView(mCtx)
-            imageForLine.setBackgroundColor(Color.parseColor("#EDC755"))
+            imageForLine.setBackgroundColor(Color.parseColor("#B06558"))
             imageForLine.width = 900
-            imageForLine.height = 3
+            imageForLine.height = 15
             imageForLine.setPadding(0, 2, 0, 2)
             lyt.addView(imageForLine)
         }
-        lyt.addView(txtView)
+        /******************************************************************************************/
+        linearLayoutForImage.addView(imgView)
+        linearLayoutForTextView.addView(txtView)
+        /******************************************************************************************/
+        mainLinearLayoutForAchievements.addView(linearLayoutForImage)
+        mainLinearLayoutForAchievements.addView(linearLayoutForTextView)
+        /******************************************************************************************/
+        imgView.layoutParams.height = 100
+        imgView.layoutParams.width = 100
+        /******************************************************************************************/
+        lyt.addView(mainLinearLayoutForAchievements)
         achievementsLinearCounter++
+        /******************************************************************************************/
+        createClickListenerForAchievementsDetail(mainLinearLayoutForAchievements, detail, style)
+        /******************************************************************************************/
+    }
+
+    private fun createClickListenerForAchievementsDetail(layout : LinearLayout, detail : Int, style : Int){
+        layout.setOnClickListener {
+            println("$detail")
+            val alert = AlertDialog.Builder(mCtx, style)
+            alert.setTitle("Detail")
+            alert.setMessage(detail)
+            alert.setPositiveButton("Okay") { dialog : DialogInterface, _ : Int ->
+                dialog.cancel()
+            }
+            alert.show()
+        }
     }
 }

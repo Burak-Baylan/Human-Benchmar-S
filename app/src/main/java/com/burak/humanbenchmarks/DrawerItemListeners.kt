@@ -13,6 +13,7 @@ import android.view.View
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.burak.humanbenchmarks.ForNumbersMemory.NumberMemoryMenu
@@ -22,7 +23,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 
 class DrawerItemListeners (val ctx : Context, val viewReal : View, val activity : Activity){
-    private var snackCreater : SnackbarCreater = SnackbarCreater()
+    private var snackCreater : PopupMessageCreator = PopupMessageCreator()
     private var loadingDialog : LoadingDialog = LoadingDialog(activity)
     private var firebaseManage : FirebaseManage = FirebaseManage(ctx, viewReal, activity)
     private lateinit var navigationView : NavigationView
@@ -97,7 +98,11 @@ class DrawerItemListeners (val ctx : Context, val viewReal : View, val activity 
                         val marketIntent = Intent(Intent.ACTION_VIEW, marketUri)
                         ctx.startActivity(marketIntent)
                     }
-                    snackCreater.showToastCenter(ctx, "Soon!")
+                    //snackCreater.showToastCenter(ctx, "Soon!")
+                    snackCreater.customToast(
+                        activity, ctx, null, Toast.LENGTH_SHORT,
+                        "SOON!", R.drawable.custom_toast_info, R.drawable.ic_info_image
+                    )
                     //sqlHistories.myHistories()
                 }
 
@@ -151,7 +156,12 @@ class DrawerItemListeners (val ctx : Context, val viewReal : View, val activity 
                             )
                             loadingDialog.dismissDialog()
                         } else {
-                            snackCreater.createFailSnack("Message cannot be empty.", viewReal)
+
+                            snackCreater.customToast(
+                                activity, ctx, null, Toast.LENGTH_SHORT, "Message cannot be empty.",
+                                R.drawable.custom_toast_warning, R.drawable.ic_warning_image
+                            )
+                            //snackCreater.createFailSnack("Message cannot be empty.", viewReal)
                             loadingDialog.dismissDialog()
                         }
                     }
@@ -211,7 +221,11 @@ class DrawerItemListeners (val ctx : Context, val viewReal : View, val activity 
         navigationView.menu.findItem(R.id.bossMenuItem).isVisible = false
         loadingDialog.dismissDialog()
         if (snackControl){
-            snackCreater.createSuccessSnack("Log Out Success", viewReal)
+            snackCreater.customToast(
+                activity, ctx, null, Toast.LENGTH_SHORT, "Log Out Success",
+                R.drawable.custom_toast_success, R.drawable.ic_success_image
+            )
+            //snackCreater.createSuccessSnack("Log Out Success", viewReal)
         }
         nullLayoutReal.visibility = View.VISIBLE
         noNullLayoutReal.visibility = View.GONE

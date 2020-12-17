@@ -12,6 +12,7 @@ import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.burak.humanbenchmarks.*
 import com.google.firebase.auth.FirebaseAuth
@@ -23,7 +24,7 @@ import kotlinx.android.synthetic.main.activity_reaction_time_menu.leaderBoardLay
 class ReactionTimeMenu : AppCompatActivity() {
 
     private lateinit var viewReal : View
-    private lateinit var snackCreater : SnackbarCreater
+    private lateinit var snackCreater : PopupMessageCreator
     private lateinit var firebaseManage: FirebaseManage
     private lateinit var olmasiGerekTextView : TextView
     private lateinit var nameText : TextView
@@ -31,6 +32,12 @@ class ReactionTimeMenu : AppCompatActivity() {
     private lateinit var auth : FirebaseAuth
     private var currentUser : FirebaseUser? = null
     private lateinit var firebase : FirebaseFirestore
+    private val animationControl = animationControl(this)
+
+    override fun onStart() {
+        animationControl.forOnStart()
+        super.onStart()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,28 +45,21 @@ class ReactionTimeMenu : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = "Reaction Time"
         var achievementScrollViewVisibilityControlBool = false
+        supportActionBar?.hide()
+        animationControl.forOnCreate(savedInstanceState)
 
         supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor("#393e46")))
         val window : Window = window
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
         window.statusBarColor = Color.parseColor("#393e46")
+        
+        fabListener()
 
         forLateInit()
         firebaseManage.getUser(nameText,viewReal,true)
         //achievementsControl.loadAchievements(achievementsLinearLayout)
         listeners()
         netConnect()
-
-        /****/
-        val oylesineCardView  = TextView(this)
-        val oylesineCardView2 = TextView(this)
-        val oylesineCardView3 = TextView(this)
-        val oylesineCardView4 = TextView(this)
-        val oylesineCardView5 = TextView(this)
-        val oylesineCardView6 = TextView(this)
-        /***/
-
-        achievementsControl.getAchievementsForShowNumber(achievementsCounterText, achievementsLinearLayout, oylesineCardView, oylesineCardView2, oylesineCardView3, oylesineCardView4, oylesineCardView5, oylesineCardView6)
 
         achievementsScrollView.visibility = View.INVISIBLE
 
@@ -80,7 +80,14 @@ class ReactionTimeMenu : AppCompatActivity() {
                 }
             }
             else{
-                snackCreater.showToastCenter(this, "You must be logged in if you want to show all achievements.")
+
+                snackCreater.customToast(
+                    this, this, null, Toast.LENGTH_SHORT,
+                    "You must be logged in if you want to show all achievements.",
+                    R.drawable.custom_toast_error, R.drawable.ic_error_image
+                )
+                //snackCreater.showToastCenter(this, "You must be logged in if you want to show all achievements.")
+
                 achievementsCounterText.setBackgroundResource(R.drawable.achievements_background_null)
             }
         }
@@ -94,6 +101,8 @@ class ReactionTimeMenu : AppCompatActivity() {
             val intent = Intent(this, ShowAchievements::class.java)
             startActivity(intent)
         }
+
+        goBackButtonInToolbar.setOnClickListener { finish() }
 
     }
 
@@ -115,14 +124,30 @@ class ReactionTimeMenu : AppCompatActivity() {
             alert.setPositiveButton("Delete") {_ : DialogInterface, _ : Int ->
                 try {
                     firebase.collection("Scores").document(userId!!).update("ScoreAverage", 0).addOnSuccessListener {
-                        snackCreater.createSuccessSnack("Deleted", viewReal)
+
+                        snackCreater.customToast(
+                            this, this, null, Toast.LENGTH_SHORT, "Deleted",
+                            R.drawable.custom_toast_success, R.drawable.ic_success_image
+                        )
+                        //snackCreater.createSuccessSnack("Deleted", viewReal)
+
                         deleteMeOnLeaderBoardImage.visibility = View.INVISIBLE
                     }.addOnFailureListener {
-                        snackCreater.createFailSnack(it.localizedMessage!!, viewReal)
+
+                        snackCreater.customToast(
+                            this, this, null, Toast.LENGTH_SHORT, it.localizedMessage!!,
+                            R.drawable.custom_toast_error, R.drawable.ic_error_image
+                        )
+                        //snackCreater.createFailSnack(it.localizedMessage!!, viewReal)
                     }
                 }
                 catch (e : Exception){
-                    snackCreater.createFailSnack("Could not be deleted.", viewReal)
+
+                    snackCreater.customToast(
+                        this, this, null, Toast.LENGTH_SHORT, "Could not be deleted.",
+                        R.drawable.custom_toast_error, R.drawable.ic_error_image
+                    )
+                    //snackCreater.createFailSnack("Could not be deleted.", viewReal)
                 }
             }
             alert.setNegativeButton("Cancel") {dialog : DialogInterface, _ : Int ->
@@ -138,7 +163,7 @@ class ReactionTimeMenu : AppCompatActivity() {
         firebase = FirebaseFirestore.getInstance()
 
         viewReal = window.decorView.rootView
-        snackCreater = SnackbarCreater()
+        snackCreater = PopupMessageCreator()
         firebaseManage = FirebaseManage(this,viewReal,this)
         olmasiGerekTextView = TextView(this)
         nameText = TextView(this)
@@ -158,7 +183,11 @@ class ReactionTimeMenu : AppCompatActivity() {
             progressForLeaderReal.visibility = View.VISIBLE
             tryConnectTextReal.visibility = View.VISIBLE
             underlinedText("Try Again", tryConnectTextReal)
-            snackCreater.createFailSnack("No Connection",viewReal)
+            snackCreater.customToast(
+                this, this, null, Toast.LENGTH_SHORT, "No Connection",
+                R.drawable.custom_toast_error, R.drawable.ic_error_image
+            )
+            //snackCreater.createFailSnack("No Connection",viewReal)
             //loadingImage.setBackgroundResource(Drawable.(R.layout.custom_loading_screen))
         }
     }
@@ -169,4 +198,88 @@ class ReactionTimeMenu : AppCompatActivity() {
         spannableString.setSpan(UnderlineSpan(), 0, spannableString.length, 0)
         textView.text = spannableString
     }
+
+    var swapControl = true
+    private fun fabListener(){
+        firstFabReactionTime.setOnClickListener{ view ->
+            if (!isFabOpen){//Kapalıysa
+                showFabMenu()
+            }
+            else{//Açıksa
+                closeFabMenu()
+            }
+        }
+
+        refreshFabReactionTime.setOnClickListener {
+            closeFabMenu()
+            firebaseManage.loadLeaderScores(leaderBoardLayout,false, olmasiGerekTextView, deleteMeOnLeaderBoardImage, 15)
+        }
+
+        swapFabReactionTime.setOnClickListener {
+            /****/
+            val oylesineCardView  = TextView(this); val oylesineCardView2 = TextView(this); val oylesineCardView3 = TextView(this); val oylesineCardView4 = TextView(this); val oylesineCardView5 = TextView(this); val oylesineCardView6 = TextView(this)
+            /***/
+            currentUser = auth.currentUser
+            if (currentUser != null) {
+                if (swapControl) {
+                    achievementsControl.getAchievementsForShowNumber(textView14, achievementsLinearLayout, oylesineCardView, oylesineCardView2, oylesineCardView3, oylesineCardView4, oylesineCardView5, oylesineCardView6)
+                    swapControl = false
+                    /************************** INVISIBLE LEADER BOARD ********************************/
+                    deleteMeOnLeaderBoardImage.visibility = View.INVISIBLE
+                    //textView14.visibility = View.GONE
+                    textView15.visibility = View.GONE
+                    reactionTimeLeadersScroll.visibility = View.INVISIBLE
+                    /*progressForLeaderRealNumbersMemory.visibility = View.INVISIBLE
+                tryConnectTextRealNumbersMemory.visibility = View.INVISIBLE*/
+                    /*************************** VISIBLE ACHIEVEMENTS *********************************/
+                    textView14.text = "Achievements"
+                    achievementsScrollView.visibility = View.VISIBLE
+                    refreshFabReactionTime.visibility = View.INVISIBLE
+                    /**********************************************************************************/
+                } else if (!swapControl) {
+                    swapControl = true
+                    /*************************** VISIBLE LEADER BOARD *********************************/
+                    deleteMeOnLeaderBoardImage.visibility = View.VISIBLE
+                    //textView14.visibility = View.VISIBLE
+                    textView15.visibility = View.VISIBLE
+                    reactionTimeLeadersScroll.visibility = View.VISIBLE
+                    /*progressForLeaderRealNumbersMemory.refreshFab.isClickable = truevisibility = View.VISIBLE
+                tryConnectTextRealNumbersMemory.visibility = View.VISIBLE*/
+                    /**********************************************************************************/
+                    /************************** INVISIBLE ACHIEVEMENTS ********************************/
+                    textView14.text = "Leaders"
+                    achievementsScrollView.visibility = View.INVISIBLE
+                    refreshFabReactionTime.visibility = View.VISIBLE
+                    /**********************************************************************************/
+                }
+                closeFabMenu()
+            }
+            else {
+                snackCreater.customToast(
+                    this, this, null, Toast.LENGTH_SHORT,
+                    "If you want to see your own achievements, you must logged in.",
+                    R.drawable.custom_toast_error, R.drawable.ic_error_image
+                )
+                //snackCreater.showToastCenter(this, "If you want to see your own achievements, you must logged in.")
+            }
+        }
+
+    }
+    
+    private var isFabOpen : Boolean = false
+    private fun showFabMenu(){
+        isFabOpen = true
+        firstFabReactionTime.setImageResource(R.drawable.ic_up_arrow_reaction_time)
+
+        swapFabReactionTime.animate().translationY(+resources.getDimension(R.dimen.standard_55))
+        refreshFabReactionTime.animate().translationY(+resources.getDimension(R.dimen.standard_105))
+    }
+
+    private fun closeFabMenu(){
+        isFabOpen = false
+        firstFabReactionTime.setImageResource(R.drawable.ic_down_arrow_reaction_time)
+        swapFabReactionTime.animate().translationY(0F)
+        refreshFabReactionTime.animate().translationY(0F)
+    }
+    
 }

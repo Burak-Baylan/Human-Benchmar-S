@@ -10,11 +10,10 @@ import android.net.ConnectivityManager
 import android.text.InputType
 import android.text.SpannableString
 import android.text.style.StyleSpan
+import android.view.Gravity
 import android.view.View
-import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
-import com.burak.humanbenchmarks.ForNumbersMemory.LeadersBoardDesign
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
@@ -22,6 +21,7 @@ import com.google.firebase.auth.ktx.userProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.ktx.Firebase
+import kotlinx.android.synthetic.main.custom_toast.view.*
 import java.io.Serializable
 import java.util.*
 
@@ -30,12 +30,12 @@ class FirebaseManage {
 
     private var firebase : FirebaseFirestore
     private var auth : FirebaseAuth
-    private var snackCreater : SnackbarCreater
+    private var snackCreater : PopupMessageCreator
     var currentUser : FirebaseUser? = null
     private var loadingDialog: LoadingDialog
     private var userNameControl : TextView
     private var oldPasswordNow : String = ""
-    lateinit private var leadersBoardDesign: LeadersBoardDesign
+    private var leadersBoardDesign: LeadersBoardDesign
 
 
     var mCtx : Context? = null
@@ -48,7 +48,7 @@ class FirebaseManage {
         this.mView = view
         this.activity = activity
 
-        snackCreater = SnackbarCreater()
+        snackCreater = PopupMessageCreator()
         userNameControl = TextView(context)
         loadingDialog = LoadingDialog(activity)
         //fullScreenLoadingDialog = FullScreenAlertDialogForStartUpApp(activity)
@@ -88,7 +88,8 @@ class FirebaseManage {
     }
     fun getUser(putText: TextView, viewReal: View, welcomeControl: Boolean){
         //loadingScreenStarter(false)
-        val snackCreater = SnackbarCreater()
+
+        val snackCreater = PopupMessageCreator()
         auth = FirebaseAuth.getInstance()
         currentUser = auth.currentUser
         val emailCurrent = currentUser?.email
@@ -98,8 +99,13 @@ class FirebaseManage {
         try {
             val getUsername = currentUser!!.displayName
 
+            //MainActivity.layout.zoptirikText.text = "Welcome lan"
+
             if (!welcomeControl) {
-                snackCreater.createSuccessSnack("Welcome '$getUsername'", viewReal)
+                snackCreater.customToast(
+                    activity!!, mCtx!!, null, Toast.LENGTH_SHORT, "Welcome $getUsername",
+                    R.drawable.custom_toast_success, null
+                )
             }
 
             this.currentRealUsername = getUsername!!
@@ -122,11 +128,20 @@ class FirebaseManage {
         deleteMeOnLeaderBoardButton: TextView,
         enFazlaKacKisi: Long
     ){
-        val snackbarCreater = SnackbarCreater()
+        val snackbarCreater = PopupMessageCreator()
         var deleteMeOnLeaderBoardButtonVisibilityControl = false
         auth = FirebaseAuth.getInstance()
         currentUser = auth.currentUser
         firebase = FirebaseFirestore.getInstance()
+
+        /******************************************************************************************/
+        var getLinearLayout = leadersBoardDesign.createLinearLayout()
+        var getScoreTextView = leadersBoardDesign.createScoreTextView()
+        var getAchievementsTextView = leadersBoardDesign.createAchievementsCountTextView()
+        var getUsernameTextView = leadersBoardDesign.createUsernameTextView()
+        var getOnlineOrOfflineTextView = leadersBoardDesign.createOnlineOrOfflineTextView()
+        /******************************************************************************************/
+
         firebase.collection("Scores").orderBy("ScoreAverage", Query.Direction.ASCENDING).limit(
             enFazlaKacKisi
         ).addSnapshotListener{ snapshot, exception ->
@@ -139,10 +154,8 @@ class FirebaseManage {
                 if (snapshot != null)
                 {
                     var kisi : Int = 0
-
                     leaderLayout.removeAllViews()
                     val documents = snapshot.documents
-
                     var countAchievement : Int
                     var countAllAchievement: Int
                     for (document in documents)
@@ -169,10 +182,7 @@ class FirebaseManage {
                                 "allAchievements"
                             ).addSnapshotListener { snapshot, excepiton ->
                                 if (exception != null) {
-                                    snackbarCreater.createFailSnack(
-                                        "Leader Board cannot be installed.",
-                                        mView!!
-                                    )
+                                    snackbarCreater.createFailSnack("Leader Board cannot be installed.", mView!!)
                                 }
                                 else{
                                     countAllAchievement = 0
@@ -199,10 +209,11 @@ class FirebaseManage {
                                         kontrolEt(turtle)
 
 
-                                        val getLinearLayout = leadersBoardDesign.createLinearLayout()
-                                        val getScoreTextView = leadersBoardDesign.createScoreTextView()
-                                        val getAchievementsTextView = leadersBoardDesign.createAchievementsCountTextView()
-                                        val getUsernameTextView = leadersBoardDesign.createUsernameTextView()
+                                        getLinearLayout = leadersBoardDesign.createLinearLayout()
+                                        getScoreTextView = leadersBoardDesign.createScoreTextView()
+                                        getAchievementsTextView = leadersBoardDesign.createAchievementsCountTextView()
+                                        getUsernameTextView = leadersBoardDesign.createUsernameTextView()
+                                        getOnlineOrOfflineTextView = leadersBoardDesign.createOnlineOrOfflineTextView()
 
 
                                         if (!nameColorControl)
@@ -213,6 +224,7 @@ class FirebaseManage {
                                             {
                                                 isimDegisBool = true
                                                 leaderScoresText.setTextColor(Color.parseColor("#66E66B"))
+                                                getUsernameTextView.setTextColor(Color.parseColor("#66E66B"))
                                                 myNameControlTextView.text = "true"
                                                 deleteMeOnLeaderBoardButton.visibility = View.VISIBLE
                                                 deleteMeOnLeaderBoardButtonVisibilityControl = true
@@ -220,7 +232,8 @@ class FirebaseManage {
                                         } else if (nameColorControl)
                                         /** Eğer ismi sadece beyaz istiyorsa **/
                                         {
-                                            leaderScoresText.setTextColor(Color.parseColor("#FFFFFF"))
+                                            leaderScoresText.setTextColor(Color.parseColor("#142A4E"))
+                                            getUsernameTextView.setTextColor(Color.parseColor("#142A4E"))
                                         }
 
                                         if (usernameCurrent.length > 8)
@@ -234,17 +247,18 @@ class FirebaseManage {
                                          * Buradaki kontrol ilk resmin üzerine çizgiyi eklememek için. Nedeni kötü gözükmesi. **/
                                         {
                                             val imageForCizgi = TextView(mCtx)
-                                            imageForCizgi.setBackgroundColor(Color.parseColor("#EDC755"))
+                                            imageForCizgi.setBackgroundColor(Color.parseColor("#00adb5"))
                                             imageForCizgi.width = 900
-                                            imageForCizgi.height = 3
+                                            imageForCizgi.height = 15
                                             imageForCizgi.setPadding(0, 2, 0, 2)
                                             leaderLayout.addView(imageForCizgi)
                                         }
 
+                                        addListener(getLinearLayout, usernameCurrent)
+                                        addOnlineOrOfflineChangeListener(uid, getOnlineOrOfflineTextView)
                                         kisi++
                                         if (isimDegisBool){usernameCurrent = "You"}
                                         var scoreString = "$kisi- $usernameCurrent: $averageScore"
-
                                         if (kisi == 1){
                                             if (usernameCurrent == currentRealUsername){
 
@@ -258,7 +272,7 @@ class FirebaseManage {
                                             scoreString = "$kisi- $usernameCurrent: 10k+"
                                         }
 
-                                        val spannableString = SpannableString(scoreString)
+                                        val spannableString = SpannableString("$averageScore ms")
                                         spannableString.setSpan(
                                             StyleSpan(Typeface.BOLD),
                                             0,
@@ -266,8 +280,31 @@ class FirebaseManage {
                                             0
                                         )
 
+                                        val spannableString2 = SpannableString("#$kisi $usernameCurrent: ")
+                                        spannableString2.setSpan(
+                                            StyleSpan(Typeface.BOLD),
+                                            0,
+                                            spannableString2.length,
+                                            0
+                                        )
+
+                                        val spannableString3 = SpannableString("Achievements: $countAchievement/$countAllAchievement")
+                                        spannableString3.setSpan(
+                                            StyleSpan(Typeface.BOLD),
+                                            0,
+                                            spannableString3.length,
+                                            0
+                                        )
+
+                                        leadersBoardDesign.getRealGridLayout(
+                                            getLinearLayout,
+                                            getUsernameTextView, getScoreTextView, getAchievementsTextView,
+                                            spannableString2, spannableString, spannableString3,
+                                            getOnlineOrOfflineTextView
+                                        )
+
                                         leaderScoresText.text = spannableString
-                                        leaderLayout.addView(leaderScoresText)
+                                        leaderLayout.addView(getLinearLayout)
                                     }
                                 }
                             }
@@ -284,11 +321,20 @@ class FirebaseManage {
         enFazlaKacKisi: Long,
         deleteMeOnLeaderBoardButton: TextView
     ){
-        val snackbarCreator = SnackbarCreater()
+        val snackbarCreator = PopupMessageCreator()
         var deleteMeOnLeaderBoardButtonVisibilityControl = false
         auth = FirebaseAuth.getInstance()
         currentUser = auth.currentUser
         firebase = FirebaseFirestore.getInstance()
+
+        /*********************************************************************************************/
+        var getLinearLayout = leadersBoardDesign.createLinearLayout()
+        var getUsernameTextView = leadersBoardDesign.createUsernameTextView()
+        var getScoreTextView = leadersBoardDesign.createScoreTextView()
+        var getAchievementsTextView = leadersBoardDesign.createAchievementsCountTextView()
+        var getOnlineOrOfflineTextView = leadersBoardDesign.createOnlineOrOfflineTextView()
+        /*********************************************************************************************/
+
         firebase.collection("Scores").orderBy("NumbersScore", Query.Direction.DESCENDING).limit(
             enFazlaKacKisi
         ).addSnapshotListener{ snapshot, exception ->
@@ -300,12 +346,13 @@ class FirebaseManage {
             {
                 if (snapshot != null)
                 {
-                    var kisi : Int = 0
+                    var kisi = 0
                     leaderLayout.removeAllViews()
                     val documents = snapshot.documents
 
                     var countAchievement : Int
                     var countAllAchievement: Int
+                    var docSizeCounter = 0
                     for (document in documents)
                     {
                         /** Burası bir for döngüsü olduğu için ve biz başta görünürlüğü sıfırladığımız için aşşağıda isim eşleşse de for dögüsü döndüğü için
@@ -325,7 +372,6 @@ class FirebaseManage {
                         println("$uid")
                         var isimDegisBool = false
                         if (lastInit.toInt() > 0) {
-
                             firebase.collection("Users").document(uid).collection("Achievements").document(
                                 "numbersMemoryAchievements"
                             ).addSnapshotListener { snapshot, excepiton ->
@@ -356,10 +402,11 @@ class FirebaseManage {
                                         kontrolEt(smart)
 
                                         /*********************************************************************************************/
-                                        val getLinearLayout = leadersBoardDesign.createLinearLayout()
-                                        val getUsernameTextView = leadersBoardDesign.createUsernameTextView()
-                                        val getScoreTextView = leadersBoardDesign.createScoreTextView()
-                                        val getAchievementsTextView = leadersBoardDesign.createAchievementsCountTextView()
+                                        getLinearLayout = leadersBoardDesign.createLinearLayout()
+                                        getUsernameTextView = leadersBoardDesign.createUsernameTextView()
+                                        getScoreTextView = leadersBoardDesign.createScoreTextView()
+                                        getAchievementsTextView = leadersBoardDesign.createAchievementsCountTextView()
+                                        getOnlineOrOfflineTextView = leadersBoardDesign.createOnlineOrOfflineTextView()
                                         /*********************************************************************************************/
 
                                         if (!nameColorControl)
@@ -378,8 +425,8 @@ class FirebaseManage {
                                         } else if (nameColorControl)
                                         /** Eğer ismi sadece beyaz istiyorsa **/
                                         {
-                                            leaderScoresText.setTextColor(Color.parseColor("#FFFFFF"))
-                                            getUsernameTextView.setTextColor(Color.parseColor("#FFFFFF"))
+                                            leaderScoresText.setTextColor(Color.parseColor("#142A4E"))
+                                            getUsernameTextView.setTextColor(Color.parseColor("#142A4E"))
                                         }
 
                                         if (usernameCurrent.length > 8)
@@ -399,6 +446,8 @@ class FirebaseManage {
                                             leaderLayout.addView(imageForCizgi)
                                         }
 
+                                        addListener(getLinearLayout, usernameCurrent)
+                                        addOnlineOrOfflineChangeListener(uid, getOnlineOrOfflineTextView)
                                         kisi++
                                         if (isimDegisBool){usernameCurrent = "You"}
                                         val scoreString = "$kisi- $usernameCurrent: $lastInit"
@@ -431,12 +480,9 @@ class FirebaseManage {
                                             getLinearLayout,
                                             getUsernameTextView, getScoreTextView, getAchievementsTextView,
                                             spannableString2, spannableString, spannableString3
-                                        )
+                                            ,getOnlineOrOfflineTextView)
 
                                         leaderScoresText.text = spannableString
-
-
-
                                         leaderLayout.addView(getLinearLayout)
                                     }
                                 }
@@ -448,20 +494,60 @@ class FirebaseManage {
         }
     }
 
+    private fun addOnlineOrOfflineChangeListener(uid : String, onlineOrOfflineTextView : TextView){
+        firebase = FirebaseFirestore.getInstance()
+        firebase.collection("Users").document(uid).addSnapshotListener { snapshot, error ->
+            if (error == null){
+                if (snapshot != null && snapshot.exists()){
+                    val status : String = snapshot.get("userStatus") as String
+                    if (status == "offline"){
+                        val offlineSpannable = SpannableString("OFFLINE")
+                        offlineSpannable.setSpan(
+                            StyleSpan(Typeface.BOLD),
+                            0,
+                            offlineSpannable.length,
+                            0
+                        )
+                        onlineOrOfflineTextView.setTextColor(Color.parseColor("#F44336"))
+                        onlineOrOfflineTextView.text = offlineSpannable
+                    }
+                    else if (status == "online"){
+                        val onlineSpannable = SpannableString("ONLINE")
+                        onlineSpannable.setSpan(
+                            StyleSpan(Typeface.BOLD),
+                            0,
+                            onlineSpannable.length,
+                            0
+                        )
+                        onlineOrOfflineTextView.setTextColor(Color.parseColor("#4CAF50"))
+                        onlineOrOfflineTextView.text = onlineSpannable
+                    }
+                }
+            }
+        }
+    }
+
+    private fun addListener (layout : LinearLayout, sey : String){
+        layout.setOnClickListener {
+            println("tık: $sey")
+        }
+    }
+
     fun addUserFirestore(email: String, password: String, username: String){
         firebase = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
         currentUser = auth.currentUser
 
-        var user = hashMapOf(
+        val user = hashMapOf(
             "UserName" to username,
             "Email" to email,
-            "Password" to password
+            "Password" to password,
+            "userStatus" to "offline"
         )
-        var userId = currentUser?.uid
+        val userId = currentUser?.uid
         firebase.collection("Users").document(userId!!).set(user).addOnSuccessListener {
 
-            var achievementsMap = hashMapOf(
+            val achievementsMap = hashMapOf(
                 "20roundsRow" to false, // 20 round arka arkaya
                 "tooSlow" to false, // 10 saniyeden fazla
                 "tooLucky" to false, // 80ms den az -SKOR-
@@ -542,7 +628,7 @@ class FirebaseManage {
         successMessage: String,
         failMessage: String
     ){
-        snackCreater = SnackbarCreater()
+        snackCreater = PopupMessageCreator()
         loadingDialog = LoadingDialog(activity)
         loadingDialog.loadingAlertDialog()
         firebase = FirebaseFirestore.getInstance()
@@ -566,7 +652,7 @@ class FirebaseManage {
         successMessage: String,
         failMessage: String
     ){
-        snackCreater = SnackbarCreater()
+        snackCreater = PopupMessageCreator()
         firebase = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
         currentUser = auth.currentUser
@@ -584,7 +670,7 @@ class FirebaseManage {
     }*/
 
     fun resetPasswordWithEmail(email: String){
-        snackCreater = SnackbarCreater()
+        snackCreater = PopupMessageCreator()
 
         loadingDialog = LoadingDialog(activity)
 
@@ -619,7 +705,7 @@ class FirebaseManage {
     fun loginAlertDialog(textView: TextView){
         auth = FirebaseAuth.getInstance()
         loadingDialog = LoadingDialog(activity)
-        snackCreater = SnackbarCreater()
+        snackCreater = PopupMessageCreator()
 
         val loginLinearLayout = LinearLayout(mCtx)
         loginLinearLayout.orientation = LinearLayout.VERTICAL
@@ -670,7 +756,7 @@ class FirebaseManage {
         loginAlert.setTitle("Login")
         loginAlert.setView(loginLinearLayout)
         loginAlert.setCancelable(false)
-        loginAlert.setPositiveButton("Login") { dialog: DialogInterface, i: Int ->
+        loginAlert.setPositiveButton("LOGIN") { dialog: DialogInterface, i: Int ->
             loadingDialog.loadingAlertDialog()
             val email = emailEditText.text.toString()
             val password = passwordEditText.text.toString()
@@ -712,7 +798,7 @@ class FirebaseManage {
 
         loadingScreenStarter(false)
         firebase = FirebaseFirestore.getInstance()
-        snackCreater = SnackbarCreater()
+        snackCreater = PopupMessageCreator()
         val currentUser = auth.currentUser
         //snackCreater.showToastCenter(mCtx!!,"oldTextViewText: ${oldUsernameTextView.text.toString()}")
 
@@ -779,7 +865,7 @@ class FirebaseManage {
     }
 
     fun updateEmail(newEmail: String){
-        snackCreater = SnackbarCreater()
+        snackCreater = PopupMessageCreator()
         auth = FirebaseAuth.getInstance()
         firebase = FirebaseFirestore.getInstance()
         val user = Firebase.auth.currentUser
@@ -800,7 +886,7 @@ class FirebaseManage {
     }
 
     private fun updateEmailUsers(newEmail: String, oldEmail: String) {
-        snackCreater = SnackbarCreater()
+        snackCreater = PopupMessageCreator()
         val currentUserId = getUserId()
         auth = FirebaseAuth.getInstance()
         firebase = FirebaseFirestore.getInstance()
@@ -820,7 +906,7 @@ class FirebaseManage {
     }
 
     private fun updateEmailScores(newEmail: String, oldEmail: String){
-        snackCreater = SnackbarCreater()
+        snackCreater = PopupMessageCreator()
         val currentUserId = getUserId()
         auth = FirebaseAuth.getInstance()
         firebase = FirebaseFirestore.getInstance()
@@ -843,7 +929,7 @@ class FirebaseManage {
     }
 
     fun changePasswordNoEmail(newPassword: String, oldPasswordComing: String){
-        snackCreater = SnackbarCreater()
+        snackCreater = PopupMessageCreator()
         val currentUserId = getUserId()
         auth = FirebaseAuth.getInstance()
         firebase = FirebaseFirestore.getInstance()
@@ -896,8 +982,8 @@ class FirebaseManage {
                     snackCreater.showToastCenter(mCtx!!, "User deleted.")
                     loadingScreenDestroyer(false)
                     val intent = Intent(activity, MainActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                     activity!!.startActivity(intent)
-                    activity!!.finish()
 
                 }.addOnFailureListener{
 
@@ -928,7 +1014,7 @@ class FirebaseManage {
 
     private fun setUserAchievementsAgain(){
 
-        val snackbarCreater = SnackbarCreater()
+        val snackbarCreater = PopupMessageCreator()
         auth = FirebaseAuth.getInstance()
         currentUser = auth.currentUser
         val uid = currentUser?.uid
@@ -976,7 +1062,7 @@ class FirebaseManage {
 
     private fun getScoresCurrentUser(){
 
-        val snackbarCreater = SnackbarCreater()
+        val snackbarCreater = PopupMessageCreator()
         auth = FirebaseAuth.getInstance()
         currentUser = auth.currentUser
         if (currentUser != null) {
@@ -1068,7 +1154,7 @@ class FirebaseManage {
 
     private fun getUserCurrentUser (){
 
-        var snackbarCreater = SnackbarCreater()
+        var snackbarCreater = PopupMessageCreator()
         auth = FirebaseAuth.getInstance()
         currentUser = auth.currentUser
         var currentEmail = currentUser?.email

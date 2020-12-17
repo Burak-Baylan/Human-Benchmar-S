@@ -8,4 +8,17 @@
         You can sign up with click the button below.\n
         Optionally, when you skip this screen, you can register by clicking the button in the left corner."
     </string>
+
+    <string name="beLeaderDetail"> Be rank 1 on the leader board. </string>
+    <string name="rounds20Row"> Play 20 rounds in a row. </string>
+    <string name="areYouRobot"> 100 ms or less average. </string>
+    <string name="tooLucky"> 80 ms or less score. </string>
+    <string name="tooSlow"> Wait 10 seconds or more. </string>
+    <string name="turtle"> Wait 50 seconds or more. </string>
+
+    <string name="brainStorm"> Know an 18-digit number. </string>
+    <string name="impatient"> Pass before the time is up and know the number. </string>
+    <string name="rookie"> Know an 7-digit number. </string>
+    <string name="smart"> Know an 10-digit number. </string>
+
 </resources>

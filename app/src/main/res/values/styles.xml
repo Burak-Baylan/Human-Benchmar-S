@@ -94,6 +94,12 @@
     </style>
 
     <!--IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII-->
+    <style name="zoptirik">
+
+        <item name="colorControlHighlight">#FFFFFF</item>
+
+    </style>
+
 
 </resources>
 

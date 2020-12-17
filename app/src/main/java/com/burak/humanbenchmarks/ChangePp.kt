@@ -14,6 +14,7 @@ import android.provider.MediaStore
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.firebase.auth.FirebaseAuth
@@ -28,10 +29,12 @@ class ChangePp : AppCompatActivity() {
     private var selectedPicture : Uri? = null
     private lateinit var viewReal : View
     private lateinit var firebaseManage: FirebaseManage
+    private var animationControl : animationControl = animationControl(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_change_pp)
+        animationControl.forOnCreate(savedInstanceState)
         supportActionBar?.title = "Change Profile Photo"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor("#0C4531")))
@@ -75,7 +78,7 @@ class ChangePp : AppCompatActivity() {
         val saveId= currentUser?.uid
         val imagesReference = reference.child("images").child("$saveId.jpg")
         val firestore = FirebaseFirestore.getInstance()
-        val snackCreator = SnackbarCreater()
+        val snackCreator = PopupMessageCreator()
         val firebaseManage = FirebaseManage(this,viewReal,this)
         firebaseManage.loadingScreenStarter(false)
         val netControl = firebaseManage.internetControl(this)
@@ -106,9 +109,14 @@ class ChangePp : AppCompatActivity() {
 
                                     currentUser.updateProfile(profileUpdate).addOnSuccessListener {
 
-                                        snackCreator.showToastCenter(
-                                            this, "Profile Photo Changed."
+                                        snackCreator.customToast(
+                                            this, this, null, Toast.LENGTH_SHORT,
+                                            "Profile Photo Changed.",
+                                            R.drawable.custom_toast_success, R.drawable.ic_success_image
                                         )
+                                        /*snackCreator.showToastCenter(
+                                            this, "Profile Photo Changed."
+                                        )*/
                                         firebaseManage.loadingScreenDestroyer(false)
 
                                         val intent = Intent(this, MainActivity::class.java)
@@ -118,34 +126,55 @@ class ChangePp : AppCompatActivity() {
                                         imagesReference.delete().addOnCompleteListener {
                                             firestore.collection("ProfilePhotos").document(saveId)
                                                 .delete().addOnCompleteListener {
-                                                snackCreator.createFailSnack(
-                                                    "Profile Photo Change Failed!",
-                                                    viewReal
-                                                )
-                                                firebaseManage.loadingScreenDestroyer(false)
+
+                                                    snackCreator.customToast(
+                                                        this, this, null, Toast.LENGTH_SHORT,
+                                                        "Profile Photo Changed Failed!",
+                                                        R.drawable.custom_toast_error, R.drawable.ic_error_image
+                                                    )
+                                                    /*snackCreator.createFailSnack(
+                                                        "Profile Photo Change Failed!",
+                                                        viewReal
+                                                    )*/
+                                                    firebaseManage.loadingScreenDestroyer(false)
                                             }
                                         }
                                     }
                                 }
                             }.addOnFailureListener {
                             imagesReference.delete().addOnCompleteListener {
-                                snackCreator.createFailSnack(
+                                snackCreator.customToast(
+                                    this, this, null, Toast.LENGTH_SHORT,
+                                    "Profile Photo Changed Failed!",
+                                    R.drawable.custom_toast_error, R.drawable.ic_error_image
+                                )
+                                /*snackCreator.createFailSnack(
                                     "Profile Photo Change Failed!",
                                     viewReal
-                                )
+                                )*/
                                 firebaseManage.loadingScreenDestroyer(false)
                             }
                         }
                     }
                 }.addOnFailureListener {
                     firebaseManage.loadingScreenDestroyer(false)
-                    snackCreator.createFailSnack("Profile Photo Change Failed!", viewReal)
+                    snackCreator.customToast(
+                        this, this, null, Toast.LENGTH_SHORT,
+                        "Profile Photo Changed Failed!",
+                        R.drawable.custom_toast_error, R.drawable.ic_error_image
+                    )
+                    //snackCreator.createFailSnack("Profile Photo Change Failed!", viewReal)
                 }
             }
         }
         else if (!netControl){
             firebaseManage.loadingScreenDestroyer(false)
-            snackCreator.createFailSnack("You must be connected to the Internet.", viewReal)
+            snackCreator.customToast(
+                this, this, null, Toast.LENGTH_SHORT,
+                "You must be connected to the Internet.",
+                R.drawable.custom_toast_error, R.drawable.ic_error_image
+            )
+            //snackCreator.createFailSnack("You must be connected to the Internet.", viewReal)
         }
     }
 

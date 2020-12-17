@@ -25,10 +25,20 @@ private lateinit var clickListeners: ProfileActivityClickListeners
 private lateinit var currentUsername : String
 
 class Profile : AppCompatActivity() {
+
+    private var animationControl : animationControl = animationControl(this)
+
+    override fun onStart() {
+        animationControl.forOnStart()
+        super.onStart()
+    }
+
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_profile)
+        animationControl.forOnCreate(savedInstanceState)
         supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor("#0E573D")))
         val window : Window = window
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)

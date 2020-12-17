@@ -8,10 +8,7 @@ import android.os.Bundle
 import android.text.InputType
 import android.text.SpannableString
 import android.text.style.UnderlineSpan
-import android.view.MenuItem
-import android.view.View
-import android.view.Window
-import android.view.WindowManager
+import android.view.*
 import android.widget.*
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
@@ -28,6 +25,8 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.userProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.custom_toast.*
+import kotlinx.android.synthetic.main.custom_toast.view.*
 import kotlinx.android.synthetic.main.nav_header.*
 
 
@@ -43,7 +42,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var noNullLayoutReal : ConstraintLayout
     private lateinit var viewReal : View
     private var currentUser : FirebaseUser? = null
-    private lateinit var snackCreater : SnackbarCreater
+    private lateinit var snackCreater : PopupMessageCreator
     private lateinit var auth : FirebaseAuth
     private lateinit var firebase : FirebaseFirestore
     private lateinit var firebaseManage : FirebaseManage
@@ -54,22 +53,20 @@ class MainActivity : AppCompatActivity() {
     private lateinit var loadingDialog : LoadingDialog
     private lateinit var olmasiGerekTextView : TextView
     private var welcomeControl : Boolean = false
+    private var animationControl : animationControl = animationControl(this)
 
     private lateinit var mAdView : AdView
-    /** ADMOB ÖNEMLİ
-     * -
-     *
-     * MainActivityBannerId
-     * ca-app-pub-8014812102703860/3585707431
-     * MainActivityBannerTestId
-     * ca-app-pub-3940256099942544/6300978111
-     */
-
+    override fun onStart() {
+        animationControl.forOnStart()
+        super.onStart()
+    }
 
     @SuppressLint("CutPasteId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        animationControl.forOnCreate(savedInstanceState)
 
         MobileAds.initialize(this) {}
         mAdView = findViewById(R.id.adView)
@@ -94,7 +91,7 @@ class MainActivity : AppCompatActivity() {
         val intent = intent
         welcomeControl = intent.getBooleanExtra("welcomeControl", false)
         firebaseManage = FirebaseManage(this, viewReal, this)
-        snackCreater = SnackbarCreater()
+        snackCreater = PopupMessageCreator()
         navigationView = findViewById(R.id.navView)
         val headerView = navigationView.getHeaderView(0)
         nameTextReal = headerView.findViewById(R.id.nameString)
@@ -109,6 +106,13 @@ class MainActivity : AppCompatActivity() {
         ppImageOnNav.setOnClickListener {val intent1 = Intent(this, Profile::class.java)
         startActivity(intent1)}
         isFirstEnter()
+
+
+
+        /*snackCreater.customToast(
+            this, this, Gravity.TOP, Toast.LENGTH_LONG,
+            "Welcome $", R.drawable.custom_toast_error, null
+        )*/
 
         if (currentUser != null){
             logInFun(welcomeControl)
@@ -135,6 +139,12 @@ class MainActivity : AppCompatActivity() {
         drawerItemListeners.putAllItems(nameTextReal, loginTextReal, signupTextReal, nullLayoutReal, noNullLayoutReal)
         drawerItemListeners.drawerLayoutListener(navigationView)
         netConnect()
+    }
+
+
+    override fun onStop() {
+        println("gitti stop")
+        super.onStop()
     }
 
     private fun numbersMemoryConstraintLayoutListeners(){
@@ -186,7 +196,11 @@ class MainActivity : AppCompatActivity() {
     private fun netConnect(){
         val netControl = firebaseManage.internetControl(this)
         if (!netControl){
-            snackCreater.createFailSnack("No Connection", viewReal)
+            snackCreater.customToast(
+                this, this, null, Toast.LENGTH_SHORT, "No Connection",
+                R.drawable.custom_toast_error, R.drawable.ic_error_image
+            )
+            //snackCreater.createFailSnack("No Connection", viewReal)
         }
     }
 
@@ -254,12 +268,20 @@ class MainActivity : AppCompatActivity() {
                     getPp.getProfilePhoto(ppImage)
                 }.addOnFailureListener {
                     loadingDialog.dismissDialog()
+                    snackCreater.customToast(
+                        this, this, null, Toast.LENGTH_SHORT, it.localizedMessage!!,
+                        R.drawable.custom_toast_error, R.drawable.ic_error_image
+                    )
                     snackCreater.createFailSnack(it.localizedMessage!!, viewReal)
                 }
             }
             catch (e: Exception){
                 loadingDialog.dismissDialog()
-                snackCreater.createFailSnack("Somethings went wrong. Try again.", viewReal)
+                snackCreater.customToast(
+                    this, this, null, Toast.LENGTH_SHORT, "Somethings went wrong. Try again.",
+                    R.drawable.custom_toast_error, R.drawable.ic_error_image
+                )
+                //snackCreater.createFailSnack("Somethings went wrong. Try again.", viewReal)
             }
 
         }
@@ -304,6 +326,10 @@ class MainActivity : AppCompatActivity() {
                 firebaseManage.resetPasswordWithEmail(email)
             }
             else{
+                snackCreater.customToast(
+                    this, this, null, Toast.LENGTH_SHORT, "Somethings went wrong. Try again.",
+                    R.drawable.custom_toast_warning, R.drawable.ic_warning_image
+                )
                 snackCreater.createFailSnack("Email could not be blank.", viewReal)
             }
         }
@@ -410,20 +436,33 @@ class MainActivity : AppCompatActivity() {
 
                     }?.addOnFailureListener{ exception ->
                         currentUser.delete().addOnCompleteListener {
-                            snackCreater.createFailSnack(
+
+                            snackCreater.customToast(
+                                this, this, null, Toast.LENGTH_SHORT, exception.localizedMessage!!,
+                                R.drawable.custom_toast_error, R.drawable.ic_error_image
+                            )
+                            /*snackCreater.createFailSnack(
                                 exception.localizedMessage!!/*"User cannot be created. Try again."*/,
                                 viewReal
-                            )
+                            )*/
                         }
                     }
                 }.addOnFailureListener {
                     loadingDialog.dismissDialog()
-                    snackCreater.createFailSnack(it.localizedMessage!!, viewReal)
+                    snackCreater.customToast(
+                        this, this, null, Toast.LENGTH_SHORT, it.localizedMessage!!,
+                        R.drawable.custom_toast_error, R.drawable.ic_error_image
+                    )
+                    //snackCreater.createFailSnack(it.localizedMessage!!, viewReal)
                 }
             }
             else{
                 loadingDialog.dismissDialog()
-                snackCreater.createFailSnack("No place can be left blank.", viewReal)
+                snackCreater.customToast(
+                    this, this, null, Toast.LENGTH_SHORT, "No place can be left blank.",
+                    R.drawable.custom_toast_error, R.drawable.ic_error_image
+                )
+                //snackCreater.createFailSnack("No place can be left blank.", viewReal)
             }
         }
         loginAlert.setNegativeButton("CANCEL") { dialog: DialogInterface, _: Int ->
@@ -441,7 +480,10 @@ class MainActivity : AppCompatActivity() {
         val getEmail = currentUser?.email
         emailTextReal.text = getEmail
         currentId = currentUser?.uid
+
+        layout = layoutInflater.inflate(R.layout.custom_toast,  custom_toast_layout)
         firebaseManage.getUser(nameTextReal, viewReal, welcomeControl)
+
         nullLayoutReal.visibility = View.GONE
         noNullLayoutReal.visibility = View.VISIBLE
         navigationView.menu.findItem(R.id.profileGroup).isVisible = true
@@ -455,6 +497,10 @@ class MainActivity : AppCompatActivity() {
         {
             navigationView.menu.findItem(R.id.bossMenuItem).isVisible = true
         }
+    }
+
+    companion object{
+        lateinit var layout : View
     }
 
     private fun underlinedText(text: String, textView: TextView){
@@ -484,9 +530,15 @@ class MainActivity : AppCompatActivity() {
         navigationView.menu.findItem(R.id.bossMenuItem).isVisible = false
         loadingDialog.dismissDialog()
         if (snackControl){
-            snackCreater.createSuccessSnack("Log Out Success", viewReal)
+
+            snackCreater.customToast(
+                this, this, null, Toast.LENGTH_SHORT, "Log Out Success",
+                R.drawable.custom_toast_success, R.drawable.ic_success_image
+            )
+            //snackCreater.createSuccessSnack("Log Out Success", viewReal)
         }
-        nullLayoutReal.visibility = View.VISIBLE
+        nullLayoutReal.visibility = View
+            .VISIBLE
         noNullLayoutReal.visibility = View.GONE
     }
 

@@ -14,6 +14,7 @@ import android.os.Handler
 import android.text.SpannableString
 import android.text.style.StrikethroughSpan
 import android.util.Log
+import android.view.Gravity
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -43,7 +44,7 @@ open class NumberMemory : AppCompatActivity() {
     private var getRandomNumber: Long = 0
     private var getInput: Long = 0
     private lateinit var progressBar: ProgressBar
-    private var snackCreator = SnackbarCreater()
+    private var snackCreator = PopupMessageCreator()
     private lateinit var viewReal: View
     private lateinit var auth: FirebaseAuth
     private var currentUser: FirebaseUser? = null
@@ -51,6 +52,7 @@ open class NumberMemory : AppCompatActivity() {
     private lateinit var firebaseManage: FirebaseManage
     private lateinit var numbersMemoryAchievementsUpdater: NumbersMemoryAchievementsUpdater
     private var mSQL : SQLiteDatabase? = null
+    private var animationControl : animationControl = animationControl(this)
 
     companion object{
         var skipFastBool = false
@@ -64,26 +66,24 @@ open class NumberMemory : AppCompatActivity() {
      * YANİ LEVEL SAYISI levelCounter + 1'dir
      **/
 
-    /** NUMBER MEMORY ACTIVITY REWARD AD ID
-     * ca-app-pub-8014812102703860/2764893438
-     *
-     * NUMBER MEMORY ACTIVITY REWARD AD TEST ID
-     * ca-app-pub-3940256099942544/5224354917
-     **/
-
     private lateinit var rewardedAd: RewardedAd
     private var rewardEarned = false
+
+    private val activity = this
+    private val context = this
 
     private fun createAndLoadRewardedAd(showInfo : Boolean) : RewardedAd {
         val rewardedAd = RewardedAd(this, "ca-app-pub-3940256099942544/5224354917")
         val adLoadCallback = object: RewardedAdLoadCallback() {
             override fun onRewardedAdLoaded() {
                 if (showInfo) {
-                    snackCreator.showToastCenter(this@NumberMemory, "Ad Loaded")
+                    snackCreator.customToast(
+                        activity, context, Gravity.CENTER, Toast.LENGTH_SHORT, "Ad Loaded",
+                        R.drawable.custom_toast_success, R.drawable.ic_success_image
+                    )
                 }
             }
             override fun onRewardedAdFailedToLoad(adError: LoadAdError) {
-                //snackCreator.showToastCenter(this@NumberMemory, "Ad Yüklenemedi")
             }
         }
         rewardedAd.loadAd(AdRequest.Builder().build(), adLoadCallback)
@@ -101,10 +101,8 @@ open class NumberMemory : AppCompatActivity() {
             val activityContext: Activity = this@NumberMemory
             val adCallback = object: RewardedAdCallback() {
                 override fun onRewardedAdOpened() {
-                    //snackCreator.showToastCenter(this@NumberMemory, "opened")
                 }
                 override fun onRewardedAdClosed() {
-                    //snackCreator.showToastCenter(this@NumberMemory, "closed")
                     if (!rewardEarned) // Eğer reward alınmamışsa (false) yeniden yüklesin.
                     {
                         rewardedAd = createAndLoadRewardedAd(false)
@@ -112,7 +110,6 @@ open class NumberMemory : AppCompatActivity() {
                     protectedExit = false
                 }
                 override fun onUserEarnedReward(@NonNull reward: RewardItem) {
-                    //snackCreator.showToastCenter(this@NumberMemory, "earned")
                     rewardEarned = true // Bir reward alan bir daha almasın diye kontrol amaçlı konuldu.
                     continueWithAdButton.visibility = View.INVISIBLE
                     val alert = AlertDialog.Builder(this@NumberMemory,
@@ -128,7 +125,9 @@ open class NumberMemory : AppCompatActivity() {
                     protectedExit = false
                 }
                 override fun onRewardedAdFailedToShow(adError: AdError) {
-                    snackCreator.showToastCenter(this@NumberMemory, "$adError")
+                    //snackCreator.showToastCenter(this@NumberMemory, "$adError")
+                    snackCreator.customToast(
+                        activity, context, null, Toast.LENGTH_SHORT, "$adError", R.drawable.custom_toast_error, R.drawable.ic_error_image)
                     rewardedAd = createAndLoadRewardedAd(false)
                     protectedExit = false
                 }
@@ -136,15 +135,34 @@ open class NumberMemory : AppCompatActivity() {
             rewardedAd.show(activityContext, adCallback)
         }
         else {
-            snackCreator.showToastLong(this@NumberMemory, "Ad loading... Please wait a few seconds without doing anything.")
+
+            snackCreator.customToast(
+                activity, context, null, Toast.LENGTH_SHORT,
+                "Ad loading... Please wait a few seconds without doing anything.",
+                R.drawable.custom_toast_error, R.drawable.ic_error_image)
+
+            //snackCreator.showToastLong(this@NumberMemory, "Ad loading... Please wait a few seconds without doing anything.")
             rewardedAd = createAndLoadRewardedAd(true)
             Log.d("TAG", "The rewarded ad wasn't loaded yet.")
         }
     }
 
+    override fun onStart() {
+        animationControl.forOnStart()
+        super.onStart()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_number_memory)
+
+
+        animationControl.forOnCreate(savedInstanceState)
+        /*if (savedInstanceState == null) // 1st time
+        {
+            this.overridePendingTransition(R.anim.anim_slide_in_left,
+                R.anim.anim_slide_out_left);
+        }*/
 
         rewardedAd = createAndLoadRewardedAd(false)
 
@@ -156,11 +174,7 @@ open class NumberMemory : AppCompatActivity() {
         viewReal = window.decorView.rootView
         numbersMemoryAchievementsUpdater = NumbersMemoryAchievementsUpdater(this,this,viewReal)
 
-        val olmasıGerekenAmaBuradaIsleviOlmayanTextView1 = TextView(this)
-        val olmasıGerekenAmaBuradaIsleviOlmayanTextView2 = TextView(this)
-        val olmasıGerekenAmaBuradaIsleviOlmayanTextView3 = TextView(this)
-        val olmasıGerekenAmaBuradaIsleviOlmayanTextView4 = TextView(this)
-        val olmasıGerekenAmaBuradaIsleviOlmayanTextView5 = TextView(this)
+        val olmasıGerekenAmaBuradaIsleviOlmayanTextView1 = TextView(this); val olmasıGerekenAmaBuradaIsleviOlmayanTextView2 = TextView(this); val olmasıGerekenAmaBuradaIsleviOlmayanTextView3 = TextView(this); val olmasıGerekenAmaBuradaIsleviOlmayanTextView4 = TextView(this); val olmasıGerekenAmaBuradaIsleviOlmayanTextView5 = TextView(this)
         numbersMemoryAchievementsUpdater.giveAchievements(olmasıGerekenAmaBuradaIsleviOlmayanTextView1, olmasıGerekenAmaBuradaIsleviOlmayanTextView2, olmasıGerekenAmaBuradaIsleviOlmayanTextView3, olmasıGerekenAmaBuradaIsleviOlmayanTextView4, olmasıGerekenAmaBuradaIsleviOlmayanTextView5, false)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -247,7 +261,11 @@ open class NumberMemory : AppCompatActivity() {
                 }
             }
             else{
-                snackCreator.createFailSnack("You must enter a few numbers", viewReal)
+                snackCreator.customToast(
+                    this, this, null, Toast.LENGTH_SHORT, "You must enter a few numbers.",
+                    R.drawable.custom_toast_warning, R.drawable.ic_warning_image
+                )
+                //snackCreator.createFailSnack("You must enter a few numbers", viewReal)
             }
         }
 
@@ -294,14 +312,17 @@ open class NumberMemory : AppCompatActivity() {
                     if (netControl) {
                         val currentId = currentUser?.uid
                         firebase.collection("Scores").document(currentId!!).update("NumbersScore", levelCounter).addOnSuccessListener {
-                            snackCreator.createSuccessSnack("Score updated!", viewReal)
+                            snackCreator.customToast(this, this, null, Toast.LENGTH_SHORT, "Score updated!", R.drawable.custom_toast_success, R.drawable.ic_success_image)
+                            //snackCreator.createSuccessSnack("Score updated!", viewReal)
                             protectedExit = false
                         }.addOnFailureListener {
-                            snackCreator.createFailSnack("Score update failed!", viewReal)
+                            snackCreator.customToast(this, this, null, Toast.LENGTH_SHORT, "Score update failed!", R.drawable.custom_toast_error, R.drawable.ic_error_image)
+                            //snackCreator.createFailSnack("Score update failed!", viewReal)
                             protectedExit = false
                         }
                     } else {
-                        snackCreator.showToastCenter(this, "Internet connection required to save.")
+                        snackCreator.customToast(this, this, null, Toast.LENGTH_SHORT, "Internet connection required to save!", R.drawable.custom_toast_error, R.drawable.ic_error_image)
+                        //snackCreator.showToastCenter(this, "Internet connection required to save.")
                         protectedExit = false
                     }
                 }
@@ -312,7 +333,10 @@ open class NumberMemory : AppCompatActivity() {
                 alert.show()
             }
             else{
-                snackCreator.createFailSnack("You must log in if you want to save the score.", viewReal)
+                snackCreator.customToast(this, this, null, Toast.LENGTH_SHORT,
+                "You must log in if you want to save the score.", R.drawable.custom_toast_warning, R.drawable.ic_warning_image
+                    )
+                //snackCreator.createFailSnack("You must log in if you want to save the score.", viewReal)
                 protectedExit = false
             }
         }
@@ -331,7 +355,7 @@ open class NumberMemory : AppCompatActivity() {
 
             levelCounter++
             startFunc()
-            //inputNumberEditText.setText("")
+            inputNumberEditText.setText("")
             rewardedAd = createAndLoadRewardedAd(false)
 
             if (!rewardEarned) // Eğer daha önce izlenmemişse göster!
@@ -354,14 +378,14 @@ open class NumberMemory : AppCompatActivity() {
             }
         }
         else{
-            snackCreator.showToastCenter(this, "bitti")
+            //snackCreator.showToastCenter(this, "bitti")
         }
     }
 
     private fun startFunc(){
         getRandomNumber = randomNumberCreator()
         showNumberRealTextView.text = "$getRandomNumber"
-        inputNumberEditText.setText("$getRandomNumber")
+        //inputNumberEditText.setText("$getRandomNumber")
         allInvisible()
         showNumberLayoutNumbersMemory.visibility = View.VISIBLE
         startProgressBar(levelCounter+2)
@@ -427,7 +451,11 @@ open class NumberMemory : AppCompatActivity() {
         if ((infoLayoutNumbersMemory.visibility != View.VISIBLE) && (trueLayoutNumbersMemory.visibility != View.VISIBLE) && (falseLayoutNumbersMemory.visibility != View.VISIBLE)) {
             if (!protectedExit) {
                 if (!hasFocus) {
-                    snackCreator.showToastLong(this, "If you quit while playing, the game will be canceled.")
+                    snackCreator.customToast(this, this, null, Toast.LENGTH_SHORT,
+                    "If you quit while playing, the game will be canceled.",
+                        R.drawable.custom_toast_info, R.drawable.ic_info_image
+                        )
+                    //snackCreator.showToastLong(this, "If you quit while playing, the game will be canceled.")
                     finish()
                 }
             }
@@ -465,7 +493,7 @@ open class NumberMemory : AppCompatActivity() {
         }
 
         Toast.makeText(this, spannableString.toString(), Toast.LENGTH_SHORT).show()
-        snackCreator.showToastCenter(this, spannableString.toString())
+        //snackCreator.showToastCenter(this, spannableString.toString())
         //return spannableString
     }
 

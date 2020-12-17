@@ -12,6 +12,7 @@ import android.os.Handler
 import android.os.SystemClock
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.burak.humanbenchmarks.*
 import com.google.android.material.snackbar.Snackbar
@@ -38,7 +39,7 @@ class ReactionTime : AppCompatActivity() {
     private var besteKacTopla : Long = 0L
     private lateinit var firebaseManage : FirebaseManage
     private lateinit var viewReal : View
-    private lateinit var snackbarCreater: SnackbarCreater
+    private lateinit var snackbarCreater : PopupMessageCreator
     private lateinit var sqlHistories: SqlHistories
     private lateinit var achievementsControl: AchievementsControl
     private var mSQL : SQLiteDatabase? = null
@@ -61,14 +62,17 @@ class ReactionTime : AppCompatActivity() {
     private lateinit var turtleString : String
     private lateinit var robotOrString : String
 
+    private val animationControl = animationControl(this)
+
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_reaction_time)
 
+        animationControl.forOnCreate(savedInstanceState)
         supportActionBar?.hide()
-        snackbarCreater = SnackbarCreater()
+        snackbarCreater = PopupMessageCreator()
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
         currentUser = auth.currentUser
@@ -247,7 +251,11 @@ class ReactionTime : AppCompatActivity() {
                     if (connectControl) {
 
                         firestore.collection("Scores").document(currentId).update("ScoreAverage", besteKacTopla.toInt()).addOnSuccessListener {
-                            snackbarCreater.createSuccessSnack("Score Saved", viewReal)
+                            snackbarCreater.customToast(
+                                this, this, null, Toast.LENGTH_SHORT, "Score Saved",
+                                R.drawable.custom_toast_success, R.drawable.ic_success_image
+                            )
+                            //snackbarCreater.createSuccessSnack("Score Saved", viewReal)
                         }.addOnFailureListener {
                             val addScoreAverage: HashMap<String, Serializable?> = hashMapOf(
                                 "Email" to currentEmail,
@@ -265,10 +273,17 @@ class ReactionTime : AppCompatActivity() {
                         }
 
                     } else if (!connectControl) {
-                        snackbarCreater.showToastCenter(
+
+                        snackbarCreater.customToast(
+                            this, this, null, Toast.LENGTH_SHORT,
+                            "Internet connection required to save.",
+                            R.drawable.custom_toast_error, R.drawable.ic_error_image
+                        )
+
+                        /*snackbarCreater.showToastCenter(
                             this,
                             "Internet connection required to save."
-                        )
+                        )*/
                     }
                     window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
                 }
@@ -279,7 +294,13 @@ class ReactionTime : AppCompatActivity() {
                 alert.show()
             }
             else{
-                createSuccessSnackWithAction("You must be logged in to save.")
+                //createSuccessSnackWithAction("You must be logged in to save.")
+                firebaseManage.loginAlertDialog(oylesineTextView)
+                snackbarCreater.customToast(
+                    this, this, null, Toast.LENGTH_SHORT,
+                    "You must be logged in to save.",
+                    R.drawable.custom_toast_warning, R.drawable.ic_warning_image
+                )
                 //snackbarCreater.createFailSnack("You must be logged in to save.",viewReal)
             }
         }
@@ -379,7 +400,6 @@ class ReactionTime : AppCompatActivity() {
     }
 
     private fun createSuccessSnackWithAction(message : String){
-
         val hexBackgroundColor = "#570F0F"
         val hexTextColor = "#FFFFFF"
         val snackBar = Snackbar.make(

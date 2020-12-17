@@ -9,6 +9,7 @@ import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.burak.humanbenchmarks.ForNumbersMemory.NumbersMemoryAchievementsUpdater
 import com.burak.humanbenchmarks.ForReactionTime.AchievementsControl
@@ -21,15 +22,18 @@ class ShowAchievements : AppCompatActivity() {
 
     private lateinit var achievementsControl : AchievementsControl
     private lateinit var viewReal : View
-    private lateinit var snackCreator : SnackbarCreater
+    private lateinit var snackCreator : PopupMessageCreator
     private lateinit var firebase : FirebaseFirestore
     private lateinit var auth : FirebaseAuth
     private lateinit var currentUser : FirebaseUser
     private lateinit var numbersMemoryAchievementsUpdater: NumbersMemoryAchievementsUpdater
+    private var animationControl : animationControl = animationControl(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_achievements)
+
+        animationControl.forOnCreate(savedInstanceState)
 
         firebase = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
@@ -49,7 +53,7 @@ class ShowAchievements : AppCompatActivity() {
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
         window.statusBarColor = Color.parseColor("#803918")
         supportActionBar?.hide()
-        snackCreator = SnackbarCreater()
+        snackCreator = PopupMessageCreator()
 
         val zıptırıkLayout = LinearLayout(this)
         achievementsControl.getAchievementsForShowNumber(achievementText, zıptırıkLayout, place1StText, row20Text, robotText, tooLuckyText, tooSlowText, turtleText)
@@ -61,7 +65,7 @@ class ShowAchievements : AppCompatActivity() {
 
     private fun clickListeners(){
         place1StCard.setOnClickListener {
-            alertCreator("Be Leader", "Be rank 1 on the leaderboard.", AchievementsControl.st1BckClr, false)
+            alertCreator("Be Leader", "Be rank 1 on the leader board.", AchievementsControl.st1BckClr, false)
         }
 
         row20Card.setOnClickListener {
@@ -116,9 +120,19 @@ class ShowAchievements : AppCompatActivity() {
                     "areYouRobot" to false // 80ms den daha az -ORTALAMA-
                 )
                 firebase.collection("Users").document(userId).collection("Achievements").document("allAchievements").set(achievementsMap).addOnSuccessListener {
-                    snackCreator.createSuccessSnack("Achievements deleted.", viewReal)
+                    snackCreator.customToast(
+                        this, this, null, Toast.LENGTH_SHORT,
+                        "Achievements deleted.",
+                        R.drawable.custom_toast_success, R.drawable.ic_success_image
+                    )
+                    //snackCreator.createSuccessSnack("Achievements deleted.", viewReal)
                 }.addOnFailureListener{
-                    snackCreator.createFailSnack("Achievements could not be deleted.",viewReal)
+                    snackCreator.customToast(
+                        this, this, null, Toast.LENGTH_SHORT,
+                        "Achievements could not be deleted.",
+                        R.drawable.custom_toast_error, R.drawable.ic_error_image
+                    )
+                    //snackCreator.createFailSnack("Achievements could not be deleted.",viewReal)
                 }
             }
             alert.setNegativeButton("Cancel") {dialog : DialogInterface, _ : Int ->
@@ -141,9 +155,19 @@ class ShowAchievements : AppCompatActivity() {
                     "smart" to false, // 1 sıraya yerleşmiş
                 )
                 firebase.collection("Users").document(userId).collection("Achievements").document("numbersMemoryAchievements").set(achievementsMap).addOnSuccessListener {
-                    snackCreator.createSuccessSnack("Achievements deleted.", viewReal)
+                    snackCreator.customToast(
+                        this, this, null, Toast.LENGTH_SHORT,
+                        "Achievements deleted",
+                        R.drawable.custom_toast_success, R.drawable.ic_success_image
+                    )
+                    //snackCreator.createSuccessSnack("Achievements deleted.", viewReal)
                 }.addOnFailureListener{
-                    snackCreator.createFailSnack("Achievements could not be deleted.",viewReal)
+                    snackCreator.customToast(
+                        this, this, null, Toast.LENGTH_SHORT,
+                        "Achievements could not be deleted.",
+                        R.drawable.custom_toast_error, R.drawable.ic_error_image
+                    )
+                    //snackCreator.createFailSnack("Achievements could not be deleted.",viewReal)
                 }
             }
             alert.setNegativeButton("Cancel") {dialog : DialogInterface, _ : Int ->

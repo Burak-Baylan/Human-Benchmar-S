@@ -19,7 +19,7 @@ import com.google.firebase.auth.FirebaseUser
 
 class ProfileActivityClickListeners(activity: Activity, context: Context, view: View) {
 
-    private lateinit var snackbarCreater: SnackbarCreater
+    private lateinit var snackbarCreater: PopupMessageCreator
     private lateinit var sqlHistories: SqlHistories
     private var firebaseManage: FirebaseManage
     private var usernameText : TextView = TextView(context)
@@ -55,7 +55,11 @@ class ProfileActivityClickListeners(activity: Activity, context: Context, view: 
     fun historyCardView (cardView : CardView){
         forLateInits()
         cardView.setOnClickListener {
-            snackbarCreater.showToastCenter(mCtx, "Soon!")
+            snackbarCreater.customToast(
+                mActivity, mCtx, null, Toast.LENGTH_SHORT,
+                "SOON!", R.drawable.custom_toast_info, R.drawable.ic_info_image
+            )
+            //snackbarCreater.showToastCenter(mCtx, "Soon!")
             //sqlHistories.myHistories()
         }
     }
@@ -100,7 +104,13 @@ class ProfileActivityClickListeners(activity: Activity, context: Context, view: 
                 firebaseManage.resetPasswordWithEmail(email)
             }
             else if (!netControl){
-                snackbarCreater.createFailSnack("You must be connected to the Internet.", viewReal)
+
+                snackbarCreater.customToast(
+                    mActivity, mCtx, null, Toast.LENGTH_SHORT,
+                    "You must be connected to the Internet.",
+                    R.drawable.custom_toast_error, R.drawable.ic_error_image
+                )
+                //snackbarCreater.createFailSnack("You must be connected to the Internet.", viewReal)
             }
         }
         alert.setNegativeButton("Cancel") { dialog : DialogInterface, _: Int ->
@@ -159,7 +169,12 @@ class ProfileActivityClickListeners(activity: Activity, context: Context, view: 
                 firebaseManage.changePasswordNoEmail(newPasswordString, oldPasswordString)
             }
             else if (!netControl){
-                snackbarCreater.createFailSnack("You must be connected to the Internet.", viewReal)
+                snackbarCreater.customToast(
+                    mActivity, mCtx, null, Toast.LENGTH_SHORT,
+                    "You must be connected to the Internet.",
+                    R.drawable.custom_toast_error, R.drawable.ic_error_image
+                )
+                //snackbarCreater.createFailSnack("You must be connected to the Internet.", viewReal)
             }
         }
         alert.setNegativeButton("Cancel") { dialog : DialogInterface, _: Int ->
@@ -232,7 +247,12 @@ class ProfileActivityClickListeners(activity: Activity, context: Context, view: 
             alert.setView(mLinearLayout)
             alert.setPositiveButton("Save") { _: DialogInterface, _: Int ->
                 if (newUsernameEditText.text.isBlank()){
-                    snackbarCreater.showToastCenter(mCtx, "New username cannot be empty.")
+                    snackbarCreater.customToast(
+                        mActivity, mCtx, null, Toast.LENGTH_SHORT,
+                        "New username cannot be empty.",
+                        R.drawable.custom_toast_error, R.drawable.ic_error_image
+                    )
+                    //snackbarCreater.showToastCenter(mCtx, "New username cannot be empty.")
                 }
                 else
                 {
@@ -246,7 +266,12 @@ class ProfileActivityClickListeners(activity: Activity, context: Context, view: 
                         )
                     }
                     else if (!netControl){
-                        snackbarCreater.createFailSnack("You must be connected to the Internet.", viewReal)
+                        snackbarCreater.customToast(
+                            mActivity, mCtx, null, Toast.LENGTH_SHORT,
+                            "You must be connected to the Internet.",
+                            R.drawable.custom_toast_error, R.drawable.ic_error_image
+                        )
+                        //snackbarCreater.createFailSnack("You must be connected to the Internet.", viewReal)
                     }
                 }
             }
@@ -275,7 +300,12 @@ class ProfileActivityClickListeners(activity: Activity, context: Context, view: 
 
                 if (newEmailEditText.text.isBlank())
                 {
-                    snackbarCreater.createFailSnack("New Email cannot be blank.",viewReal)
+                    snackbarCreater.customToast(
+                        mActivity, mCtx, null, Toast.LENGTH_SHORT,
+                        "New Email cannot be blank.",
+                        R.drawable.custom_toast_error, R.drawable.ic_error_image
+                    )
+                    //snackbarCreater.createFailSnack("New Email cannot be blank.",viewReal)
                 }
                 else {
                     val netControl = firebaseManage.internetControl(mActivity)
@@ -285,7 +315,12 @@ class ProfileActivityClickListeners(activity: Activity, context: Context, view: 
                         firebaseManage.updateEmail(newEmailString)
                     }
                     else if (!netControl){
-                        snackbarCreater.createFailSnack("You must be connected to the Internet.", viewReal)
+                        snackbarCreater.customToast(
+                            mActivity, mCtx, null, Toast.LENGTH_SHORT,
+                            "You must be connected to the Internet.",
+                            R.drawable.custom_toast_error, R.drawable.ic_error_image
+                        )
+                        //snackbarCreater.createFailSnack("You must be connected to the Internet.", viewReal)
                     }
                 }
             }
@@ -325,11 +360,21 @@ class ProfileActivityClickListeners(activity: Activity, context: Context, view: 
                     firebaseManage.deleteAccount(usernameString)
                 }
                 else if (!netControl){
-                    snackbarCreater.createFailSnack("You must be connected to the Internet.", viewReal)
+                    snackbarCreater.customToast(
+                        mActivity, mCtx, null, Toast.LENGTH_SHORT,
+                        "You must be connected to the Internet.",
+                        R.drawable.custom_toast_error, R.drawable.ic_error_image
+                    )
+                    //snackbarCreater.createFailSnack("You must be connected to the Internet.", viewReal)
                 }
             }
             else{
-                snackbarCreater.createFailSnack("Password could not be matched", viewReal)
+                snackbarCreater.customToast(
+                    mActivity, mCtx, null, Toast.LENGTH_SHORT,
+                    "Password could not be matched",
+                    R.drawable.custom_toast_error, R.drawable.ic_error_image
+                )
+                //snackbarCreater.createFailSnack("Password could not be matched", viewReal)
                 deleteCreater()
             }
         }
@@ -340,7 +385,7 @@ class ProfileActivityClickListeners(activity: Activity, context: Context, view: 
     }
 
     private fun forLateInits (){
-        snackbarCreater = SnackbarCreater()
+        snackbarCreater = PopupMessageCreator()
         sqlHistories = SqlHistories(mActivity,mCtx,viewReal)
     }
     
@@ -372,31 +417,6 @@ class ProfileActivityClickListeners(activity: Activity, context: Context, view: 
         spannableString = SpannableString(text)
         spannableString.setSpan(UnderlineSpan(), 0, spannableString.length, 0)
         textView.text = spannableString
-    }
-
-    private fun listeners2 (){
-        deleteControlEditText.addTextChangedListener(object : TextWatcher{
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-            override fun afterTextChanged(s: Editable?) {
-
-                snackbarCreater = SnackbarCreater()
-
-                if (s != null) {
-                    if (!s.equals("Delete")) {
-                        snackbarCreater.showToastCenter(mCtx, "Kırmızı: $s")
-                        deleteControlEditText.setTextColor(Color.parseColor("#B32432"))
-                    }
-                    if (s.equals("Delete")) {
-                        snackbarCreater.showToastCenter(mCtx, "Yesil: $s")
-                        deleteControlEditText.setTextColor(Color.parseColor("#49C349"))
-                    }
-                }
-
-            }
-        })
     }
 
     private fun layoutForDeleteAccount() : LinearLayout{

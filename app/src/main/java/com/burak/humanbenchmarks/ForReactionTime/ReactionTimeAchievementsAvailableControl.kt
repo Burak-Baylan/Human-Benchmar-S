@@ -4,13 +4,12 @@ import android.app.Activity
 import android.content.Context
 import android.view.View
 import android.widget.TextView
-import com.burak.humanbenchmarks.ForReactionTime.AchievementsControl
-import com.burak.humanbenchmarks.SnackbarCreater
+import com.burak.humanbenchmarks.PopupMessageCreator
 
 class ReactionTimeAchievementsAvailableControl (val ctx : Context, val activity : Activity, val viewReal : View){
 
     private val achievementsControl : AchievementsControl = AchievementsControl(ctx,activity, viewReal)
-    private val snackbarCreater : SnackbarCreater = SnackbarCreater()
+    private val snackbarCreater : PopupMessageCreator = PopupMessageCreator()
 
     fun controlAvailableAchievements(
         row20String : String,
@@ -46,9 +45,9 @@ class ReactionTimeAchievementsAvailableControl (val ctx : Context, val activity 
                 )
             }
         }
-        else{
+        /*else{
             snackbarCreater.showToastCenter(ctx,"20rounds var")
-        }
+        }*/
 
         // 10 saniyeden fazla
         if (tooSlowString == "false") {
@@ -64,9 +63,9 @@ class ReactionTimeAchievementsAvailableControl (val ctx : Context, val activity 
                     row20TextView, tooSlowTextView, tooLuckTextView, s1TextView, turtleTextView, robotOrTextView)
             }
         }
-        else{
+        /*else{
             snackbarCreater.showToastCenter(ctx,"tooSlow (10s) var")
-        }
+        }*/
 
         // 80ms'den az -SKOR-
         if (tooLuckString == "false") {
@@ -82,9 +81,9 @@ class ReactionTimeAchievementsAvailableControl (val ctx : Context, val activity 
                     row20TextView, tooSlowTextView, tooLuckTextView, s1TextView, turtleTextView, robotOrTextView)
             }
         }
-        else{
+        /*else{
             snackbarCreater.showToastCenter(ctx,"tooLuck(80ms) var")
-        }
+        }*/
 
         /*if (s1String == "false"){
             val olmasiGerekTextView = TextView(this)
@@ -106,9 +105,9 @@ class ReactionTimeAchievementsAvailableControl (val ctx : Context, val activity 
                     row20TextView, tooSlowTextView, tooLuckTextView, s1TextView, turtleTextView, robotOrTextView)
             }
         }
-        else{
+        /*else{
             snackbarCreater.showToastCenter(ctx,"turtle(50s) var")
-        }
+        }*/
 
         // 100ms'den az -ORTALAMA-
         if (besteKac == 5) /** Ortalama cinsinden hesap yaptığımız için 5. roundda kontrolü yapmamız gerek **/ {
@@ -119,9 +118,10 @@ class ReactionTimeAchievementsAvailableControl (val ctx : Context, val activity 
                         achievementsControl,
                         row20TextView, tooSlowTextView, tooLuckTextView, s1TextView, turtleTextView, robotOrTextView)
                 }
-            } else {
-                snackbarCreater.showToastCenter(ctx, "robot var")
             }
+            /*else {
+                snackbarCreater.showToastCenter(ctx, "robot var")
+            }*/
         }
 
     }
