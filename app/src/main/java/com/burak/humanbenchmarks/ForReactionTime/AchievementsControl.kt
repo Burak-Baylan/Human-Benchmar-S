@@ -13,6 +13,8 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import com.burak.humanbenchmarks.FirebaseManage
+import com.burak.humanbenchmarks.LeadersBoardAndAchievementsScreenDesign
 import com.burak.humanbenchmarks.R
 import com.burak.humanbenchmarks.PopupMessageCreator
 import com.google.firebase.auth.FirebaseAuth
@@ -30,13 +32,7 @@ class AchievementsControl(context: Context, activity: Activity, view: View) {
     private var mView = view
     private var howManyAchievements = 0
     private lateinit var alert : AlertDialog.Builder
-
-    /*private var row20Rounds : Boolean = false
-    private var tooSlow : Boolean = false
-    private var tooLuck : Boolean = false
-    private var st1 : Boolean = false
-    private var turtle : Boolean = false
-    private var robotOr : Boolean = false*/
+    private val leadersBoardAndAchievementsScreenDesign = LeadersBoardAndAchievementsScreenDesign(mCtx)
 
     fun getAchievementsForShowNumber(putText: TextView, getLinear : LinearLayout, oylesineCardView : TextView, oylesineCardView2 : TextView, oylesineCardView3 : TextView, oylesineCardView4 : TextView, oylesineCardView5 : TextView, oylesineCardView6 : TextView){
         if (currentUser != null) {
@@ -169,6 +165,8 @@ class AchievementsControl(context: Context, activity: Activity, view: View) {
         /******************************************************************************************/
     }
 
+
+
     /** Javadaki static ile aynı **/
     companion object{
         var row20BckClr = 0
@@ -186,6 +184,7 @@ class AchievementsControl(context: Context, activity: Activity, view: View) {
             robotOrTextView: TextView
         ){
             if (achievementsControl.currentUser != null) {
+
                 val userId = achievementsControl.currentUser?.uid
                 achievementsControl.firebase.collection("Users").document(userId!!).collection("Achievements")
                     .document("allAchievements").addSnapshotListener { snapshot, e ->
@@ -229,10 +228,6 @@ class AchievementsControl(context: Context, activity: Activity, view: View) {
         val cardIcınKırmızıRenk = "#AF4C4C"
         val cardIcınYesilRenk = "#4CAF50"
         achievementsLinearCounter = 0
-
-
-
-
 
         if (row20Rounds){ // Row 20 Rounds
             addAchievements("20 rounds in a row", yesilRenk, putLayout, R.string.rounds20Row, R.style.GreenCustomAlertDialog)
@@ -303,89 +298,47 @@ class AchievementsControl(context: Context, activity: Activity, view: View) {
 
     private fun counterCounter(bool: Boolean, boolCounter: Int) : Int {
         var boolCounterHere = boolCounter
-
         if (bool){
             boolCounterHere++
         }
         else if (!bool){
             boolCounterHere--
-            if (boolCounterHere < 0){
+            if (boolCounterHere < 0) {
                 boolCounterHere = 0
             }
         }
         howManyAchievements++
         return boolCounterHere
     }
-
+    private val firebaseManage = FirebaseManage(mCtx, mView, mActivity)
     fun updateAchievements(hangiSey: String, updateBool: Boolean, updateMessage: String, updateTitle : String){
         val currentId = currentUser?.uid
-        //firebaseManage.loadingScreenStarter(false)
+        firebaseManage.loadingScreenDestroyer(false)
+        firebaseManage.loadingScreenStarter(false)
 
         firebase.collection("Users").document(currentId!!).collection("Achievements").document("allAchievements").update(
             hangiSey,
             updateBool
         ).addOnSuccessListener {
-            //firebaseManage.loadingScreenDestroyer(false)
 
-            val getLayout = setLayout(updateMessage, updateTitle)
+            firebaseManage.loadingScreenDestroyer(false)
+
+            val getLayout = leadersBoardAndAchievementsScreenDesign.setLayout(updateMessage, updateTitle)
 
             alert = AlertDialog.Builder(mCtx, R.style.CustomAlertDialogForHistories)
-            //alert.setTitle(updateTitle)
-            alert.setView(getLayout)
 
-            alert.setPositiveButton("DONE") {dialog : DialogInterface, _ : Int ->
-                dialog.cancel()
-            }
+            alert.setView(getLayout)
 
             alert.show()
 
-
-
-            //snackCreator.createSuccessSnack(updateMessage, mView)
             val ring: MediaPlayer = MediaPlayer.create(mCtx, R.raw.ring)
             ring.start()
         }.addOnFailureListener{
-            //firebaseManage.loadingScreenDestroyer(false)
-
-            //snackCreator.createFailSnack("Updatelenemedi", mView)
+            snackCreator.customToast(
+                mActivity, mCtx, null, Toast.LENGTH_SHORT, "Achievement could not update.",
+                R.drawable.custom_toast_error, R.drawable.ic_error_image
+            )
+            firebaseManage.loadingScreenDestroyer(false)
         }
-    }
-
-    fun setLayout(title : String, message : String) : LinearLayout{
-        val params = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.WRAP_CONTENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        )
-        params.setMargins(0, 0, 0, 0)
-
-
-        val linearLayout = LinearLayout(mCtx)
-        linearLayout.orientation = LinearLayout.VERTICAL
-        linearLayout.setPadding(50,10,50,20)
-
-        val textForMessage1 = TextView(mCtx)
-        textForMessage1.text = title
-        textForMessage1.textSize = 25f
-        textForMessage1.gravity = Gravity.CENTER
-        textForMessage1.typeface = Typeface.DEFAULT_BOLD
-        textForMessage1.setTextColor(Color.rgb(255,255,255))
-        linearLayout.addView(textForMessage1)
-
-        val cupImage = ImageView(mCtx)
-        cupImage.maxHeight = 100
-        cupImage.maxWidth = 100
-        cupImage.setImageResource(R.drawable.cup_for_achievement)
-        cupImage.minimumHeight = 100
-        cupImage.minimumWidth = 100
-        linearLayout.addView(cupImage)
-
-        val textForMessage = TextView(mCtx)
-        textForMessage.text = message
-        textForMessage.textSize = 20f
-        textForMessage.gravity = Gravity.CENTER
-        textForMessage.setTextColor(Color.rgb(255,255,255))
-        linearLayout.addView(textForMessage)
-
-        return linearLayout
     }
 }

@@ -18,6 +18,7 @@ import com.burak.humanbenchmarks.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.android.synthetic.main.activity_number_memory_menu.*
 import kotlinx.android.synthetic.main.activity_reaction_time_menu.*
 import kotlinx.android.synthetic.main.activity_reaction_time_menu.leaderBoardLayout
 
@@ -33,11 +34,6 @@ class ReactionTimeMenu : AppCompatActivity() {
     private var currentUser : FirebaseUser? = null
     private lateinit var firebase : FirebaseFirestore
     private val animationControl = animationControl(this)
-
-    override fun onStart() {
-        animationControl.forOnStart()
-        super.onStart()
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -106,11 +102,22 @@ class ReactionTimeMenu : AppCompatActivity() {
 
     }
 
+    override fun onStart() {
+        animationControl.forOnStart()
+        if (firebaseManage.internetControl(this)){
+            connectionIconReactionTime.visibility = View.INVISIBLE
+        }
+        else{
+            connectionIconReactionTime.visibility = View.VISIBLE
+            MainActivity.connectionImageAnimation(connectionIconReactionTime)
+        }
+        super.onStart()
+    }
+
     private fun listeners(){
         startButtonReal.setOnClickListener {
             val intent = Intent(this, ReactionTime::class.java)
             startActivity(intent)
-            finish()
         }
         tryConnectTextReal.setOnClickListener {
             netConnect()
@@ -176,17 +183,20 @@ class ReactionTimeMenu : AppCompatActivity() {
             firebaseManage.loadLeaderScores(leaderBoardLayout,false, olmasiGerekTextView, deleteMeOnLeaderBoardImage, 15)
             leaderBoardLayout.visibility = View.VISIBLE
             progressForLeaderReal.visibility = View.INVISIBLE
+            connectionIconReactionTime.visibility = View.INVISIBLE
             tryConnectTextReal.visibility = View.INVISIBLE
         }
         else{
             leaderBoardLayout.visibility = View.INVISIBLE
             progressForLeaderReal.visibility = View.VISIBLE
             tryConnectTextReal.visibility = View.VISIBLE
+            connectionIconReactionTime.visibility = View.VISIBLE
+            MainActivity.connectionImageAnimation(connectionIconReactionTime)
             underlinedText("Try Again", tryConnectTextReal)
-            snackCreater.customToast(
+            /*snackCreater.customToast(
                 this, this, null, Toast.LENGTH_SHORT, "No Connection",
                 R.drawable.custom_toast_error, R.drawable.ic_error_image
-            )
+            )*/
             //snackCreater.createFailSnack("No Connection",viewReal)
             //loadingImage.setBackgroundResource(Drawable.(R.layout.custom_loading_screen))
         }
@@ -281,5 +291,16 @@ class ReactionTimeMenu : AppCompatActivity() {
         swapFabReactionTime.animate().translationY(0F)
         refreshFabReactionTime.animate().translationY(0F)
     }
-    
+
+    private val userStatusUpdater = UserStatusUpdater()
+    override fun onPause() {
+        super.onPause()
+        userStatusUpdater.statusUpdater("OFFLINE")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        userStatusUpdater.statusUpdater("ONLINE")
+    }
+
 }

@@ -193,4 +193,16 @@ class ShowAchievements : AppCompatActivity() {
         }
         alert.show()
     }
+
+    private val userStatusUpdater = UserStatusUpdater()
+    override fun onPause() {
+        super.onPause()
+        userStatusUpdater.statusUpdater("OFFLINE")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        userStatusUpdater.statusUpdater("ONLINE")
+    }
+
 }

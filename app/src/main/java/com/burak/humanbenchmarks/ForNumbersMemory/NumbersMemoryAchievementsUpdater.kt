@@ -13,9 +13,8 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import com.burak.humanbenchmarks.*
 import com.burak.humanbenchmarks.ForReactionTime.AchievementsControl
-import com.burak.humanbenchmarks.R
-import com.burak.humanbenchmarks.PopupMessageCreator
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
@@ -31,23 +30,27 @@ class NumbersMemoryAchievementsUpdater (context : Context, activity: Activity, v
     private val currentUser : FirebaseUser? = auth.currentUser
     private val snackCreator : PopupMessageCreator = PopupMessageCreator()
     private val achievementsControl : AchievementsControl = AchievementsControl(mCtx, mActivity, viewReal)
+    private val leadersBoardAndAchievementsScreenDesign = LeadersBoardAndAchievementsScreenDesign(mCtx)
 
-    fun updateTrueAnAchievements(whichAchievement : String, title : String){
+    private val firebaseManage = FirebaseManage(mCtx, viewReal, mActivity)
+
+    fun updateTrueAnAchievements(whichAchievement : String, title : String, message : String){
+        firebaseManage.loadingScreenDestroyer(false)
+        firebaseManage.loadingScreenStarter(false)
         if (currentUser != null){
             val userId = currentUser.uid
-
             firebase.collection("Users").document(userId).collection("Achievements").document("numbersMemoryAchievements").update(whichAchievement, true).addOnSuccessListener {
-                //snackCreator.showToastCenter(mCtx, "UPDATED")
 
+                firebaseManage.loadingScreenDestroyer(false)
 
-                val getLayout = achievementsControl.setLayout(title, whichAchievement)
+                val getLayout = leadersBoardAndAchievementsScreenDesign.setLayout(title, message)
 
                 val alert = AlertDialog.Builder(mCtx, R.style.CustomAlertDialogForHistories)
                 //alert.setTitle(updateTitle)
                 alert.setView(getLayout)
-                alert.show()
+                //alert.show()
+                builder = alert.show()
 
-                //snackCreator.createSuccessSnack(updateMessage, mView)
                 val ring: MediaPlayer = MediaPlayer.create(mCtx, R.raw.ring)
                 ring.start()
 
@@ -56,6 +59,7 @@ class NumbersMemoryAchievementsUpdater (context : Context, activity: Activity, v
                     mActivity, mCtx, null, Toast.LENGTH_SHORT, "Achievement could not update.",
                     R.drawable.custom_toast_error, R.drawable.ic_error_image
                 )
+                firebaseManage.loadingScreenDestroyer(false)
                 //snackCreator.showToastCenter(mCtx, "NO UPDATED")
             }
         }
@@ -64,6 +68,7 @@ class NumbersMemoryAchievementsUpdater (context : Context, activity: Activity, v
                 mActivity, mCtx, null, Toast.LENGTH_SHORT, "User Null",
                 R.drawable.custom_toast_error, R.drawable.ic_error_image
             )
+            firebaseManage.loadingScreenDestroyer(false)
             //snackCreator.showToastCenter(mCtx, "USER NULL")
         }
     }
@@ -74,6 +79,8 @@ class NumbersMemoryAchievementsUpdater (context : Context, activity: Activity, v
         var impatientClr = 0
         var rookieClr = 0
         var smartClr = 0
+
+        lateinit var builder : AlertDialog
 
         var howManyAchievementNumbersMemory = 0
         var allAchievementNumberMemory = 0

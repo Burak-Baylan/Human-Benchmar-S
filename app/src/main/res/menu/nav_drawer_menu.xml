@@ -36,6 +36,11 @@
                 android:title="Profile"/>
 
             <item
+                android:id="@+id/messagesInMenu"
+                android:icon="@drawable/ic_message"
+                android:title="Messages"/>
+
+            <item
                 android:id="@+id/achievementsInMenu"
                 android:icon="@drawable/ic_achivement"
                 android:title="Achievements"/>

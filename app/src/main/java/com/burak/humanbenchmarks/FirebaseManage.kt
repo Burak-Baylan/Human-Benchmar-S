@@ -10,7 +10,6 @@ import android.net.ConnectivityManager
 import android.text.InputType
 import android.text.SpannableString
 import android.text.style.StyleSpan
-import android.view.Gravity
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
@@ -21,7 +20,6 @@ import com.google.firebase.auth.ktx.userProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.ktx.Firebase
-import kotlinx.android.synthetic.main.custom_toast.view.*
 import java.io.Serializable
 import java.util.*
 
@@ -30,12 +28,12 @@ class FirebaseManage {
 
     private var firebase : FirebaseFirestore
     private var auth : FirebaseAuth
-    private var snackCreater : PopupMessageCreator
+    private var snackCreator : PopupMessageCreator
     var currentUser : FirebaseUser? = null
     private var loadingDialog: LoadingDialog
     private var userNameControl : TextView
     private var oldPasswordNow : String = ""
-    private var leadersBoardDesign: LeadersBoardDesign
+    private var leadersBoardDesign: LeadersBoardAndAchievementsScreenDesign
 
 
     var mCtx : Context? = null
@@ -48,15 +46,14 @@ class FirebaseManage {
         this.mView = view
         this.activity = activity
 
-        snackCreater = PopupMessageCreator()
+        snackCreator = PopupMessageCreator()
         userNameControl = TextView(context)
         loadingDialog = LoadingDialog(activity)
-        //fullScreenLoadingDialog = FullScreenAlertDialogForStartUpApp(activity)
         firebase = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
         currentUser = auth.currentUser
         val currentEmail = currentUser?.email
-        leadersBoardDesign = LeadersBoardDesign(context)
+        leadersBoardDesign = LeadersBoardAndAchievementsScreenDesign(context)
 
         if (currentUser != null) {
             val gidecekText = TextView(mCtx)
@@ -87,39 +84,23 @@ class FirebaseManage {
         }
     }
     fun getUser(putText: TextView, viewReal: View, welcomeControl: Boolean){
-        //loadingScreenStarter(false)
-
         val snackCreater = PopupMessageCreator()
         auth = FirebaseAuth.getInstance()
         currentUser = auth.currentUser
-        val emailCurrent = currentUser?.email
         firebase = FirebaseFirestore.getInstance()
-        //Toast.makeText(mCtx,emailCurrent,Toast.LENGTH_SHORT).show()
-
         try {
             val getUsername = currentUser!!.displayName
-
-            //MainActivity.layout.zoptirikText.text = "Welcome lan"
-
             if (!welcomeControl) {
                 snackCreater.customToast(
                     activity!!, mCtx!!, null, Toast.LENGTH_SHORT, "Welcome $getUsername",
                     R.drawable.custom_toast_success, null
                 )
             }
-
             this.currentRealUsername = getUsername!!
             putText.text = getUsername
         }
-        catch (e: Exception){
-
-        }
+        catch (e: Exception){}
     }
-
-    /*fun getAchievements(){
-        val getAchievements = AchievementsControl(mCtx!!,activity!!,mView!!)
-        //getAchievements.getAchievementsForShowNumber()
-    }*/
 
     fun loadLeaderScores(
         leaderLayout: GridLayout,
@@ -133,7 +114,6 @@ class FirebaseManage {
         auth = FirebaseAuth.getInstance()
         currentUser = auth.currentUser
         firebase = FirebaseFirestore.getInstance()
-
         /******************************************************************************************/
         var getLinearLayout = leadersBoardDesign.createLinearLayout()
         var getScoreTextView = leadersBoardDesign.createScoreTextView()
@@ -141,13 +121,12 @@ class FirebaseManage {
         var getUsernameTextView = leadersBoardDesign.createUsernameTextView()
         var getOnlineOrOfflineTextView = leadersBoardDesign.createOnlineOrOfflineTextView()
         /******************************************************************************************/
-
         firebase.collection("Scores").orderBy("ScoreAverage", Query.Direction.ASCENDING).limit(
             enFazlaKacKisi
         ).addSnapshotListener{ snapshot, exception ->
             if (exception != null)
             {
-                snackbarCreater.createFailSnack("Leader Board cannot be installed.", mView!!)
+                snackbarCreater.createFailSnack("Leader Board couldn't be installed.", mView!!)
             }
             else
             {
@@ -180,20 +159,20 @@ class FirebaseManage {
 
                             firebase.collection("Users").document(uid).collection("Achievements").document(
                                 "allAchievements"
-                            ).addSnapshotListener { snapshot, excepiton ->
-                                if (exception != null) {
-                                    snackbarCreater.createFailSnack("Leader Board cannot be installed.", mView!!)
+                            ).addSnapshotListener { snapshotHere, excepitonHere ->
+                                if (excepitonHere != null) {
+                                    snackbarCreater.createFailSnack("Leader Board couldn't be installed.", mView!!)
                                 }
                                 else{
                                     countAllAchievement = 0
                                     countAchievement = 0
-                                    if (snapshot != null && snapshot.exists()) {
-                                        val st1 = snapshot.get("1st") as Boolean
-                                        val round20Row = snapshot.get("20roundsRow") as Boolean
-                                        val areYouRobot = snapshot.get("areYouRobot") as Boolean
-                                        val tooLucky = snapshot.get("tooLucky") as Boolean
-                                        val tooSlow = snapshot.get("tooSlow") as Boolean
-                                        val turtle = snapshot.get("turtle") as Boolean
+                                    if (snapshotHere != null && snapshotHere.exists()) {
+                                        val st1 = snapshotHere.get("1st") as Boolean
+                                        val round20Row = snapshotHere.get("20roundsRow") as Boolean
+                                        val areYouRobot = snapshotHere.get("areYouRobot") as Boolean
+                                        val tooLucky = snapshotHere.get("tooLucky") as Boolean
+                                        val tooSlow = snapshotHere.get("tooSlow") as Boolean
+                                        val turtle = snapshotHere.get("turtle") as Boolean
 
                                         fun kontrolEt(bool : Boolean){
                                             if (bool){
@@ -254,16 +233,11 @@ class FirebaseManage {
                                             leaderLayout.addView(imageForCizgi)
                                         }
 
-                                        addListener(getLinearLayout, usernameCurrent)
+                                        addListener(getLinearLayout, usernameCurrent, uid)
                                         addOnlineOrOfflineChangeListener(uid, getOnlineOrOfflineTextView)
                                         kisi++
                                         if (isimDegisBool){usernameCurrent = "You"}
                                         var scoreString = "$kisi- $usernameCurrent: $averageScore"
-                                        if (kisi == 1){
-                                            if (usernameCurrent == currentRealUsername){
-
-                                            }
-                                        }
                                         val averageInt = averageScore.toInt()
                                         if (averageInt > 9999)
                                         /** Alt satıra taşmaması için yapılmış skor kısaltma önlemi. **/
@@ -272,38 +246,38 @@ class FirebaseManage {
                                             scoreString = "$kisi- $usernameCurrent: 10k+"
                                         }
 
-                                        val spannableString = SpannableString("$averageScore ms")
-                                        spannableString.setSpan(
+                                        val spannableStringScore = SpannableString("$averageScore ms")
+                                        spannableStringScore.setSpan(
                                             StyleSpan(Typeface.BOLD),
                                             0,
-                                            spannableString.length,
+                                            spannableStringScore.length,
                                             0
                                         )
 
-                                        val spannableString2 = SpannableString("#$kisi $usernameCurrent: ")
-                                        spannableString2.setSpan(
+                                        val spannableStringUser = SpannableString("#$kisi $usernameCurrent: ")
+                                        spannableStringUser.setSpan(
                                             StyleSpan(Typeface.BOLD),
                                             0,
-                                            spannableString2.length,
+                                            spannableStringUser.length,
                                             0
                                         )
 
-                                        val spannableString3 = SpannableString("Achievements: $countAchievement/$countAllAchievement")
-                                        spannableString3.setSpan(
+                                        val spannableStringAchievement = SpannableString("Achievements: $countAchievement/$countAllAchievement")
+                                        spannableStringAchievement.setSpan(
                                             StyleSpan(Typeface.BOLD),
                                             0,
-                                            spannableString3.length,
+                                            spannableStringAchievement.length,
                                             0
                                         )
 
                                         leadersBoardDesign.getRealGridLayout(
                                             getLinearLayout,
                                             getUsernameTextView, getScoreTextView, getAchievementsTextView,
-                                            spannableString2, spannableString, spannableString3,
+                                            spannableStringUser, spannableStringScore, spannableStringAchievement,
                                             getOnlineOrOfflineTextView
                                         )
 
-                                        leaderScoresText.text = spannableString
+                                        leaderScoresText.text = spannableStringScore
                                         leaderLayout.addView(getLinearLayout)
                                     }
                                 }
@@ -326,7 +300,6 @@ class FirebaseManage {
         auth = FirebaseAuth.getInstance()
         currentUser = auth.currentUser
         firebase = FirebaseFirestore.getInstance()
-
         /*********************************************************************************************/
         var getLinearLayout = leadersBoardDesign.createLinearLayout()
         var getUsernameTextView = leadersBoardDesign.createUsernameTextView()
@@ -334,13 +307,12 @@ class FirebaseManage {
         var getAchievementsTextView = leadersBoardDesign.createAchievementsCountTextView()
         var getOnlineOrOfflineTextView = leadersBoardDesign.createOnlineOrOfflineTextView()
         /*********************************************************************************************/
-
         firebase.collection("Scores").orderBy("NumbersScore", Query.Direction.DESCENDING).limit(
             enFazlaKacKisi
         ).addSnapshotListener{ snapshot, exception ->
             if (exception != null)
             {
-                snackbarCreator.createFailSnack("Leader Board cannot be installed.", mView!!)
+                snackbarCreator.createFailSnack("Leader Board couldn't be installed.", mView!!)
             }
             else
             {
@@ -369,26 +341,27 @@ class FirebaseManage {
                         var usernameCurrent : String = document.get("Username") as String
                         val lastInit: Number = document.get("NumbersScore") as Number
                         val uid : String = document.get("Uid") as String
-                        println("$uid")
+                        val after18Count : Number = document.get("after18Count") as Number
+                        println(uid)
                         var isimDegisBool = false
                         if (lastInit.toInt() > 0) {
                             firebase.collection("Users").document(uid).collection("Achievements").document(
                                 "numbersMemoryAchievements"
-                            ).addSnapshotListener { snapshot, excepiton ->
-                                if (exception != null){
+                            ).addSnapshotListener { snapshotHere, excepitonHere ->
+                                if (excepitonHere != null){
                                     snackbarCreator.createFailSnack(
-                                        "Leader Board cannot be installed.",
+                                        "Leader Board couldn't be installed.",
                                         mView!!
                                     )
                                 }
                                 else{ // Hata yoksa
-                                    if (snapshot != null && snapshot.exists()){
+                                    if (snapshotHere != null && snapshotHere.exists()){
                                         countAllAchievement = 0
                                         countAchievement = 0
-                                        val brainStorm = snapshot.get("brainStorm") as Boolean
-                                        val impatient = snapshot.get("impatient") as Boolean
-                                        val rookie = snapshot.get("rookie") as Boolean
-                                        val smart = snapshot.get("smart") as Boolean
+                                        val brainStorm = snapshotHere.get("brainStorm") as Boolean
+                                        val impatient = snapshotHere.get("impatient") as Boolean
+                                        val rookie = snapshotHere.get("rookie") as Boolean
+                                        val smart = snapshotHere.get("smart") as Boolean
 
                                         fun kontrolEt(getBool: Boolean){
                                             if (getBool){
@@ -400,7 +373,6 @@ class FirebaseManage {
                                         kontrolEt(impatient)
                                         kontrolEt(rookie)
                                         kontrolEt(smart)
-
                                         /*********************************************************************************************/
                                         getLinearLayout = leadersBoardDesign.createLinearLayout()
                                         getUsernameTextView = leadersBoardDesign.createUsernameTextView()
@@ -445,21 +417,26 @@ class FirebaseManage {
                                             imageForCizgi.setPadding(0, 2, 0, 2)
                                             leaderLayout.addView(imageForCizgi)
                                         }
-
-                                        addListener(getLinearLayout, usernameCurrent)
+                                        addListener(getLinearLayout, usernameCurrent, uid)
                                         addOnlineOrOfflineChangeListener(uid, getOnlineOrOfflineTextView)
                                         kisi++
                                         if (isimDegisBool){usernameCurrent = "You"}
-                                        val scoreString = "$kisi- $usernameCurrent: $lastInit"
-
-                                        val spannableString = SpannableString("$lastInit Digit")
-                                        spannableString.setSpan(
-                                            StyleSpan(Typeface.BOLD),
-                                            0,
-                                            spannableString.length,
-                                            0
-                                        )
-
+                                        /******************************************************************************************/
+                                        val spannableStringScore =
+                                            if (after18Count.toInt() > 0 && lastInit.toInt() == 18) {
+                                                SpannableString("$lastInit+$after18Count Digit")
+                                            }
+                                            else {
+                                                SpannableString("$lastInit Digit")
+                                            }.apply {
+                                            this.setSpan(
+                                                StyleSpan(Typeface.BOLD),
+                                                0,
+                                                this.length,
+                                                0
+                                            )
+                                        }
+                                        /******************************************************************************************/
                                         val spannableString2 = SpannableString("#$kisi $usernameCurrent: ")
                                         spannableString2.setSpan(
                                             StyleSpan(Typeface.BOLD),
@@ -467,7 +444,7 @@ class FirebaseManage {
                                             spannableString2.length,
                                             0
                                         )
-
+                                        /******************************************************************************************/
                                         val spannableString3 = SpannableString("Achievements: $countAchievement/$countAllAchievement")
                                         spannableString3.setSpan(
                                             StyleSpan(Typeface.BOLD),
@@ -475,15 +452,16 @@ class FirebaseManage {
                                             spannableString3.length,
                                             0
                                         )
-
+                                        /******************************************************************************************/
                                         leadersBoardDesign.getRealGridLayout(
                                             getLinearLayout,
                                             getUsernameTextView, getScoreTextView, getAchievementsTextView,
-                                            spannableString2, spannableString, spannableString3
+                                            spannableString2, spannableStringScore, spannableString3
                                             ,getOnlineOrOfflineTextView)
-
-                                        leaderScoresText.text = spannableString
+                                        /******************************************************************************************/
+                                        leaderScoresText.text = spannableStringScore
                                         leaderLayout.addView(getLinearLayout)
+                                        /******************************************************************************************/
                                     }
                                 }
                             }
@@ -500,7 +478,8 @@ class FirebaseManage {
             if (error == null){
                 if (snapshot != null && snapshot.exists()){
                     val status : String = snapshot.get("userStatus") as String
-                    if (status == "offline"){
+                    println("statusHere $status")
+                    if (status == "OFFLINE"){
                         val offlineSpannable = SpannableString("OFFLINE")
                         offlineSpannable.setSpan(
                             StyleSpan(Typeface.BOLD),
@@ -511,7 +490,7 @@ class FirebaseManage {
                         onlineOrOfflineTextView.setTextColor(Color.parseColor("#F44336"))
                         onlineOrOfflineTextView.text = offlineSpannable
                     }
-                    else if (status == "online"){
+                    else if (status == "ONLINE"){
                         val onlineSpannable = SpannableString("ONLINE")
                         onlineSpannable.setSpan(
                             StyleSpan(Typeface.BOLD),
@@ -527,9 +506,9 @@ class FirebaseManage {
         }
     }
 
-    private fun addListener (layout : LinearLayout, sey : String){
+    private fun addListener (layout : LinearLayout, username : String, userId : String){
         layout.setOnClickListener {
-            println("tık: $sey")
+            println(userId)
         }
     }
 
@@ -567,7 +546,8 @@ class FirebaseManage {
                     "Uid" to userId,
                     "ScoreAverage" to 0,
                     "NumbersScore" to 0,
-                    "Username" to username
+                    "Username" to username,
+                    "after18Count" to 0
                 )
 
                 val numbersMemoryAchievementsMap = hashMapOf(
@@ -577,18 +557,23 @@ class FirebaseManage {
                     "impatient" to false // Süre bitmeden geç
                 )
 
-                firebase.collection("Scores").document(userId).set(addScoreAverage).addOnSuccessListener {//
+                firebase.collection("Scores").document(userId).set(addScoreAverage).addOnSuccessListener {
                     firebase.collection("Users").document(userId).collection("Achievements").document(
                         "numbersMemoryAchievements"
                     ).set(numbersMemoryAchievementsMap).addOnSuccessListener {
-                        snackCreater.createSuccessSnack("Sign Up Success.", mView!!)
+
+                        snackCreator.customToast(
+                            activity!!, mCtx!!, null, Toast.LENGTH_SHORT,
+                            "Sign Up Success.", R.drawable.custom_toast_success, R.drawable.ic_success_image
+                        )
                     }.addOnFailureListener {
                         firebase.collection("Users").document(userId).delete().addOnCompleteListener {
                             firebase.collection("Scores").document(userId).delete().addOnCompleteListener {
                                 currentUser?.delete()?.addOnCompleteListener {
-                                    snackCreater.createFailSnack(
-                                        "User cannot be created. Try again.",
-                                        mView!!
+
+                                    snackCreator.customToast(
+                                        activity!!, mCtx!!, null, Toast.LENGTH_SHORT,
+                                        "User couldn't be created. Try again.", R.drawable.custom_toast_error, R.drawable.ic_error_image
                                     )
                                 }
                             }
@@ -598,9 +583,9 @@ class FirebaseManage {
                     firebase.collection("Users").document(userId).delete().addOnCompleteListener {
                         firebase.collection("Scores").document(userId).delete().addOnCompleteListener {
                             currentUser?.delete()?.addOnCompleteListener {
-                                snackCreater.createFailSnack(
-                                    "User cannot be created. Try again.",
-                                    mView!!
+                                snackCreator.customToast(
+                                    activity!!, mCtx!!, null, Toast.LENGTH_SHORT,
+                                    "User couldn't be created. Try again.", R.drawable.custom_toast_error, R.drawable.ic_error_image
                                 )
                             }
                         }
@@ -609,13 +594,19 @@ class FirebaseManage {
             }.addOnFailureListener{
                 firebase.collection("Users").document(userId).delete().addOnCompleteListener {
                     currentUser?.delete()?.addOnCompleteListener {
-                        snackCreater.createFailSnack("User cannot be created. Try again.", mView!!)
+                        snackCreator.customToast(
+                            activity!!, mCtx!!, null, Toast.LENGTH_SHORT,
+                            "User couldn't be created. Try again.", R.drawable.custom_toast_error, R.drawable.ic_error_image
+                        )
                     }
                 }
             }
-        }.addOnFailureListener { e ->
+        }.addOnFailureListener { _ ->
             currentUser?.delete()?.addOnCompleteListener {
-                snackCreater.createFailSnack("User cannot be created. Try again.", mView!!)
+                snackCreator.customToast(
+                    activity!!, mCtx!!, null, Toast.LENGTH_SHORT,
+                    "User couldn't be created. Try again.", R.drawable.custom_toast_error, R.drawable.ic_error_image
+                )
             }
         }
     }
@@ -628,7 +619,7 @@ class FirebaseManage {
         successMessage: String,
         failMessage: String
     ){
-        snackCreater = PopupMessageCreator()
+        snackCreator = PopupMessageCreator()
         loadingDialog = LoadingDialog(activity)
         loadingDialog.loadingAlertDialog()
         firebase = FirebaseFirestore.getInstance()
@@ -637,10 +628,16 @@ class FirebaseManage {
         val uuId = UUID.randomUUID()
         uuId.toString()
         firebase.collection(collection).document("$userId $uuId").set(hashMap).addOnSuccessListener {
-            snackCreater.createSuccessSnack(successMessage, mView!!)
+            snackCreator.customToast(
+                activity!!, mCtx!!, null, Toast.LENGTH_SHORT,
+                successMessage, R.drawable.custom_toast_success, R.drawable.ic_success_image
+            )
             loadingDialog.dismissDialog()
         }.addOnFailureListener {
-            snackCreater.createFailSnack(failMessage, mView!!)
+            snackCreator.customToast(
+                activity!!, mCtx!!, null, Toast.LENGTH_SHORT,
+                failMessage, R.drawable.custom_toast_error, R.drawable.ic_error_image
+            )
             loadingDialog.dismissDialog()
         }
     }
@@ -652,46 +649,51 @@ class FirebaseManage {
         successMessage: String,
         failMessage: String
     ){
-        snackCreater = PopupMessageCreator()
+        snackCreator = PopupMessageCreator()
         firebase = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
         currentUser = auth.currentUser
 
         firebase.collection(collection).document(userId).set(hashMap).addOnSuccessListener {
-            snackCreater.createSuccessSnack(successMessage, mView!!)
+            snackCreator.customToast(
+                activity!!, mCtx!!, null, Toast.LENGTH_SHORT,
+                successMessage, R.drawable.custom_toast_success, R.drawable.ic_success_image
+            )
         }.addOnFailureListener {
-            snackCreater.createFailSnack(failMessage, mView!!)
+            snackCreator.customToast(
+                activity!!, mCtx!!, null, Toast.LENGTH_SHORT,
+                failMessage, R.drawable.custom_toast_error, R.drawable.ic_error_image
+            )
         }
     }
 
-    /*fun doSnackbar(message : String, backgroundColor : String, textColor : String){
-        snackCreater = SnackbarCreater()
-        snackCreater.createSnack(message,mView!!,backgroundColor,textColor)
-    }*/
-
     fun resetPasswordWithEmail(email: String){
-        snackCreater = PopupMessageCreator()
-
+        snackCreator = PopupMessageCreator()
         loadingDialog = LoadingDialog(activity)
-
         loadingDialog.loadingAlertDialog()
-
         auth = FirebaseAuth.getInstance()
-
 
         try {
             auth.sendPasswordResetEmail(email).addOnSuccessListener {
-                snackCreater.showToastCenter(mCtx!!, "Email sent. Check your mail box.")
+                snackCreator.customToast(
+                    activity!!, mCtx!!, null, Toast.LENGTH_LONG,
+                    "Email sent. Check your mail box.", R.drawable.custom_toast_success, R.drawable.ic_success_image
+                )
                 loadingDialog.dismissDialog()
 
             }.addOnFailureListener {
-
-                snackCreater.createFailSnack(it.localizedMessage!!, mView!!)
+                snackCreator.customToast(
+                    activity!!, mCtx!!, null, Toast.LENGTH_SHORT,
+                    it.localizedMessage!!, R.drawable.custom_toast_error, R.drawable.ic_error_image
+                )
                 loadingDialog.dismissDialog()
             }
         }
         catch (e: Exception) {
-            snackCreater.createFailSnack(e.localizedMessage!!, mView!!)
+            snackCreator.customToast(
+                activity!!, mCtx!!, null, Toast.LENGTH_SHORT,
+                e.localizedMessage!!, R.drawable.custom_toast_error, R.drawable.ic_error_image
+            )
             loadingDialog.dismissDialog()
         }
     }
@@ -705,7 +707,7 @@ class FirebaseManage {
     fun loginAlertDialog(textView: TextView){
         auth = FirebaseAuth.getInstance()
         loadingDialog = LoadingDialog(activity)
-        snackCreater = PopupMessageCreator()
+        snackCreator = PopupMessageCreator()
 
         val loginLinearLayout = LinearLayout(mCtx)
         loginLinearLayout.orientation = LinearLayout.VERTICAL
@@ -714,7 +716,6 @@ class FirebaseManage {
 
         val emailEditText = EditText(mCtx)
         emailEditText.setBackgroundResource(R.drawable.custom_input_edittext)
-        //emailEditText.hint = "E-Mail"
         emailEditText.maxLines = 1
         emailEditText.inputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
         emailEditText.setHintTextColor(Color.parseColor("#2B2B2B"))
@@ -731,10 +732,8 @@ class FirebaseManage {
         emailEditText.compoundDrawablePadding = 5
         loginLinearLayout.addView(emailEditText)
 
-
         val passwordEditText = EditText(mCtx!!)
         passwordEditText.setBackgroundResource(R.drawable.custom_input_edittext)
-        //passwordEditText.hint = "Password"
         passwordEditText.maxLines = 1
         val params2 = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -747,16 +746,15 @@ class FirebaseManage {
         passwordEditText.width = 900
         passwordEditText.setPadding(5, 25, 0, 25)
         passwordEditText.compoundDrawablePadding = 5
-        //passwordEditText.setTransformationMethod(PasswordTransformationMethod.getInstance())
         passwordEditText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
         passwordEditText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_password, 0, 0, 0)
         loginLinearLayout.addView(passwordEditText)
 
-        var loginAlert = AlertDialog.Builder(mCtx!!, R.style.CustomAlertDialog)
+        val loginAlert = AlertDialog.Builder(mCtx!!, R.style.CustomAlertDialog)
         loginAlert.setTitle("Login")
         loginAlert.setView(loginLinearLayout)
         loginAlert.setCancelable(false)
-        loginAlert.setPositiveButton("LOGIN") { dialog: DialogInterface, i: Int ->
+        loginAlert.setPositiveButton("LOGIN") { _ : DialogInterface, _ : Int ->
             loadingDialog.loadingAlertDialog()
             val email = emailEditText.text.toString()
             val password = passwordEditText.text.toString()
@@ -767,16 +765,22 @@ class FirebaseManage {
                     getUser(textView, mView!!, welcomeControl = false)
                 }.addOnFailureListener {
                     loadingDialog.dismissDialog()
-                    snackCreater.createFailSnack(it.localizedMessage, mView!!)
+                    snackCreator.customToast(
+                        activity!!, mCtx!!, null, Toast.LENGTH_SHORT,
+                        it.localizedMessage!!, R.drawable.custom_toast_error, R.drawable.ic_error_image
+                    )
                 }
             }
             catch (e: Exception){
                 loadingDialog.dismissDialog()
-                snackCreater.createFailSnack("Somethings went wrong. Try again.", mView!!)
+                snackCreator.customToast(
+                    activity!!, mCtx!!, null, Toast.LENGTH_SHORT,
+                    "Something went wrong. Try again.", R.drawable.custom_toast_error, R.drawable.ic_error_image
+                )
             }
 
         }
-        loginAlert.setNegativeButton("Cancel") { dialog: DialogInterface, i: Int ->
+        loginAlert.setNegativeButton("Cancel") { dialog: DialogInterface, _: Int ->
             dialog.cancel()
         }
         loginAlert.show()
@@ -798,9 +802,8 @@ class FirebaseManage {
 
         loadingScreenStarter(false)
         firebase = FirebaseFirestore.getInstance()
-        snackCreater = PopupMessageCreator()
+        snackCreator = PopupMessageCreator()
         val currentUser = auth.currentUser
-        //snackCreater.showToastCenter(mCtx!!,"oldTextViewText: ${oldUsernameTextView.text.toString()}")
 
         val currentPpUrl = currentUser?.photoUrl
 
@@ -808,8 +811,6 @@ class FirebaseManage {
             displayName = newUsername
             photoUri = currentPpUrl
         }
-
-        //Toast.makeText(mCtx,"$newUsername",Toast.LENGTH_LONG).show()
 
         val oldProfileUpdates = userProfileChangeRequest {
             displayName = oldUsername
@@ -822,7 +823,10 @@ class FirebaseManage {
                     firebase.collection("Scores").document(userId).update("Username", newUsername)
                         .addOnSuccessListener {
                             loadingScreenDestroyer(false)
-                            snackCreater.createSuccessSnack("Username changed!", mView!!)
+                            snackCreator.customToast(
+                                activity!!, mCtx!!, null, Toast.LENGTH_SHORT,
+                                "Username changed!", R.drawable.custom_toast_success, R.drawable.ic_success_image
+                            )
 
                             val intent = Intent(mCtx, MainActivity::class.java)
                             activity?.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
@@ -834,38 +838,48 @@ class FirebaseManage {
                                     .addOnSuccessListener {
                                         currentUser.updateProfile(oldProfileUpdates).addOnCompleteListener {
                                             loadingScreenDestroyer(false)
-                                            snackCreater.showToastCenter(
-                                                mCtx!!, "Username could not be changed!"
+                                            snackCreator.customToast(
+                                                activity!!, mCtx!!, null, Toast.LENGTH_SHORT,
+                                                "Username could not be changed!", R.drawable.custom_toast_error, R.drawable.ic_error_image
                                             )
                                         }
                                     }.addOnFailureListener {
                                         currentUser.updateProfile(oldProfileUpdates).addOnCompleteListener {
                                             loadingScreenDestroyer(false)
-                                            snackCreater.createFailSnack(
-                                                "Username could not be changed!",
-                                                mView!!
+                                            snackCreator.customToast(
+                                                activity!!, mCtx!!, null, Toast.LENGTH_SHORT,
+                                                "Username could not be changed!", R.drawable.custom_toast_error, R.drawable.ic_error_image
                                             )
                                         }
                                     }
                             } else {
                                 currentUser.updateProfile(oldProfileUpdates).addOnCompleteListener {
                                     loadingScreenDestroyer(false)
-                                    snackCreater.createSuccessSnack("Username changed!", mView!!)
+                                    snackCreator.customToast(
+                                        activity!!, mCtx!!, null, Toast.LENGTH_SHORT,
+                                        "Username changed!", R.drawable.custom_toast_success, R.drawable.ic_success_image
+                                    )
                                 }
                             }
                         }
                 }.addOnFailureListener {
                     loadingScreenDestroyer(false)
-                    snackCreater.createFailSnack("Username could not be changed!", mView!!)
+                    snackCreator.customToast(
+                        activity!!, mCtx!!, null, Toast.LENGTH_SHORT,
+                        "Username could not be changed!", R.drawable.custom_toast_error, R.drawable.ic_error_image
+                    )
                 }
         }?.addOnFailureListener {
             loadingScreenDestroyer(false)
-            snackCreater.createFailSnack("Username could not be changed!", mView!!)
+            snackCreator.customToast(
+                activity!!, mCtx!!, null, Toast.LENGTH_SHORT,
+                "Username could not be changed!", R.drawable.custom_toast_error, R.drawable.ic_error_image
+            )
         }
     }
 
     fun updateEmail(newEmail: String){
-        snackCreater = PopupMessageCreator()
+        snackCreator = PopupMessageCreator()
         auth = FirebaseAuth.getInstance()
         firebase = FirebaseFirestore.getInstance()
         val user = Firebase.auth.currentUser
@@ -880,13 +894,15 @@ class FirebaseManage {
         }.addOnFailureListener{
 
             loadingScreenDestroyer(false)
-            snackCreater.createFailSnack(it.localizedMessage!!, mView!!)
-
+            snackCreator.customToast(
+                activity!!, mCtx!!, null, Toast.LENGTH_SHORT,
+                it.localizedMessage!!, R.drawable.custom_toast_error, R.drawable.ic_error_image
+            )
         }
     }
 
     private fun updateEmailUsers(newEmail: String, oldEmail: String) {
-        snackCreater = PopupMessageCreator()
+        snackCreator = PopupMessageCreator()
         val currentUserId = getUserId()
         auth = FirebaseAuth.getInstance()
         firebase = FirebaseFirestore.getInstance()
@@ -899,14 +915,17 @@ class FirebaseManage {
             else{
                 user!!.updateEmail(oldEmail).addOnCompleteListener{
                     loadingScreenDestroyer(false)
-                    snackCreater.createFailSnack("Email could not be updated", mView!!)
+                    snackCreator.customToast(
+                        activity!!, mCtx!!, null, Toast.LENGTH_SHORT,
+                        "Email could not be changed!", R.drawable.custom_toast_error, R.drawable.ic_error_image
+                    )
                 }
             }
         }
     }
 
     private fun updateEmailScores(newEmail: String, oldEmail: String){
-        snackCreater = PopupMessageCreator()
+        snackCreator = PopupMessageCreator()
         val currentUserId = getUserId()
         auth = FirebaseAuth.getInstance()
         firebase = FirebaseFirestore.getInstance()
@@ -915,13 +934,19 @@ class FirebaseManage {
         firebase.collection("Scores").document(currentUserId!!).update("Email", newEmail).addOnCompleteListener { task ->
             if (task.isSuccessful){
                 loadingScreenDestroyer(false)
-                snackCreater.showToastCenter(mCtx!!, "Email address updated.")
+                snackCreator.customToast(
+                    activity!!, mCtx!!, null, Toast.LENGTH_SHORT,
+                    "Email address updated!", R.drawable.custom_toast_success, R.drawable.ic_success_image
+                )
             }
             else{
                 user!!.updateEmail(oldEmail).addOnCompleteListener{
                     firebase.collection("Users").document(currentUserId).update("Email", oldEmail).addOnCompleteListener{
                         loadingScreenDestroyer(false)
-                        snackCreater.createFailSnack("Email could not be updated", mView!!)
+                        snackCreator.customToast(
+                            activity!!, mCtx!!, null, Toast.LENGTH_SHORT,
+                            "Email could not be updated!", R.drawable.custom_toast_error, R.drawable.ic_error_image
+                        )
                     }
                 }
             }
@@ -929,7 +954,7 @@ class FirebaseManage {
     }
 
     fun changePasswordNoEmail(newPassword: String, oldPasswordComing: String){
-        snackCreater = PopupMessageCreator()
+        snackCreator = PopupMessageCreator()
         val currentUserId = getUserId()
         auth = FirebaseAuth.getInstance()
         firebase = FirebaseFirestore.getInstance()
@@ -938,35 +963,46 @@ class FirebaseManage {
         loadingScreenStarter(false)
 
         if (oldPasswordComing == oldPasswordNow) {
-            snackCreater.createSuccessSnack("Matched", mView!!)
+            snackCreator.createSuccessSnack("Matched", mView!!)
             user!!.updatePassword(newPassword).addOnSuccessListener {
 
                 firebase.collection("Users").document(currentUserId!!)
                     .update("Password", newPassword).addOnSuccessListener {
-
-                        snackCreater.showToastCenter(mCtx!!, "Password changed.")
+                        snackCreator.customToast(
+                            activity!!, mCtx!!, null, Toast.LENGTH_SHORT,
+                            "Password changed!", R.drawable.custom_toast_success, R.drawable.ic_success_image
+                        )
                         loadingScreenDestroyer(false)
 
                     }.addOnFailureListener {
                         user.updatePassword(oldPasswordNow).addOnCompleteListener {
-                            snackCreater.createFailSnack("Password could not be changed.", mView!!)
+                            snackCreator.customToast(
+                                activity!!, mCtx!!, null, Toast.LENGTH_SHORT,
+                                "Password could not be changed!", R.drawable.custom_toast_error, R.drawable.ic_error_image
+                            )
                             loadingScreenDestroyer(false)
                         }
                     }
             }.addOnFailureListener {
-                snackCreater.createFailSnack(it.localizedMessage!!, mView!!)
+                snackCreator.customToast(
+                    activity!!, mCtx!!, null, Toast.LENGTH_SHORT,
+                    it.localizedMessage!!, R.drawable.custom_toast_error, R.drawable.ic_error_image
+                )
                 loadingScreenDestroyer(false)
             }
         }
         else{
-            snackCreater.createFailSnack("Password could not be matched.", mView!!)
+            snackCreator.customToast(
+                activity!!, mCtx!!, null, Toast.LENGTH_SHORT,
+                "Password could not be matched.", R.drawable.custom_toast_error, R.drawable.ic_error_image
+            )
             loadingScreenDestroyer(false)
         }
     }
 
-    var scoreAverageGet : Number = 0
-    var usernameGet = ""
-    var numbersMemoryScoreGet : Number = 0
+    private var scoreAverageGet : Number = 0
+    private var usernameGet = ""
+    private var numbersMemoryScoreGet : Number = 0
 
 
     fun deleteAccount(username: String){
@@ -979,7 +1015,10 @@ class FirebaseManage {
             firebase.collection("Scores").document(userId).delete().addOnSuccessListener {
                 currentUser!!.delete().addOnSuccessListener {
 
-                    snackCreater.showToastCenter(mCtx!!, "User deleted.")
+                    snackCreator.customToast(
+                        activity!!, mCtx!!, null, Toast.LENGTH_SHORT,
+                        "User deleted.", R.drawable.custom_toast_success, R.drawable.ic_success_image
+                    )
                     loadingScreenDestroyer(false)
                     val intent = Intent(activity, MainActivity::class.java)
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
@@ -1001,20 +1040,22 @@ class FirebaseManage {
                 }
                 else{
                     loadingScreenDestroyer(false)
-                    snackCreater.showToastCenter(mCtx!!, "Olması gereken oldu.")
+                    snackCreator.showToastCenter(mCtx!!, "Olması gereken oldu.")
                 }
                 setUserAchievementsAgain()
             }
 
         }.addOnFailureListener{
             loadingScreenDestroyer(false)
-            snackCreater.createFailSnack("Account could not be deleted.", mView!!)
+            snackCreator.customToast(
+                activity!!, mCtx!!, null, Toast.LENGTH_SHORT,
+                "Account could not be deleted.", R.drawable.custom_toast_error, R.drawable.ic_error_image
+            )
         }
     }
 
     private fun setUserAchievementsAgain(){
 
-        val snackbarCreater = PopupMessageCreator()
         auth = FirebaseAuth.getInstance()
         currentUser = auth.currentUser
         val uid = currentUser?.uid
@@ -1079,7 +1120,6 @@ class FirebaseManage {
                                 scoreAverageGet = document.get("ScoreAverage") as Number
                                 numbersMemoryScoreGet = document.get("NumbersScore") as Number
                                 usernameGet = document.get("Username") as String
-                                //Toast.makeText(mCtx, "$scoreAverageGet", Toast.LENGTH_LONG).show()
                             }
                         }
                     }
@@ -1120,7 +1160,6 @@ class FirebaseManage {
 
     private fun setUserCurrentUser (){
         val emailCurrent = currentUser?.email
-        //addUserFirestore(emailCurrent!!,oldPasswordNow,usernameGet)
 
         val user = hashMapOf(
             "UserName" to usernameGet,
@@ -1146,18 +1185,18 @@ class FirebaseManage {
         )
 
         firebase.collection("Scores").document(idCurrent!!).set(userScores).addOnSuccessListener {
-            snackCreater.createSuccessSnack("", mView!!)
+            //snackCreator.createSuccessSnack("", mView!!)
         }.addOnFailureListener {
-            snackCreater.createFailSnack("", mView!!)
+            //snackCreator.createFailSnack("", mView!!)
         }
     }
 
     private fun getUserCurrentUser (){
 
-        var snackbarCreater = PopupMessageCreator()
+        val snackbarCreater = PopupMessageCreator()
         auth = FirebaseAuth.getInstance()
         currentUser = auth.currentUser
-        var currentEmail = currentUser?.email
+        val currentEmail = currentUser?.email
         firebase = FirebaseFirestore.getInstance()
         firebase.collection("Users").whereEqualTo("Email", currentEmail).addSnapshotListener{ snapshot, exception ->
             if (exception != null)
@@ -1182,7 +1221,10 @@ class FirebaseManage {
         firebase.collection("Users").whereEqualTo("Email", currentEmail).addSnapshotListener{ snapshot, exception ->
             if (exception != null){
                 //loadingScreenDestroyer(false)
-                snackCreater.showToastLong(mCtx!!, "The password could not be obtained.")
+                snackCreator.customToast(
+                    activity!!, mCtx!!, null, Toast.LENGTH_SHORT,
+                    "The password could not be obtained.", R.drawable.custom_toast_error, R.drawable.ic_error_image
+                )
             }
             else{
                 if (snapshot != null){

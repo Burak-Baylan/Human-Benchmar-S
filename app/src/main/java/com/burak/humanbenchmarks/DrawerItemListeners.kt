@@ -18,6 +18,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.burak.humanbenchmarks.ForNumbersMemory.NumberMemoryMenu
 import com.burak.humanbenchmarks.ForReactionTime.ReactionTimeMenu
+import com.burak.humanbenchmarks.Messages.Messages
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -120,7 +121,7 @@ class DrawerItemListeners (val ctx : Context, val viewReal : View, val activity 
                     )
                     params.setMargins(30, 20, 30, 0)
                     feedbackEditText.layoutParams = params
-                    feedbackEditText.setPadding(5, 25, 0, 25)
+                    feedbackEditText.setPadding(10, 25, 0, 25)
                     feedbackEditText.setHintTextColor(Color.parseColor("#2B2B2B"))
                     feedbackEditText.setTextColor(Color.parseColor("#FFFFFF"))
                     feedbackEditText.setCompoundDrawablesWithIntrinsicBounds(
@@ -184,8 +185,13 @@ class DrawerItemListeners (val ctx : Context, val viewReal : View, val activity 
                     )
                 }
 
+                R.id.messagesInMenu -> {
+                    val intent = Intent(ctx, Messages::class.java)
+                    ctx.startActivity(intent)
+                }
+
                 R.id.logout -> {
-                    var alert = AlertDialog.Builder(ctx, R.style.CustomAlertDialog)
+                    val alert = AlertDialog.Builder(ctx, R.style.CustomAlertDialog)
                     alert.setTitle("Log Out")
                     alert.setMessage("Are you sure?")
                     alert.setPositiveButton("Yes") { _: DialogInterface, _: Int ->

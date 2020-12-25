@@ -1,7 +1,12 @@
 package com.burak.humanbenchmarks
 
+import android.animation.ArgbEvaluator
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
+import android.app.ActivityManager
 import android.content.*
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -30,7 +35,7 @@ import kotlinx.android.synthetic.main.custom_toast.view.*
 import kotlinx.android.synthetic.main.nav_header.*
 
 
-class MainActivity : AppCompatActivity() {
+open class MainActivity : AppCompatActivity() {
 
     private lateinit var toggle : ActionBarDrawerToggle
     private lateinit var nameTextReal:TextView
@@ -58,6 +63,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mAdView : AdView
     override fun onStart() {
         animationControl.forOnStart()
+        if (firebaseManage.internetControl(this)){
+            connectionIcon.visibility = View.INVISIBLE
+        }
+        else{
+            connectionIcon.visibility = View.VISIBLE
+            connectionImageAnimation(connectionIcon)
+        }
         super.onStart()
     }
 
@@ -106,13 +118,11 @@ class MainActivity : AppCompatActivity() {
         ppImageOnNav.setOnClickListener {val intent1 = Intent(this, Profile::class.java)
         startActivity(intent1)}
         isFirstEnter()
+        val openSignUpAlertDialog = intent.getBooleanExtra("openSignUpAlert", false)
 
-
-
-        /*snackCreater.customToast(
-            this, this, Gravity.TOP, Toast.LENGTH_LONG,
-            "Welcome $", R.drawable.custom_toast_error, null
-        )*/
+        if (openSignUpAlertDialog){
+            signupAlertDialog()
+        }
 
         if (currentUser != null){
             logInFun(welcomeControl)
@@ -136,15 +146,38 @@ class MainActivity : AppCompatActivity() {
 
         val drawerItemListeners = DrawerItemListeners(this, viewReal, this)
         drawerItemListeners.findNavigationView(navigationView)
-        drawerItemListeners.putAllItems(nameTextReal, loginTextReal, signupTextReal, nullLayoutReal, noNullLayoutReal)
+        drawerItemListeners.putAllItems(
+            nameTextReal,
+            loginTextReal,
+            signupTextReal,
+            nullLayoutReal,
+            noNullLayoutReal
+        )
         drawerItemListeners.drawerLayoutListener(navigationView)
         netConnect()
+
+        connectionIcon.setOnClickListener {
+            val alert = AlertDialog.Builder(this, R.style.RedCustomAlertDialog)
+            alert.setCancelable(true)
+            alert.setTitle("Internet Connection")
+            alert.setMessage("You cannot earn an achievement without internet.")
+            alert.setPositiveButton("DONE") { dialog: DialogInterface, _: Int ->
+                dialog.cancel()
+            }
+            alert.show()
+        }
+
     }
 
+    private val userStatusUpdater = UserStatusUpdater()
+    override fun onPause() {
+        super.onPause()
+        userStatusUpdater.statusUpdater("OFFLINE")
+    }
 
-    override fun onStop() {
-        println("gitti stop")
-        super.onStop()
+    override fun onResume() {
+        super.onResume()
+        userStatusUpdater.statusUpdater("ONLINE")
     }
 
     private fun numbersMemoryConstraintLayoutListeners(){
@@ -192,15 +225,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
     private fun netConnect(){
         val netControl = firebaseManage.internetControl(this)
         if (!netControl){
-            snackCreater.customToast(
-                this, this, null, Toast.LENGTH_SHORT, "No Connection",
-                R.drawable.custom_toast_error, R.drawable.ic_error_image
-            )
-            //snackCreater.createFailSnack("No Connection", viewReal)
+            connectionIcon.visibility = View.VISIBLE
+            connectionImageAnimation(connectionIcon)
         }
     }
 
@@ -272,7 +301,7 @@ class MainActivity : AppCompatActivity() {
                         this, this, null, Toast.LENGTH_SHORT, it.localizedMessage!!,
                         R.drawable.custom_toast_error, R.drawable.ic_error_image
                     )
-                    snackCreater.createFailSnack(it.localizedMessage!!, viewReal)
+                    //snackCreater.createFailSnack(it.localizedMessage!!, viewReal)
                 }
             }
             catch (e: Exception){
@@ -481,7 +510,7 @@ class MainActivity : AppCompatActivity() {
         emailTextReal.text = getEmail
         currentId = currentUser?.uid
 
-        layout = layoutInflater.inflate(R.layout.custom_toast,  custom_toast_layout)
+        layout = layoutInflater.inflate(R.layout.custom_toast, custom_toast_layout)
         firebaseManage.getUser(nameTextReal, viewReal, welcomeControl)
 
         nullLayoutReal.visibility = View.GONE
@@ -490,7 +519,10 @@ class MainActivity : AppCompatActivity() {
         navigationView.menu.findItem(R.id.logout).isVisible = true
         navigationView.menu.findItem(R.id.feedback).isVisible = true
         navigationView.menu.findItem(R.id.myScores).isVisible = true
+        navigationView.menu.findItem(R.id.messagesInMenu).isVisible = true
         this@MainActivity.welcomeControl = false
+
+        userStatusUpdater.statusUpdater("ONLINE")
 
         currentEmail = currentUser!!.email
         if (currentEmail!! == "dsjkadnas@gmail.com") /** Boss item'a erişim için kontrol **/
@@ -501,6 +533,20 @@ class MainActivity : AppCompatActivity() {
 
     companion object{
         lateinit var layout : View
+
+        fun connectionImageAnimation(imageView: ImageView){
+            val colorStart : Int = Color.parseColor("#FF0600")
+            val colorEnd : Int = Color.parseColor("#810300")
+            val colorAnim = ObjectAnimator.ofInt(
+                imageView,
+                "colorFilter",
+                colorStart, colorEnd
+            )
+            colorAnim.setEvaluator(ArgbEvaluator())
+            colorAnim.repeatCount = 10000
+            colorAnim.repeatMode = ValueAnimator.REVERSE
+            colorAnim.start()
+        }
     }
 
     private fun underlinedText(text: String, textView: TextView){
@@ -527,6 +573,7 @@ class MainActivity : AppCompatActivity() {
         navigationView.menu.findItem(R.id.logout).isVisible = false
         navigationView.menu.findItem(R.id.feedback).isVisible = false
         navigationView.menu.findItem(R.id.myScores).isVisible = false
+        navigationView.menu.findItem(R.id.messagesInMenu).isVisible = false
         navigationView.menu.findItem(R.id.bossMenuItem).isVisible = false
         loadingDialog.dismissDialog()
         if (snackControl){

@@ -14,5 +14,7 @@
 
     <color name="colorForDarkGreen">#4BBC59</color>
 
+    <color name="testColor">#00FFAE</color>
+
     <color name="statusBarColorForProfile">#1E354E</color>
 </resources>

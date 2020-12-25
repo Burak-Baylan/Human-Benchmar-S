@@ -116,7 +116,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#2b87d1"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -239,13 +239,27 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#2b87d1"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0">
+
+        <Button
+            android:id="@+id/button5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/cust_button_return_menu"
+            android:drawableStart="@drawable/ic_share_white"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:text="SHARE"
+            android:textColor="#FFFFFF"
+            app:layout_constraintBottom_toTopOf="@+id/saveScoreButton"
+            app:layout_constraintEnd_toEndOf="@+id/saveScoreButton" />
 
         <ImageView
             android:id="@+id/imageView"
@@ -319,16 +333,17 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
             android:layout_marginEnd="30dp"
-            android:layout_marginBottom="15dp"
+            android:layout_marginBottom="10dp"
             android:background="@drawable/cust_button_save"
             android:fontFamily="@font/alfa_slab_one"
             android:paddingStart="5dp"
             android:paddingEnd="5dp"
             android:text="OVERWRITE THIS SCORE"
             android:textColor="#FFFFFF"
-            android:visibility="gone"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent" />
 
         <Button
@@ -337,7 +352,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
             android:layout_marginEnd="30dp"
-            android:layout_marginBottom="15dp"
+            android:layout_marginBottom="10dp"
             android:background="@drawable/cust_button_return_menu"
             android:fontFamily="@font/alfa_slab_one"
             android:paddingStart="5dp"
@@ -348,6 +363,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

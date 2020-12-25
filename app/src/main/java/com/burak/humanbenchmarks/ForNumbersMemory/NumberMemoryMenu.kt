@@ -1,8 +1,12 @@
 package com.burak.humanbenchmarks.ForNumbersMemory
 
+import android.animation.ArgbEvaluator
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.drawable.AnimationDrawable
 import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -11,6 +15,7 @@ import android.text.style.UnderlineSpan
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -18,6 +23,7 @@ import com.burak.humanbenchmarks.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_number_memory_menu.*
 import kotlinx.android.synthetic.main.activity_reaction_time_menu.*
 
@@ -37,6 +43,7 @@ class NumberMemoryMenu : AppCompatActivity() {
     private lateinit var auth : FirebaseAuth
     private var currentUser : FirebaseUser? = null
     private lateinit var numbersMemoryAchievementsUpdater: NumbersMemoryAchievementsUpdater
+    private var animationControl : animationControl = animationControl(this)
 
     var onStartCount = 0
 
@@ -48,17 +55,7 @@ class NumberMemoryMenu : AppCompatActivity() {
         supportActionBar?.title = "Numbers Memory"
         supportActionBar?.hide()
 
-        /******************************************************************************************/
-        onStartCount = 1
-        if (savedInstanceState == null) // 1st time
-        {
-            this.overridePendingTransition(R.anim.anim_slide_in_left,
-                R.anim.anim_slide_out_left);
-        } else // already created so reverse animation
-        {
-            onStartCount = 2;
-        }
-        /******************************************************************************************/
+        animationControl.forOnCreate(savedInstanceState)
 
         supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor("#393e46")))
         val window : Window = window
@@ -75,7 +72,7 @@ class NumberMemoryMenu : AppCompatActivity() {
 
         firebaseManage = FirebaseManage(this,viewReal,this)
         snackCreator = PopupMessageCreator()
-        internetControl()
+        internetControl(false)
 
         achievementsCounterText2.setBackgroundResource(R.drawable.achievements_background)
         numbersAchievementsScrollView.visibility = View.INVISIBLE
@@ -112,52 +109,79 @@ class NumberMemoryMenu : AppCompatActivity() {
         }
 
         tryConnectTextRealNumbersMemory.setOnClickListener {
-            internetControl()
+            internetControl(true)
         }
 
         deleteMeOnLeaderBoardImageNumbersMemory.setOnClickListener {
-            firebase = FirebaseFirestore.getInstance()
-            val userId = currentUser?.uid
-            val alert = AlertDialog.Builder(this, R.style.CustomAlertDialogForHistoriesNumbersMemory)
-            alert.setTitle("Delete Me On Leader Board")
-            alert.setMessage("If you delete. You cant get it back.")
-            alert.setPositiveButton("Delete") { _ : DialogInterface, _ : Int ->
-                try {
-                    firebase.collection("Scores").document(userId!!).update("NumbersScore", 0).addOnSuccessListener {
+            if (firebaseManage.internetControl(this)) {
+                firebase = FirebaseFirestore.getInstance()
+                val userId = currentUser?.uid
+                val alert =
+                    AlertDialog.Builder(this, R.style.CustomAlertDialogForHistoriesNumbersMemory)
+                alert.setTitle("Delete Me On Leader Board")
+                alert.setMessage("If you delete. You cant get it back.")
+                alert.setPositiveButton("Delete") { _: DialogInterface, _: Int ->
+                    try {
+                        firebase.collection("Scores").document(userId!!).update("NumbersScore", 0, "after18Count", 0)
+                            .addOnSuccessListener {
 
-                        snackCreator.customToast(
-                            this, this, null, Toast.LENGTH_SHORT,
-                            "Deleted", R.drawable.custom_toast_success, R.drawable.ic_success_image
-                        )
-                        //snackCreator.showToastShort(this, "Deleted")
+                                snackCreator.customToast(
+                                    this,
+                                    this,
+                                    null,
+                                    Toast.LENGTH_SHORT,
+                                    "Deleted",
+                                    R.drawable.custom_toast_success,
+                                    R.drawable.ic_success_image
+                                )
+                                //snackCreator.showToastShort(this, "Deleted")
 
-                        deleteMeOnLeaderBoardImageNumbersMemory.visibility = View.INVISIBLE
-                    }.addOnFailureListener {
+                                deleteMeOnLeaderBoardImageNumbersMemory.visibility = View.INVISIBLE
+                            }.addOnFailureListener {
+
+                            snackCreator.customToast(
+                                this, this, null, Toast.LENGTH_LONG,
+                                it.localizedMessage!!,
+                                R.drawable.custom_toast_error, R.drawable.ic_error_image
+                            )
+                            //snackCreator.showToastShort(this, it.localizedMessage!!)
+                        }
+                    } catch (e: Exception) {
 
                         snackCreator.customToast(
                             this, this, null, Toast.LENGTH_LONG,
-                            it.localizedMessage!!,
+                            "Could not be deleted.",
                             R.drawable.custom_toast_error, R.drawable.ic_error_image
                         )
-                        //snackCreator.showToastShort(this, it.localizedMessage!!)
+                        //snackCreator.showToastShort(this, "Could not be deleted.")
                     }
                 }
-                catch (e : Exception){
-
-                    snackCreator.customToast(
-                        this, this, null, Toast.LENGTH_LONG,
-                        "Could not be deleted.",
-                        R.drawable.custom_toast_error, R.drawable.ic_error_image
-                    )
-                    //snackCreator.showToastShort(this, "Could not be deleted.")
+                alert.setNegativeButton("Cancel") { dialog: DialogInterface, _: Int ->
+                    dialog.cancel()
                 }
+                alert.show()
             }
-            alert.setNegativeButton("Cancel") { dialog : DialogInterface, _ : Int ->
-                dialog.cancel()
+            else{
+                snackCreator.customToast(
+                    this, this, null, Toast.LENGTH_SHORT,
+                    "Internet connection required.",
+                    R.drawable.custom_toast_error, R.drawable.ic_error_image
+                )
             }
-            alert.show()
         }
         goBackButtonInToolbar2.setOnClickListener { finish() }
+    }
+
+    override fun onStart() {
+        animationControl.forOnStart()
+        if (firebaseManage.internetControl(this)){
+            connectionIconNumbersMemory.visibility = View.INVISIBLE
+        }
+        else{
+            connectionIconNumbersMemory.visibility = View.VISIBLE
+            MainActivity.connectionImageAnimation(connectionIconNumbersMemory)
+        }
+        super.onStart()
     }
 
     fun startClick(v : View){
@@ -165,11 +189,12 @@ class NumberMemoryMenu : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun internetControl(){
+    private fun internetControl(messageControl : Boolean){
         val netControl = firebaseManage.internetControl(this)
         if (netControl) {
             leaderBoardLayoutNumberMemory.visibility = View.VISIBLE
             progressForLeaderRealNumbersMemory.visibility = View.INVISIBLE
+            connectionIconNumbersMemory.visibility = View.INVISIBLE
             tryConnectTextRealNumbersMemory.visibility = View.INVISIBLE
             swapGoLeaders()
         }
@@ -177,15 +202,17 @@ class NumberMemoryMenu : AppCompatActivity() {
             leaderBoardLayoutNumberMemory.visibility = View.INVISIBLE
             achievementsLinearLayoutNumberMemory.visibility = View.INVISIBLE
             progressForLeaderRealNumbersMemory.visibility = View.VISIBLE
-            println("internetBurada")
+            connectionIconNumbersMemory.visibility = View.VISIBLE
+            MainActivity.connectionImageAnimation(connectionIconNumbersMemory)
             tryConnectTextRealNumbersMemory.visibility = View.VISIBLE
             underlinedText("Try Again", tryConnectTextRealNumbersMemory)
-            snackCreator.customToast(
-                this, this, null, Toast.LENGTH_SHORT,
-                "No Connection",
-                R.drawable.custom_toast_error, R.drawable.ic_error_image
-            )
-            //snackCreator.createFailSnack("No Connection",viewReal)
+            if (messageControl){
+                snackCreator.customToast(
+                    this, this, null, Toast.LENGTH_SHORT,
+                    "No Connection",
+                    R.drawable.custom_toast_error, R.drawable.ic_error_image
+                )
+            }
         }
     }
 
@@ -208,7 +235,7 @@ class NumberMemoryMenu : AppCompatActivity() {
 
         refreshFab.setOnClickListener {
             val netControl = firebaseManage.internetControl(this)
-            internetControl()
+            internetControl(true)
             if (netControl) {
                 closeFabMenu()
                 firebaseManage.getNumbersMemoryLeader(leaderBoardLayoutNumberMemory, false, 15, deleteMeOnLeaderBoardImageNumbersMemory)
@@ -313,6 +340,17 @@ class NumberMemoryMenu : AppCompatActivity() {
         firstFab.setImageResource(R.drawable.ic_down_arrow)
         swapFab.animate().translationY(0F)
         refreshFab.animate().translationY(0F)
+    }
+
+    private val userStatusUpdater = UserStatusUpdater()
+    override fun onPause() {
+        super.onPause()
+        userStatusUpdater.statusUpdater("OFFLINE")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        userStatusUpdater.statusUpdater("ONLINE")
     }
 
 }

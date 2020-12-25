@@ -4,15 +4,15 @@ import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.Context
 import android.content.DialogInterface
+import android.content.SharedPreferences
 import android.database.sqlite.SQLiteDatabase
 import android.graphics.Color
 import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
-import android.text.SpannableString
-import android.text.style.StrikethroughSpan
 import android.util.Log
 import android.view.Gravity
 import android.view.View
@@ -28,14 +28,13 @@ import com.google.android.gms.ads.rewarded.RewardItem
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdCallback
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_number_memory.*
 import java.util.concurrent.ThreadLocalRandom
 
-open class NumberMemory : AppCompatActivity() {
+class NumberMemory : AppCompatActivity() {
 
     private var progressBarValue = 0
     private var progressRunnable: Runnable = Runnable {}
@@ -55,12 +54,11 @@ open class NumberMemory : AppCompatActivity() {
     private var animationControl : animationControl = animationControl(this)
 
     companion object{
+        lateinit var preferences : SharedPreferences
         var skipFastBool = false
     }
 
-    /** Max score(18) ulaştığı zaman achievements gibi bi ekranda göstersin
-     * daha fazla yapmaya çalışınca uyarı falan versin
-     **/
+    
 
     /** DİKKAT!! 0. BÖLÜM 1. BÖLÜMDÜR
      * YANİ LEVEL SAYISI levelCounter + 1'dir
@@ -156,6 +154,7 @@ open class NumberMemory : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_number_memory)
 
+        preferences = getSharedPreferences("com.burak.humanbenchmarks", Context.MODE_PRIVATE)
 
         animationControl.forOnCreate(savedInstanceState)
         /*if (savedInstanceState == null) // 1st time
@@ -167,7 +166,16 @@ open class NumberMemory : AppCompatActivity() {
         rewardedAd = createAndLoadRewardedAd(false)
 
         continueWithAdButton.setOnClickListener {
-            showAd()
+            if (firebaseManage.internetControl(this)) {
+                showAd()
+            }
+            else {
+                snackCreator.customToast(
+                    this, this, null, Toast.LENGTH_SHORT,
+                    "Internet connection required to watch ad.",
+                    R.drawable.custom_toast_error, R.drawable.ic_error_image
+                )
+            }
         }
         /***************************************************************************************************/
 
@@ -209,14 +217,30 @@ open class NumberMemory : AppCompatActivity() {
 
         submitButton.setOnClickListener {
             if (inputNumberEditText.text.isNotBlank()) {
-                val gelen = inputNumberEditText.text.toString()
-                getInput = gelen.toLong()
+                val getInput = inputNumberEditText.text.toString()
 
-                if (getInput == getRandomNumber) /** Doğru cevap **/
+                try {
+                    this.getInput = getInput.toLong()
+                }
+                catch (e : Exception){
+                    snackCreator.customToast(
+                        this, this, null, Toast.LENGTH_LONG,
+                        "You shouldn't write no more than 18-digits.",
+                        R.drawable.custom_toast_warning, R.drawable.ic_warning_image
+                    )
+                }
+
+                if (this.getInput == getRandomNumber) /** Doğru cevap **/
                 {
                     currentNumberTextView.text = "$getRandomNumber"
-                    yourNumberTextView.text = "$getInput"
-                    showLevelTextView.text = "Level ${levelCounter + 1}"
+                    yourNumberTextView.text = "${this.getInput}"
+
+                    if (after18Counter <= 0) {
+                        showLevelTextView.text = "Level ${levelCounter + 1}"
+                    }
+                    else {
+                        showLevelTextView.text = "Level ${levelCounter + 1}+$after18Counter"
+                    }
 
                     allInvisible()
                     trueLayoutNumbersMemory.visibility = View.VISIBLE
@@ -240,8 +264,15 @@ open class NumberMemory : AppCompatActivity() {
                     allInvisible()
 
                     currentNumberTextViewFalse.text = "$getRandomNumber"
-                    yourNumberTextViewFalse.text = "$getInput"
-                    showLevelTextViewNumbersMemoryFalse.text = "Level ${levelCounter + 1}"
+                    yourNumberTextViewFalse.text = "${this.getInput}"
+
+                    if (after18Counter <= 0) {
+                        showLevelTextViewNumbersMemoryFalse.text = "Level ${levelCounter + 1}"
+                    }
+                    else {
+                        showLevelTextViewNumbersMemoryFalse.text = "Level ${levelCounter + 1}+$after18Counter"
+                    }
+
                     showLevelTextViewNumbersMemoryFalse.setTextColor(Color.parseColor("#FF5722"))
 
                     falseLayoutNumbersMemory.visibility = View.VISIBLE
@@ -276,6 +307,7 @@ open class NumberMemory : AppCompatActivity() {
         tryAgainButtonNumbersMemory.setOnClickListener {
             protectedExit = false
             levelCounter = 0
+            after18Counter = 0
             rewardEarned = false
             startFunc()
             inputNumberEditText.setText("")
@@ -284,10 +316,19 @@ open class NumberMemory : AppCompatActivity() {
         shareButtonNumbersMemory.setOnClickListener {
             protectedExit = true
 
-            val getLinkForShareApp = GetLinkForShareApp(this, viewReal, this)
-            getLinkForShareApp.share(
-                "I can remember a $levelCounter digit number. What about you? Download this game if you want to try it!",
-                "Share Your Score")
+            if (firebaseManage.internetControl(this)) {
+                val getLinkForShareApp = GetLinkForShareApp(this, viewReal, this)
+                getLinkForShareApp.share(
+                    "I can remember a $levelCounter digit number. What about you? Download this game if you want to try it!",
+                    "Share Your Score"
+                )
+            }
+            else {
+                snackCreator.customToast(this ,this, null, Toast.LENGTH_SHORT,
+                    "Internet connection required to share your score.",
+                    R.drawable.custom_toast_error, R.drawable.ic_error_image
+                )
+            }
         }
 
         backButtonNumbersMemory.setOnClickListener{
@@ -311,7 +352,28 @@ open class NumberMemory : AppCompatActivity() {
 
                     if (netControl) {
                         val currentId = currentUser?.uid
-                        firebase.collection("Scores").document(currentId!!).update("NumbersScore", levelCounter).addOnSuccessListener {
+                        /** Why do we save it as 3 digits? (levelCounter+after18Counter)
+                         * Because we want to save with after18. What is the after18?
+                         * after18, when we finish the game (when we reach 18 digit number) we want to continue this game but we use the long number type and long number
+                         * type is supporting max 18 digit number. So We cannot reach beyond 18 digits. So i thought this way.
+                         * I want to show this like 18+2. How can i do this?
+                         * First we get this number then we use toString method then subString method. (I shown this below.)
+                         * After we get first two digits, we check 3rd number with x>0. Because if user can't reach level 18 this number saving as 0 and if
+                         * the number is 0 we shouldn't do anything. If the number greater than 0 we should do this ->
+                         * (This way does not work for 2-digit numbers, but the user cannot increment the number 0 before reaching the 18-digit number.
+                         * Because the user needs reach 18-digit for increment the number 0 and when user reach 18-digit the number will 3-digit)
+                         * /********************************/
+                         * val num1 = 123
+                         * val num1String = num1.toString()
+                         * val num1SubStr1 = num1String.substring(0, 2)
+                         * val num1SubStr2 = num1String.substring(1, 2)
+                         * println("$num1SubStr1 + $num1SubStr2") = 'Username': 12 + 3 Digit
+                         * /********************************/
+                         */
+                        if (after18Counter > 0){
+                            levelCounter = 18
+                        }
+                        firebase.collection("Scores").document(currentId!!).update("NumbersScore", levelCounter, "after18Count", after18Counter).addOnSuccessListener {
                             snackCreator.customToast(this, this, null, Toast.LENGTH_SHORT, "Score updated!", R.drawable.custom_toast_success, R.drawable.ic_success_image)
                             //snackCreator.createSuccessSnack("Score updated!", viewReal)
                             protectedExit = false
@@ -349,49 +411,52 @@ open class NumberMemory : AppCompatActivity() {
         }
     }
 
+    private var after18Counter = 0
+
     private fun nextFunc(){
+
         skipFastBool = false
         if (levelCounter < 17) {
-
             levelCounter++
-            startFunc()
-            inputNumberEditText.setText("")
-            rewardedAd = createAndLoadRewardedAd(false)
-
-            if (!rewardEarned) // Eğer daha önce izlenmemişse göster!
-            {
-                continueWithAdButton.visibility = View.VISIBLE
-            }
-            else if (rewardEarned) // Eğer daha önce izlenmişse gösterme!
-            {
-                continueWithAdButton.visibility = View.VISIBLE // 290 291 946 647 281 704
-            }
-
-            if (levelCounter > 8) {
-                showNumberRealTextView.textSize = 40f
-            }
-            if (levelCounter > 9) {
-                showNumberRealTextView.textSize = 30f
-            }
-            if (levelCounter <= 8) {
-                showNumberRealTextView.textSize = 50f
-            }
         }
+        else if (levelCounter.toInt() == 17){
+            levelCounter = 17
+            after18Counter++
+        }
+        startFunc()
+        inputNumberEditText.setText("")
+        inputNumberEditText.setText("$getRandomNumber")
+        //rewardedAd = createAndLoadRewardedAd(false)
+        if (!rewardEarned) {// Eğer daha önce izlenmemişse göster!
+            continueWithAdButton.visibility = View.VISIBLE
+        }
+        else if (rewardEarned) {// Eğer daha önce izlenmişse gösterme!
+            continueWithAdButton.visibility = View.INVISIBLE // 290 291 946 647 281 704
+        }
+        if (levelCounter > 8) {
+            showNumberRealTextView.textSize = 40f
+        }
+        if (levelCounter > 9) {
+            showNumberRealTextView.textSize = 30f
+        }
+        if (levelCounter <= 8) {
+            showNumberRealTextView.textSize = 50f
+        }
+        /*}
         else{
+            Toast.makeText(this, "Done", Toast.LENGTH_SHORT).show()
             //snackCreator.showToastCenter(this, "bitti")
-        }
+        }*/
     }
 
     private fun startFunc(){
         getRandomNumber = randomNumberCreator()
         showNumberRealTextView.text = "$getRandomNumber"
-        //inputNumberEditText.setText("$getRandomNumber")
         allInvisible()
         showNumberLayoutNumbersMemory.visibility = View.VISIBLE
         startProgressBar(levelCounter+2)
         hideWindowAndSupportActionBar()
         continueWithAdButton.visibility = View.VISIBLE
-        rewardedAd = createAndLoadRewardedAd(false)
     }
 
     private fun allInvisible(){
@@ -441,8 +506,8 @@ open class NumberMemory : AppCompatActivity() {
     }
 
     private fun randomNumberCreator() : Long{
-        val here = listOf<Long>(1,10,100,1000,10000,100000,1000000,10000000,100000000,1000000000,10000000000,100000000000,1000000000000,10000000000000,100000000000000,1000000000000000,10000000000000000,100000000000000000)
-        val to = listOf<Long>  (9,99,999,9999,99999,999999,9999999,99999999,999999999,9999999999,99999999999,999999999999,9999999999999,99999999999999,999999999999999,9999999999999999,99999999999999999,999999999999999999)
+        val here = listOf (1,10,100,1000,10000,100000,1000000,10000000,100000000,1000000000,10000000000,100000000000,1000000000000,10000000000000,100000000000000,1000000000000000,10000000000000000,100000000000000000)
+        val to = listOf (9,99,999,9999,99999,999999,9999999,99999999,999999999,9999999999,99999999999,999999999999,9999999999999,99999999999999,999999999999999,9999999999999999,99999999999999999,999999999999999999)
         return ThreadLocalRandom.current().nextLong(here[levelCounter.toInt()], to[levelCounter.toInt()] + 1)
     }
 
@@ -463,7 +528,7 @@ open class NumberMemory : AppCompatActivity() {
         }
     }
 
-    var fullYourInputString : String = ""
+    /*var fullYourInputString : String = ""
 
     private fun yanlışGirişinÜstünuÇizmeFonksiyonu(currentNumber : Long, yourInput : Long){
         val currentNumberString = currentNumber.toString()
@@ -495,26 +560,17 @@ open class NumberMemory : AppCompatActivity() {
         Toast.makeText(this, spannableString.toString(), Toast.LENGTH_SHORT).show()
         //snackCreator.showToastCenter(this, spannableString.toString())
         //return spannableString
+    }*/
+
+    private val userStatusUpdater = UserStatusUpdater()
+    override fun onPause() {
+        super.onPause()
+        userStatusUpdater.statusUpdater("OFFLINE")
     }
 
-    private fun createSuccessSnackWithAction(message : String){
-
-        val oylesineTextView = TextView(this)
-
-        val hexBackgroundColor = "#570F0F"
-        val hexTextColor = "#FFFFFF"
-        val snackBar = Snackbar.make(
-            viewReal, message,
-            Snackbar.LENGTH_LONG
-        ).setAction("Action", null)
-        snackBar.setActionTextColor(Color.parseColor(hexTextColor))
-        val snackBarView = snackBar.view
-        snackBarView.setBackgroundColor(Color.parseColor(hexBackgroundColor))
-        val textView = snackBarView.findViewById(com.google.android.material.R.id.snackbar_text) as TextView
-        textView.setTextColor(Color.parseColor(hexTextColor))
-        snackBar.setAction("LogIn", View.OnClickListener {
-            firebaseManage.loginAlertDialog(oylesineTextView)
-        })
-        snackBar.show()
+    override fun onResume() {
+        super.onResume()
+        userStatusUpdater.statusUpdater("ONLINE")
     }
+
 }

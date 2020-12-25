@@ -4,12 +4,14 @@ import android.app.Activity
 import android.content.Context
 import android.view.View
 import android.widget.TextView
+import com.burak.humanbenchmarks.FirebaseManage
 import com.burak.humanbenchmarks.PopupMessageCreator
 
 class ReactionTimeAchievementsAvailableControl (val ctx : Context, val activity : Activity, val viewReal : View){
 
     private val achievementsControl : AchievementsControl = AchievementsControl(ctx,activity, viewReal)
     private val snackbarCreater : PopupMessageCreator = PopupMessageCreator()
+    private val firebaseManage = FirebaseManage(ctx, viewReal, activity)
 
     fun controlAvailableAchievements(
         row20String : String,
@@ -29,7 +31,7 @@ class ReactionTimeAchievementsAvailableControl (val ctx : Context, val activity 
         robotOrTextView : TextView,
     )
     {
-
+        firebaseManage.loadingScreenStarter(false)
         // 20 Round arka arkaya.
         if (row20String == "false") {
             if (roundsCounter == 20) {
@@ -81,14 +83,6 @@ class ReactionTimeAchievementsAvailableControl (val ctx : Context, val activity 
                     row20TextView, tooSlowTextView, tooLuckTextView, s1TextView, turtleTextView, robotOrTextView)
             }
         }
-        /*else{
-            snackbarCreater.showToastCenter(ctx,"tooLuck(80ms) var")
-        }*/
-
-        /*if (s1String == "false"){
-            val olmasiGerekTextView = TextView(this)
-            firebaseManage.loadLeaderScores(leaderBoardLayout,false, olmasiGerekTextView, deleteMeOnLeaderBoardImage, 1, true)
-        }*/
         /** Birinci sırada olmasını kontrol eden achievementsControl burada değil getLeaders fonksiyonunda yazılacak **/
 
         // 50 Saniyeden fazla.
@@ -105,9 +99,6 @@ class ReactionTimeAchievementsAvailableControl (val ctx : Context, val activity 
                     row20TextView, tooSlowTextView, tooLuckTextView, s1TextView, turtleTextView, robotOrTextView)
             }
         }
-        /*else{
-            snackbarCreater.showToastCenter(ctx,"turtle(50s) var")
-        }*/
 
         // 100ms'den az -ORTALAMA-
         if (besteKac == 5) /** Ortalama cinsinden hesap yaptığımız için 5. roundda kontrolü yapmamız gerek **/ {
@@ -119,10 +110,9 @@ class ReactionTimeAchievementsAvailableControl (val ctx : Context, val activity 
                         row20TextView, tooSlowTextView, tooLuckTextView, s1TextView, turtleTextView, robotOrTextView)
                 }
             }
-            /*else {
-                snackbarCreater.showToastCenter(ctx, "robot var")
-            }*/
         }
+
+        firebaseManage.loadingScreenDestroyer(false)
 
     }
 

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="140dp"
+    android:layout_height="100dp"
     android:background="#6E6E6E"
     android:orientation="horizontal">
 
@@ -14,38 +14,51 @@
         android:background="@drawable/custom_nav_header_gradient_login_background"
         android:visibility="gone">
 
+
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/ppImage"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginStart="10dp"
             android:src="@drawable/questionmark"
             app:civ_border_color="#FFFFFFFF"
             app:civ_border_width="1dp"
-            app:layout_constraintBottom_toTopOf="@+id/nameString"
-            app:layout_constraintStart_toStartOf="@+id/nameString" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/emailText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
             android:text="dsjkadnas@gmail.com"
             android:textColor="#FFFFFF"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/nameString" />
+            app:layout_constraintBottom_toBottomOf="@+id/ppImage"
+            app:layout_constraintStart_toStartOf="@+id/nameString"
+            app:layout_constraintTop_toBottomOf="@+id/imageView6" />
 
         <TextView
             android:id="@+id/nameString"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:layout_marginBottom="2dp"
             android:text="Burak BAYLAN"
             android:textColor="#FFFFFF"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/emailText"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintBottom_toTopOf="@+id/imageView6"
+            app:layout_constraintStart_toEndOf="@+id/ppImage"
+            app:layout_constraintTop_toTopOf="@+id/ppImage" />
+
+        <ImageView
+            android:id="@+id/imageView6"
+            android:layout_width="10dp"
+            android:layout_height="2dp"
+            android:layout_marginStart="10dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/ppImage"
+            app:layout_constraintStart_toEndOf="@+id/ppImage"
+            app:layout_constraintTop_toTopOf="@+id/ppImage"
+            app:srcCompat="@drawable/cust_button_return_menu" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

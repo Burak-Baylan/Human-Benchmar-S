@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/numberMemoryMenuLayout"
     android:background="@drawable/reaction_time_background"
     tools:context=".ForNumbersMemory.NumberMemoryMenu">
 
@@ -195,7 +196,7 @@
         android:layout_height="wrap_content"
         android:clickable="true"
         android:src="@drawable/ic_refresh"
-        app:backgroundTint="#FFC107"
+        app:backgroundTint="#ffd66b"
         app:rippleColor="#6BB8B18E"
         app:layout_constraintBottom_toBottomOf="@+id/firstFab"
         app:layout_constraintEnd_toEndOf="@+id/firstFab"
@@ -209,7 +210,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"
-        app:backgroundTint="#FFC107"
+        app:backgroundTint="#ffd66b"
         app:rippleColor="#6BB8B18E"
         android:src="@drawable/ic_change_achievement_leader_board"
         app:borderWidth="1dp"
@@ -224,7 +225,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"
-        app:backgroundTint="#873600"
+        app:backgroundTint="#CC7351"
         app:rippleColor="#6BB8B18E"
         app:srcCompat="@drawable/ic_down_arrow"
         app:borderWidth="1dp"
@@ -245,25 +246,47 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/goBackButtonInToolbar2"
-            style="@style/zoptirik"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="?android:attr/actionBarItemBackground"
-            android:src="@drawable/ic_back_arrow" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="40dp"
-            android:maxLines="1"
-            android:text="Numbers Memory"
-            android:textColor="#FFFFFF"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            tools:layout_editor_absoluteX="80dp"
-            tools:layout_editor_absoluteY="16dp" />
+            <ImageView
+                android:id="@+id/goBackButtonInToolbar2"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:background="?android:attr/actionBarItemBackground"
+                android:src="@drawable/ic_back_arrow" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:maxLines="1"
+                android:layout_marginStart="30dp"
+                android:text="Numbers Memory"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@id/goBackButtonInToolbar2"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+            <ImageView
+                android:id="@+id/connectionIconNumbersMemory"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="15dp"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_baseline_wifi_off_24"
+                tools:visibility="visible" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
     </androidx.appcompat.widget.Toolbar>
 
     <View

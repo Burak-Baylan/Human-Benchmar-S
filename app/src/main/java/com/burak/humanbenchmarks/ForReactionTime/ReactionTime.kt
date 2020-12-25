@@ -2,7 +2,6 @@ package com.burak.humanbenchmarks.ForReactionTime
 
 import android.annotation.SuppressLint
 import android.content.DialogInterface
-import android.content.Intent
 import android.database.sqlite.SQLiteDatabase
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
@@ -85,8 +84,7 @@ class ReactionTime : AppCompatActivity() {
         firebaseManage.getUser(oylesineTextView,viewReal,welcomeControl = true)
         sqlHistories = SqlHistories(this,this,viewReal)
 
-        /****************************************************************************/
-
+        /******************************************************************************************/
         row20TextView = TextView(this)
         tooSlowTextView = TextView(this)
         tooLuckTextView = TextView(this)
@@ -103,8 +101,7 @@ class ReactionTime : AppCompatActivity() {
             turtleTextView,
             robotOrTextView
         )
-
-        /****************************************************************************/
+        /******************************************************************************************/
 
         if (currentUser != null){
             val currentEmail = currentUser!!.email
@@ -223,11 +220,11 @@ class ReactionTime : AppCompatActivity() {
         }
 
         returnMenuButton2.setOnClickListener {
-            returnMenuFun()
+            finish()
         }
 
         returnMenuButton.setOnClickListener {
-            returnMenuFun()
+            finish()
         }
 
         saveScoreButton.setOnClickListener {
@@ -238,8 +235,6 @@ class ReactionTime : AppCompatActivity() {
 
             getUsername = oylesineTextView.text.toString()
 
-            //Toast.makeText(this,"id:$currentId email:$currentEmail",Toast.LENGTH_SHORT).show()
-
             if (currentId != null) {
                 val alert = AlertDialog.Builder(this, R.style.saveScoreCustomAlertDialog)
                 alert.setTitle("Overwrite Your Score")
@@ -249,13 +244,11 @@ class ReactionTime : AppCompatActivity() {
                 alert.setPositiveButton("Save") { _: DialogInterface, _: Int ->
 
                     if (connectControl) {
-
                         firestore.collection("Scores").document(currentId).update("ScoreAverage", besteKacTopla.toInt()).addOnSuccessListener {
                             snackbarCreater.customToast(
                                 this, this, null, Toast.LENGTH_SHORT, "Score Saved",
                                 R.drawable.custom_toast_success, R.drawable.ic_success_image
                             )
-                            //snackbarCreater.createSuccessSnack("Score Saved", viewReal)
                         }.addOnFailureListener {
                             val addScoreAverage: HashMap<String, Serializable?> = hashMapOf(
                                 "Email" to currentEmail,
@@ -279,11 +272,6 @@ class ReactionTime : AppCompatActivity() {
                             "Internet connection required to save.",
                             R.drawable.custom_toast_error, R.drawable.ic_error_image
                         )
-
-                        /*snackbarCreater.showToastCenter(
-                            this,
-                            "Internet connection required to save."
-                        )*/
                     }
                     window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
                 }
@@ -294,21 +282,14 @@ class ReactionTime : AppCompatActivity() {
                 alert.show()
             }
             else{
-                //createSuccessSnackWithAction("You must be logged in to save.")
                 firebaseManage.loginAlertDialog(oylesineTextView)
                 snackbarCreater.customToast(
                     this, this, null, Toast.LENGTH_SHORT,
                     "You must be logged in to save.",
                     R.drawable.custom_toast_warning, R.drawable.ic_warning_image
                 )
-                //snackbarCreater.createFailSnack("You must be logged in to save.",viewReal)
             }
         }
-    }
-
-    override fun onBackPressed(){
-        super.onBackPressed()
-        returnMenuFun()
     }
 
     @SuppressLint("Recycle")
@@ -326,27 +307,15 @@ class ReactionTime : AppCompatActivity() {
                     gelenString = cursor.getString(historyIx!!)
                     idString = cursor.getString(historyId!!)
                 }
-            } catch (e: Exception) {
-                //snackbarCreater.createFailSnack("Average Score cannot be save.", viewReal)
-            }
+            } catch (e: Exception) {}
 
             gelenString += "\n$idString- $besteKacTopla"
 
             mSQL?.execSQL("INSERT INTO reactionhistoryaverage (history) VALUES (?)", arrayOf(gelenString))
-            //snackbarCreater.showToastCenter(this,/*"Average Score saved.*/ "$gelenString")
         }
         catch (e : Exception){
 
         }
-    }
-
-    private fun returnMenuFun(){
-        allInvisible()
-
-        val intent = Intent(this, ReactionTimeMenu::class.java)
-        intent.putExtra("welcomeControl",true)
-        startActivity(intent)
-        finish()
     }
 
     private fun startCountDown(second : Long){
@@ -385,12 +354,9 @@ class ReactionTime : AppCompatActivity() {
 
     private fun startGreenSecond(){
         handler.postDelayed(runnable,0)
-        runnable = object : Runnable{
-            override fun run() {
-                timeInMilliseconds = SystemClock.uptimeMillis() - startTime
-                handler.postDelayed(runnable,0)
-                //greenClickText.text = "$time"
-            }
+        runnable = Runnable {
+            timeInMilliseconds = SystemClock.uptimeMillis() - startTime
+            handler.postDelayed(runnable,0)
         }
         handler.post(runnable)
     }
@@ -399,21 +365,15 @@ class ReactionTime : AppCompatActivity() {
         timeInMilliseconds = 0L
     }
 
-    private fun createSuccessSnackWithAction(message : String){
-        val hexBackgroundColor = "#570F0F"
-        val hexTextColor = "#FFFFFF"
-        val snackBar = Snackbar.make(
-            viewReal, message,
-            Snackbar.LENGTH_LONG
-        ).setAction("Action", null)
-        snackBar.setActionTextColor(Color.parseColor(hexTextColor))
-        val snackBarView = snackBar.view
-        snackBarView.setBackgroundColor(Color.parseColor(hexBackgroundColor))
-        val textView = snackBarView.findViewById(com.google.android.material.R.id.snackbar_text) as TextView
-        textView.setTextColor(Color.parseColor(hexTextColor))
-        snackBar.setAction("LogIn") {
-            firebaseManage.loginAlertDialog(oylesineTextView)
-        }
-        snackBar.show()
+    private val userStatusUpdater = UserStatusUpdater()
+    override fun onPause() {
+        super.onPause()
+        userStatusUpdater.statusUpdater("OFFLINE")
     }
+
+    override fun onResume() {
+        super.onResume()
+        userStatusUpdater.statusUpdater("ONLINE")
+    }
+
 }
