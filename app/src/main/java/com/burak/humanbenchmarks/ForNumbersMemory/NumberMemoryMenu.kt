@@ -1,12 +1,8 @@
 package com.burak.humanbenchmarks.ForNumbersMemory
 
-import android.animation.ArgbEvaluator
-import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.drawable.AnimationDrawable
 import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -15,7 +11,7 @@ import android.text.style.UnderlineSpan
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
-import android.widget.Button
+import android.view.animation.AnimationUtils
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -25,7 +21,6 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_number_memory_menu.*
-import kotlinx.android.synthetic.main.activity_reaction_time_menu.*
 
 class NumberMemoryMenu : AppCompatActivity() {
 
@@ -159,7 +154,9 @@ class NumberMemoryMenu : AppCompatActivity() {
                 alert.setNegativeButton("Cancel") { dialog: DialogInterface, _: Int ->
                     dialog.cancel()
                 }
-                alert.show()
+                val dialog = alert.create()
+                dialog.window!!.attributes!!.windowAnimations = R.style.CustomAlertDialog
+                dialog.show()
             }
             else{
                 snackCreator.customToast(
@@ -342,7 +339,7 @@ class NumberMemoryMenu : AppCompatActivity() {
         refreshFab.animate().translationY(0F)
     }
 
-    private val userStatusUpdater = UserStatusUpdater()
+    private val userStatusUpdater = UserStatus()
     override fun onPause() {
         super.onPause()
         userStatusUpdater.statusUpdater("OFFLINE")

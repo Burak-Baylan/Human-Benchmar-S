@@ -174,7 +174,7 @@ class LeaderBoard : AppCompatActivity() {
         }
     }
 
-    private val userStatusUpdater = UserStatusUpdater()
+    private val userStatusUpdater = UserStatus()
     override fun onPause() {
         super.onPause()
         userStatusUpdater.statusUpdater("OFFLINE")

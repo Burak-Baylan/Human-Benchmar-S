@@ -77,11 +77,17 @@ class SqlHistories(activity: Activity, context: Context, view : View) {
                 }
                 alert2.setNeutralButton("Back"){ _: DialogInterface, _: Int ->
                     dialog.cancel()
-                    alert.show()
+                    val dialog2 = alert.create()
+                    dialog2.window!!.attributes!!.windowAnimations = R.style.CustomAlertDialog
+                    dialog2.show()
                 }
-                alert2.show()
+                val dialog3 = alert2.create()
+                dialog3.window!!.attributes!!.windowAnimations = R.style.CustomAlertDialog
+                dialog3.show()
             }
-            alert.show()
+            val dialog = alert.create()
+            dialog.window!!.attributes!!.windowAnimations = R.style.CustomAlertDialog
+            dialog.show()
 
         } catch (e: Exception) {
             snackCreater.customToast(

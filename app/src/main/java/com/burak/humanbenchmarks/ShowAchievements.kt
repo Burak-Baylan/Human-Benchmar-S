@@ -138,7 +138,9 @@ class ShowAchievements : AppCompatActivity() {
             alert.setNegativeButton("Cancel") {dialog : DialogInterface, _ : Int ->
                 dialog.cancel()
             }
-            alert.show()
+            val dialog = alert.create()
+            dialog.window!!.attributes!!.windowAnimations = R.style.CustomAlertDialog
+            dialog.show()
         }
 
         deleteNumbersMemoryButton.setOnClickListener {
@@ -173,7 +175,9 @@ class ShowAchievements : AppCompatActivity() {
             alert.setNegativeButton("Cancel") {dialog : DialogInterface, _ : Int ->
                 dialog.cancel()
             }
-            alert.show()
+            val dialog = alert.create()
+            dialog.window!!.attributes!!.windowAnimations = R.style.CustomAlertDialog
+            dialog.show()
         }
     }
 
@@ -191,10 +195,12 @@ class ShowAchievements : AppCompatActivity() {
                 dialog.cancel()
             }
         }
-        alert.show()
+        val dialog = alert.create()
+        dialog.window!!.attributes!!.windowAnimations = R.style.CustomAlertDialog
+        dialog.show()
     }
 
-    private val userStatusUpdater = UserStatusUpdater()
+    private val userStatusUpdater = UserStatus()
     override fun onPause() {
         super.onPause()
         userStatusUpdater.statusUpdater("OFFLINE")

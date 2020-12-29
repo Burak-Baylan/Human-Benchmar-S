@@ -20,6 +20,8 @@
         <item name="android:animateOnClick"> true </item>
         <item name="colorAccent"> #FFFFFF </item> <!-- #FFE289 -->
         <item name="android:textColorPrimary"> #FFFFFF </item>
+        <item name="android:windowEnterAnimation">@anim/anim_slide_in_right</item>
+        <item name="android:windowExitAnimation">@anim/anim_slide_out_right</item>
     </style>
 
     <style name="NeutralButtonStyle" parent="Theme.AppCompat.Dialog.Alert">

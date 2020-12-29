@@ -4,9 +4,7 @@ import android.animation.ArgbEvaluator
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
-import android.app.ActivityManager
 import android.content.*
-import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -14,6 +12,7 @@ import android.text.InputType
 import android.text.SpannableString
 import android.text.style.UnderlineSpan
 import android.view.*
+import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
@@ -32,6 +31,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.custom_toast.*
 import kotlinx.android.synthetic.main.custom_toast.view.*
+import kotlinx.android.synthetic.main.messages_recylcler_row.view.*
 import kotlinx.android.synthetic.main.nav_header.*
 
 
@@ -164,12 +164,14 @@ open class MainActivity : AppCompatActivity() {
             alert.setPositiveButton("DONE") { dialog: DialogInterface, _: Int ->
                 dialog.cancel()
             }
-            alert.show()
+            val dialog = alert.create()
+            dialog.window!!.attributes!!.windowAnimations = R.style.CustomAlertDialog
+            dialog.show()
         }
 
     }
 
-    private val userStatusUpdater = UserStatusUpdater()
+    private val userStatusUpdater = UserStatus()
     override fun onPause() {
         super.onPause()
         userStatusUpdater.statusUpdater("OFFLINE")
@@ -198,7 +200,9 @@ open class MainActivity : AppCompatActivity() {
             alert.setPositiveButton("Understood") { dialog: DialogInterface, _: Int ->
                 dialog.cancel()
             }
-            alert.show()
+            val dialog = alert.create()
+            dialog.window!!.attributes!!.windowAnimations = R.style.CustomAlertDialog
+            dialog.show()
 
             true
         }
@@ -219,7 +223,9 @@ open class MainActivity : AppCompatActivity() {
             alert.setPositiveButton("Understood") { dialog: DialogInterface, _: Int ->
                 dialog.cancel()
             }
-            alert.show()
+            val dialog = alert.create()
+            dialog.window!!.attributes!!.windowAnimations = R.style.CustomAlertDialog
+            dialog.show()
 
             true
         }
@@ -321,7 +327,9 @@ open class MainActivity : AppCompatActivity() {
             dialog.cancel()
             forgotPasswordAlertDialog()
         }
-        loginAlert.show()
+        val dialog = loginAlert.create()
+        dialog.window!!.attributes!!.windowAnimations = R.style.CustomAlertDialog
+        dialog.show()
     }
 
     private fun forgotPasswordAlertDialog(){
@@ -369,7 +377,9 @@ open class MainActivity : AppCompatActivity() {
             dialog.cancel()
             loginAlertDialog()
         }
-        alert.show()
+        val dialog = alert.create()
+        dialog.window!!.attributes!!.windowAnimations = R.style.CustomAlertDialog
+        dialog.show()
     }
 
     private fun signupAlertDialog(){
@@ -377,7 +387,6 @@ open class MainActivity : AppCompatActivity() {
         loginLinearLayout.orientation = LinearLayout.VERTICAL
 
         loginLinearLayout.setPadding(10, 20, 10, 10)
-
 
         val usernameEditText = EditText(this)
         usernameEditText.setBackgroundResource(R.drawable.custom_input_edittext)
@@ -459,7 +468,6 @@ open class MainActivity : AppCompatActivity() {
                     currentUser?.updateProfile(profileUpdates)?.addOnSuccessListener {
 
                         loadingDialog.dismissDialog()
-                        //snackCreater.createSuccessSnack("Sign Up Success.", viewReal)
                         loginAlertDialog()
                         firebaseManage.addUserFirestore(email, password, username)
 
@@ -470,10 +478,6 @@ open class MainActivity : AppCompatActivity() {
                                 this, this, null, Toast.LENGTH_SHORT, exception.localizedMessage!!,
                                 R.drawable.custom_toast_error, R.drawable.ic_error_image
                             )
-                            /*snackCreater.createFailSnack(
-                                exception.localizedMessage!!/*"User cannot be created. Try again."*/,
-                                viewReal
-                            )*/
                         }
                     }
                 }.addOnFailureListener {
@@ -482,7 +486,6 @@ open class MainActivity : AppCompatActivity() {
                         this, this, null, Toast.LENGTH_SHORT, it.localizedMessage!!,
                         R.drawable.custom_toast_error, R.drawable.ic_error_image
                     )
-                    //snackCreater.createFailSnack(it.localizedMessage!!, viewReal)
                 }
             }
             else{
@@ -501,7 +504,9 @@ open class MainActivity : AppCompatActivity() {
             dialog.cancel()
             loginAlertDialog()
         }
-        loginAlert.show()
+        val dialog = loginAlert.create()
+        dialog.window!!.attributes!!.windowAnimations = R.style.CustomAlertDialog
+        dialog.show()
     }
 
     private fun logInFun(welcomeControl: Boolean){

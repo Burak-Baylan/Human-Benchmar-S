@@ -1,8 +1,11 @@
 package com.burak.humanbenchmarks
 
 import android.Manifest
+import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.ImageDecoder
 import android.graphics.drawable.ColorDrawable
@@ -14,13 +17,16 @@ import android.provider.MediaStore
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.burak.humanbenchmarks.Messages.Chat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.userProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.activity_change_pp.*
 
 
@@ -47,25 +53,15 @@ class ChangePp : AppCompatActivity() {
         val getProfilePhoto = GetProfilePhoto(this,this,viewReal)
         getProfilePhoto.getProfilePhoto(ppChangeImage)
         chooseImageButton.setOnClickListener {
-            changeImage()
+            changeImage(this, this, ppChangeImage)
         }
 
         ppChangeImage.setOnClickListener{
-            changeImage()
+            changeImage(this, this, ppChangeImage)
         }
 
         saveProfilePhotoButton.setOnClickListener {
             saveProfilePhotoFun()
-        }
-    }
-
-    private fun changeImage(){
-        if (ContextCompat.checkSelfPermission(this,Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this,arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),1)
-        }
-        else{
-            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            startActivityForResult(intent,2)
         }
     }
 
@@ -94,10 +90,7 @@ class ChangePp : AppCompatActivity() {
                         val downloadUrl = uri.toString()
                         //val postMap = hashMapOf<String,Any>("downloadUrl" to "as")
 
-                        val postMap = hashMapOf<String, Any>()
-                        postMap.put("ppurl", downloadUrl)
-
-                        firestore.collection("ProfilePhotos").document(saveId!!).set(postMap)
+                        firestore.collection("Users").document(saveId!!).update("ppurl", downloadUrl)
                             .addOnCompleteListener { task ->
                                 if (task.isComplete && task.isSuccessful) {
 
@@ -178,6 +171,16 @@ class ChangePp : AppCompatActivity() {
         }
     }
 
+    fun changeImage(activity : Activity, context : Context, imageView : CircleImageView){
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),1)
+        }
+        else{
+            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            activity.startActivityForResult(intent,2)
+        }
+    }
+
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
 
         if (requestCode == 1){
@@ -189,15 +192,14 @@ class ChangePp : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
+    private lateinit var imageViewForSelectedPicture : CircleImageView
+    private var isComingFromChat = false
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
         if (requestCode == 2 && resultCode == RESULT_OK && data != null) {
-
             selectedPicture = data.data
-
             try {
                 if (selectedPicture != null) {
-
                     if (Build.VERSION.SDK_INT >= 28) {
                         val source = ImageDecoder.createSource(contentResolver, selectedPicture!!)
                         val bitmap = ImageDecoder.decodeBitmap(source)
@@ -216,7 +218,7 @@ class ChangePp : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    private val userStatusUpdater = UserStatusUpdater()
+    private val userStatusUpdater = UserStatus()
     override fun onPause() {
         super.onPause()
         userStatusUpdater.statusUpdater("OFFLINE")

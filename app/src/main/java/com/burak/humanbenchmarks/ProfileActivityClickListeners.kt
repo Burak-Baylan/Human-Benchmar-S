@@ -6,10 +6,7 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
-import android.text.Editable
-import android.text.InputType
-import android.text.SpannableString
-import android.text.TextWatcher
+import android.text.*
 import android.text.style.UnderlineSpan
 import android.view.View
 import android.widget.*
@@ -120,7 +117,9 @@ class ProfileActivityClickListeners(activity: Activity, context: Context, view: 
             dialog.cancel()
             changeWithOldPasswordFun()
         }
-        alert.show()
+        val dialog = alert.create()
+        dialog.window!!.attributes!!.windowAnimations = R.style.CustomAlertDialog
+        dialog.show()
     }
 
     private fun createLayoutForChangePasswordWithEmail() : LinearLayout{
@@ -183,7 +182,9 @@ class ProfileActivityClickListeners(activity: Activity, context: Context, view: 
         alert.setNeutralButton("CHANGE W.\n EMAIL") { _: DialogInterface, _: Int ->
             changeWithEmailFun()
         }
-        alert.show()
+        val dialog = alert.create()
+        dialog.window!!.attributes!!.windowAnimations = R.style.CustomAlertDialog
+        dialog.show()
     }
 
     private fun createLayoutForChangePassword() : LinearLayout{
@@ -239,6 +240,7 @@ class ProfileActivityClickListeners(activity: Activity, context: Context, view: 
             mLinearLayout.orientation = LinearLayout.HORIZONTAL
 
             val newUsernameEditText = createEditTextForAlertDialog("New Username",R.drawable.ic_username)
+            newUsernameEditText.filters += InputFilter.LengthFilter(14)
             mLinearLayout.addView(newUsernameEditText)
 
             val alert = AlertDialog.Builder(mCtx,R.style.CustomAlertDialog)
@@ -278,7 +280,9 @@ class ProfileActivityClickListeners(activity: Activity, context: Context, view: 
             alert.setNegativeButton("Cancel") { dialog : DialogInterface, _: Int ->
                 dialog.cancel()
             }
-            alert.show()
+            val dialog = alert.create()
+            dialog.window!!.attributes!!.windowAnimations = R.style.CustomAlertDialog
+            dialog.show()
         }
     }
 
@@ -327,7 +331,9 @@ class ProfileActivityClickListeners(activity: Activity, context: Context, view: 
             alert.setNegativeButton("Cancel") { dialog : DialogInterface, _: Int ->
                 dialog.cancel()
             }
-            alert.show()
+            val dialog = alert.create()
+            dialog.window!!.attributes!!.windowAnimations = R.style.CustomAlertDialog
+            dialog.show()
         }
     }
 
@@ -381,7 +387,9 @@ class ProfileActivityClickListeners(activity: Activity, context: Context, view: 
         alert.setNegativeButton("Cancel") { dialog : DialogInterface, _: Int ->
             dialog.cancel()
         }
-        alert.show()
+        val dialog = alert.create()
+        dialog.window!!.attributes!!.windowAnimations = R.style.CustomAlertDialog
+        dialog.show()
     }
 
     private fun forLateInits (){

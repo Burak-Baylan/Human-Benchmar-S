@@ -169,7 +169,9 @@ class DrawerItemListeners (val ctx : Context, val viewReal : View, val activity 
                     alert.setNegativeButton("Cancel") { dialog: DialogInterface, _: Int ->
                         dialog.cancel()
                     }
-                    alert.show()
+                    val dialog = alert.create()
+                    dialog.window!!.attributes!!.windowAnimations = R.style.CustomAlertDialog
+                    dialog.show()
                 }
 
                 R.id.bossMenuItem -> {
@@ -203,7 +205,9 @@ class DrawerItemListeners (val ctx : Context, val viewReal : View, val activity 
                     alert.setNegativeButton("Cancel") { dialog: DialogInterface, _: Int ->
                         dialog.cancel()
                     }
-                    alert.show()
+                    val dialog = alert.create()
+                    dialog.window!!.attributes!!.windowAnimations = R.style.CustomAlertDialog
+                    dialog.show()
                 }
 
                 R.id.achievementsInMenu -> {

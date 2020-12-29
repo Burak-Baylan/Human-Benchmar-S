@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/mLinearLayoutMessageRow"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:orientation="horizontal"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:background="@drawable/messages_row_background">
+
+        <Button
+            android:id="@+id/userStatusInMessage"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_marginEnd="3dp"
+            android:layout_marginBottom="3dp"
+            android:background="@drawable/offline_red"
+            app:layout_constraintBottom_toBottomOf="@+id/messagesPpImageView"
+            app:layout_constraintEnd_toEndOf="@+id/messagesPpImageView" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/messagesPpImageView"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center|top"
+            android:layout_margin="15dp"
+            android:src="@drawable/ach_icon_for_profile"
+            app:civ_border_color="#FFFFFF"
+            app:civ_border_width="1dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="@+id/messagesPpImageView"
+            app:layout_constraintStart_toEndOf="@+id/messagesPpImageView"
+            app:layout_constraintTop_toTopOf="@+id/messagesPpImageView">
+
+            <TextView
+                android:id="@+id/messagesUsernameTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="3dp"
+                android:fontFamily="@font/candal"
+                android:text="Some Username"
+                android:textColor="#000000"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/messagesLastMessageTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:fontFamily="@font/candal"
+                android:text="Some little very long message." />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:background="#000000"
+        android:visibility="gone" />
+
+</LinearLayout>

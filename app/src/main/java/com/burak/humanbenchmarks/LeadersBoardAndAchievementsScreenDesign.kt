@@ -33,7 +33,7 @@ class LeadersBoardAndAchievementsScreenDesign(val context: Context) {
         scoreText: SpannableString,
         achievementsCountText: SpannableString,
         onlineOrOffline : TextView
-    ) : LinearLayout{
+    ){
         /******************************************************************************************/
         val spannableString3 = SpannableString("WAITING..")
         spannableString3.setSpan(StyleSpan(Typeface.BOLD), 0, spannableString3.length, 0)
@@ -77,7 +77,7 @@ class LeadersBoardAndAchievementsScreenDesign(val context: Context) {
         linearLayout.addView(linear2)
         linearLayout.addView(linear3)
         /******************************************************************************************/
-        return linearLayout
+        //return linearLayout
     }
 
     fun createUsernameTextView() : TextView {

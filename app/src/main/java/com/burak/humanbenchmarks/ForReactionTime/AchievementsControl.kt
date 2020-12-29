@@ -99,7 +99,9 @@ class AchievementsControl(context: Context, activity: Activity, view: View) {
             alert.setPositiveButton("Okay") {dialog : DialogInterface, _ : Int ->
                 dialog.cancel()
             }
-            alert.show()
+            val dialog = alert.create()
+            dialog.window!!.attributes!!.windowAnimations = R.style.CustomAlertDialog
+            dialog.show()
         }
     }
 
@@ -329,7 +331,9 @@ class AchievementsControl(context: Context, activity: Activity, view: View) {
 
             alert.setView(getLayout)
 
-            alert.show()
+            val dialog = alert.create()
+            dialog.window!!.attributes!!.windowAnimations = R.style.CustomAlertDialog
+            dialog.show()
 
             val ring: MediaPlayer = MediaPlayer.create(mCtx, R.raw.ring)
             ring.start()

@@ -18,7 +18,6 @@ import com.burak.humanbenchmarks.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.android.synthetic.main.activity_number_memory_menu.*
 import kotlinx.android.synthetic.main.activity_reaction_time_menu.*
 import kotlinx.android.synthetic.main.activity_reaction_time_menu.leaderBoardLayout
 
@@ -160,7 +159,9 @@ class ReactionTimeMenu : AppCompatActivity() {
             alert.setNegativeButton("Cancel") {dialog : DialogInterface, _ : Int ->
                 dialog.cancel()
             }
-            alert.show()
+            val dialog = alert.create()
+            dialog.window!!.attributes!!.windowAnimations = R.style.CustomAlertDialog
+            dialog.show()
         }
     }
 
@@ -292,7 +293,7 @@ class ReactionTimeMenu : AppCompatActivity() {
         refreshFabReactionTime.animate().translationY(0F)
     }
 
-    private val userStatusUpdater = UserStatusUpdater()
+    private val userStatusUpdater = UserStatus()
     override fun onPause() {
         super.onPause()
         userStatusUpdater.statusUpdater("OFFLINE")

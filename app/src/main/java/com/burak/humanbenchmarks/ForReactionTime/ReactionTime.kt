@@ -3,7 +3,6 @@ package com.burak.humanbenchmarks.ForReactionTime
 import android.annotation.SuppressLint
 import android.content.DialogInterface
 import android.database.sqlite.SQLiteDatabase
-import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -14,7 +13,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.burak.humanbenchmarks.*
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
@@ -279,7 +277,9 @@ class ReactionTime : AppCompatActivity() {
                     window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
                     dialog.cancel()
                 }
-                alert.show()
+                val dialog = alert.create()
+                dialog.window!!.attributes!!.windowAnimations = R.style.CustomAlertDialog
+                dialog.show()
             }
             else{
                 firebaseManage.loginAlertDialog(oylesineTextView)
@@ -365,7 +365,7 @@ class ReactionTime : AppCompatActivity() {
         timeInMilliseconds = 0L
     }
 
-    private val userStatusUpdater = UserStatusUpdater()
+    private val userStatusUpdater = UserStatus()
     override fun onPause() {
         super.onPause()
         userStatusUpdater.statusUpdater("OFFLINE")

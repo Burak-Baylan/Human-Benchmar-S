@@ -22,7 +22,6 @@ private lateinit var firestore : FirebaseFirestore
 private lateinit var auth : FirebaseAuth
 private lateinit var currentUser : FirebaseUser
 private lateinit var clickListeners: ProfileActivityClickListeners
-private lateinit var currentUsername : String
 
 class Profile : AppCompatActivity() {
 
@@ -79,7 +78,7 @@ class Profile : AppCompatActivity() {
         }
     }
 
-    private val userStatusUpdater = UserStatusUpdater()
+    private val userStatusUpdater = UserStatus()
     override fun onPause() {
         super.onPause()
         userStatusUpdater.statusUpdater("OFFLINE")

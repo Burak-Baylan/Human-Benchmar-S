@@ -11,6 +11,7 @@ import android.text.InputType
 import android.text.SpannableString
 import android.text.style.StyleSpan
 import android.view.View
+import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import com.google.firebase.auth.FirebaseAuth
@@ -20,6 +21,7 @@ import com.google.firebase.auth.ktx.userProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.ktx.Firebase
+import kotlinx.android.synthetic.main.activity_main.*
 import java.io.Serializable
 import java.util.*
 
@@ -186,15 +188,13 @@ class FirebaseManage {
                                         kontrolEt(tooLucky)
                                         kontrolEt(tooSlow)
                                         kontrolEt(turtle)
-
-
+                                        /******************************************************************************************/
                                         getLinearLayout = leadersBoardDesign.createLinearLayout()
                                         getScoreTextView = leadersBoardDesign.createScoreTextView()
                                         getAchievementsTextView = leadersBoardDesign.createAchievementsCountTextView()
                                         getUsernameTextView = leadersBoardDesign.createUsernameTextView()
                                         getOnlineOrOfflineTextView = leadersBoardDesign.createOnlineOrOfflineTextView()
-
-
+                                        /******************************************************************************************/
                                         if (!nameColorControl)
                                         /** Eğer ismi kontrol ederek kullanıcıya kullanıcının adıyla aynı birisi varsa yeşil renkte sunmak istiyorsa **/
                                         {
@@ -214,13 +214,13 @@ class FirebaseManage {
                                             leaderScoresText.setTextColor(Color.parseColor("#142A4E"))
                                             getUsernameTextView.setTextColor(Color.parseColor("#142A4E"))
                                         }
-
+                                        /******************************************************************************************/
                                         if (usernameCurrent.length > 8)
                                         /** LeaderBoard'da aşşağıya taşmaması için alınmış isim kısaltma önlemi. **/
                                         {
                                             usernameCurrent = "${usernameCurrent.substring(0, 6)}.."
                                         }
-
+                                        /******************************************************************************************/
                                         if (kisi >= 1)
                                         /** Her isimden sonra çizgi eklemek.
                                          * Buradaki kontrol ilk resmin üzerine çizgiyi eklememek için. Nedeni kötü gözükmesi. **/
@@ -232,9 +232,10 @@ class FirebaseManage {
                                             imageForCizgi.setPadding(0, 2, 0, 2)
                                             leaderLayout.addView(imageForCizgi)
                                         }
-
+                                        /******************************************************************************************/
                                         addListener(getLinearLayout, usernameCurrent, uid)
-                                        addOnlineOrOfflineChangeListener(uid, getOnlineOrOfflineTextView)
+                                        val userStatusClass = UserStatus()
+                                        userStatusClass.addOnlineOrOfflineChangeListener(uid, getOnlineOrOfflineTextView, null)
                                         kisi++
                                         if (isimDegisBool){usernameCurrent = "You"}
                                         var scoreString = "$kisi- $usernameCurrent: $averageScore"
@@ -245,7 +246,8 @@ class FirebaseManage {
                                             leaderScoresText.textSize = 14f
                                             scoreString = "$kisi- $usernameCurrent: 10k+"
                                         }
-
+                                        /******************************************************************************************/
+                                        /******************************************************************************************/
                                         val spannableStringScore = SpannableString("$averageScore ms")
                                         spannableStringScore.setSpan(
                                             StyleSpan(Typeface.BOLD),
@@ -253,7 +255,7 @@ class FirebaseManage {
                                             spannableStringScore.length,
                                             0
                                         )
-
+                                        /******************************************************************************************/
                                         val spannableStringUser = SpannableString("#$kisi $usernameCurrent: ")
                                         spannableStringUser.setSpan(
                                             StyleSpan(Typeface.BOLD),
@@ -261,7 +263,7 @@ class FirebaseManage {
                                             spannableStringUser.length,
                                             0
                                         )
-
+                                        /******************************************************************************************/
                                         val spannableStringAchievement = SpannableString("Achievements: $countAchievement/$countAllAchievement")
                                         spannableStringAchievement.setSpan(
                                             StyleSpan(Typeface.BOLD),
@@ -269,16 +271,27 @@ class FirebaseManage {
                                             spannableStringAchievement.length,
                                             0
                                         )
-
+                                        /******************************************************************************************/
+                                        /******************************************************************************************/
                                         leadersBoardDesign.getRealGridLayout(
                                             getLinearLayout,
                                             getUsernameTextView, getScoreTextView, getAchievementsTextView,
                                             spannableStringUser, spannableStringScore, spannableStringAchievement,
                                             getOnlineOrOfflineTextView
                                         )
-
+                                        /******************************************************************************************/
                                         leaderScoresText.text = spannableStringScore
                                         leaderLayout.addView(getLinearLayout)
+                                        /******************************************************************************************/
+                                        if (!animControl) {
+                                            getLinearLayout.animation = AnimationUtils.loadAnimation(mCtx, R.anim.anim_for_message_row)
+                                            animControl = true
+                                        }
+                                        else{
+                                            getLinearLayout.animation = AnimationUtils.loadAnimation(mCtx, R.anim.right_to_left_slide_anim)
+                                            animControl = false
+                                        }
+                                        /******************************************************************************************/
                                     }
                                 }
                             }
@@ -418,9 +431,11 @@ class FirebaseManage {
                                             leaderLayout.addView(imageForCizgi)
                                         }
                                         addListener(getLinearLayout, usernameCurrent, uid)
-                                        addOnlineOrOfflineChangeListener(uid, getOnlineOrOfflineTextView)
+                                        val userStatusClass = UserStatus()
+                                        userStatusClass.addOnlineOrOfflineChangeListener(uid, getOnlineOrOfflineTextView, null)
                                         kisi++
                                         if (isimDegisBool){usernameCurrent = "You"}
+                                        /******************************************************************************************/
                                         /******************************************************************************************/
                                         val spannableStringScore =
                                             if (after18Count.toInt() > 0 && lastInit.toInt() == 18) {
@@ -453,6 +468,7 @@ class FirebaseManage {
                                             0
                                         )
                                         /******************************************************************************************/
+                                        /******************************************************************************************/
                                         leadersBoardDesign.getRealGridLayout(
                                             getLinearLayout,
                                             getUsernameTextView, getScoreTextView, getAchievementsTextView,
@@ -461,6 +477,15 @@ class FirebaseManage {
                                         /******************************************************************************************/
                                         leaderScoresText.text = spannableStringScore
                                         leaderLayout.addView(getLinearLayout)
+                                        /******************************************************************************************/
+                                        if (!animControl) {
+                                            getLinearLayout.animation = AnimationUtils.loadAnimation(mCtx, R.anim.anim_for_message_row)
+                                            animControl = true
+                                        }
+                                        else{
+                                            getLinearLayout.animation = AnimationUtils.loadAnimation(mCtx, R.anim.right_to_left_slide_anim)
+                                            animControl = false
+                                        }
                                         /******************************************************************************************/
                                     }
                                 }
@@ -471,40 +496,7 @@ class FirebaseManage {
             }
         }
     }
-
-    private fun addOnlineOrOfflineChangeListener(uid : String, onlineOrOfflineTextView : TextView){
-        firebase = FirebaseFirestore.getInstance()
-        firebase.collection("Users").document(uid).addSnapshotListener { snapshot, error ->
-            if (error == null){
-                if (snapshot != null && snapshot.exists()){
-                    val status : String = snapshot.get("userStatus") as String
-                    println("statusHere $status")
-                    if (status == "OFFLINE"){
-                        val offlineSpannable = SpannableString("OFFLINE")
-                        offlineSpannable.setSpan(
-                            StyleSpan(Typeface.BOLD),
-                            0,
-                            offlineSpannable.length,
-                            0
-                        )
-                        onlineOrOfflineTextView.setTextColor(Color.parseColor("#F44336"))
-                        onlineOrOfflineTextView.text = offlineSpannable
-                    }
-                    else if (status == "ONLINE"){
-                        val onlineSpannable = SpannableString("ONLINE")
-                        onlineSpannable.setSpan(
-                            StyleSpan(Typeface.BOLD),
-                            0,
-                            onlineSpannable.length,
-                            0
-                        )
-                        onlineOrOfflineTextView.setTextColor(Color.parseColor("#4CAF50"))
-                        onlineOrOfflineTextView.text = onlineSpannable
-                    }
-                }
-            }
-        }
-    }
+    var animControl = false
 
     private fun addListener (layout : LinearLayout, username : String, userId : String){
         layout.setOnClickListener {
@@ -517,13 +509,16 @@ class FirebaseManage {
         auth = FirebaseAuth.getInstance()
         currentUser = auth.currentUser
 
+        val userId = currentUser?.uid
         val user = hashMapOf(
             "UserName" to username,
             "Email" to email,
             "Password" to password,
-            "userStatus" to "offline"
+            "userStatus" to "offline",
+            "uid" to userId,
+            "ppurl" to "nulla",
         )
-        val userId = currentUser?.uid
+
         firebase.collection("Users").document(userId!!).set(user).addOnSuccessListener {
 
             val achievementsMap = hashMapOf(
@@ -551,10 +546,10 @@ class FirebaseManage {
                 )
 
                 val numbersMemoryAchievementsMap = hashMapOf(
-                    "brainStorm" to false, // 18 haneli saı bil
-                    "rookie" to false, // 7 haneli sayı bil
-                    "smart" to false, // 10 haneli sayı bil
-                    "impatient" to false // Süre bitmeden geç
+                    "brainStorm" to false, // Know 18-digit number
+                    "rookie" to false, // Know 7-digit number
+                    "smart" to false, // Know 10-digit numbersayı bil
+                    "impatient" to false // Know the number before to time is up
                 )
 
                 firebase.collection("Scores").document(userId).set(addScoreAverage).addOnSuccessListener {
@@ -783,7 +778,9 @@ class FirebaseManage {
         loginAlert.setNegativeButton("Cancel") { dialog: DialogInterface, _: Int ->
             dialog.cancel()
         }
-        loginAlert.show()
+        val dialog = loginAlert.create()
+        dialog.window!!.attributes!!.windowAnimations = R.style.CustomAlertDialog
+        dialog.show()
     }
 
     fun getUserId () : String? {
@@ -1026,7 +1023,7 @@ class FirebaseManage {
 
                 }.addOnFailureListener{
 
-                    Toast.makeText(mCtx, it.localizedMessage!!, Toast.LENGTH_LONG).show()
+                    //Toast.makeText(mCtx, it.localizedMessage!!, Toast.LENGTH_LONG).show()
                     loadingScreenDestroyer(false)
                     setUserCurrentUser()
                     setScoresCurrentUser()

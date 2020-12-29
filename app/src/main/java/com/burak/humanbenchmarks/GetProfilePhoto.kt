@@ -13,38 +13,18 @@ import com.google.firebase.storage.StorageReference
 import com.squareup.picasso.Picasso
 
 class GetProfilePhoto (context : Context, activity : Activity, view : View) {
-    private var mCtx = context
-    private var mActivity = activity
-    private var mView = view
+    private var auth : FirebaseAuth = FirebaseAuth.getInstance()
+    private var currentUser : FirebaseUser? = auth.currentUser
 
-    private var storage : FirebaseStorage = FirebaseStorage.getInstance()
-    private var storageReference : StorageReference
-    private var firebase : FirebaseFirestore
-    private var auth : FirebaseAuth
-    private var currentUser : FirebaseUser?
-    private var userId : String?
-    private var firebaseManage : FirebaseManage
-
-    init {
-        storageReference = storage.reference
-        firebase = FirebaseFirestore.getInstance()
-        auth = FirebaseAuth.getInstance()
-        currentUser = auth.currentUser
-        userId = currentUser?.uid
-        firebaseManage = FirebaseManage(mCtx,mView,mActivity)
-    }
 
     fun getProfilePhoto(ppImageView : ImageView){
-        currentUser = auth.currentUser
         val profilePhotoUrl = currentUser?.photoUrl
         if (profilePhotoUrl != null) {
             Picasso.get().load(profilePhotoUrl).into(ppImageView)
             Picasso.get()
-            //Toast.makeText(mCtx,"$profilePhotoUrl",Toast.LENGTH_SHORT).show()
         }
         else{
             ppImageView.setImageResource(R.drawable.questionmark)
-            //Toast.makeText(mCtx,"$profilePhotoUrl",Toast.LENGTH_SHORT).show()
         }
     }
 

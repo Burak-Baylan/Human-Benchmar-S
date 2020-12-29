@@ -331,7 +331,9 @@ class NumbersMemoryAchievementsUpdater (context : Context, activity: Activity, v
             alert.setPositiveButton("Okay") { dialog : DialogInterface, _ : Int ->
                 dialog.cancel()
             }
-            alert.show()
+            val dialog = alert.create()
+            dialog.window!!.attributes!!.windowAnimations = R.style.CustomAlertDialog
+            dialog.show()
         }
     }
 }

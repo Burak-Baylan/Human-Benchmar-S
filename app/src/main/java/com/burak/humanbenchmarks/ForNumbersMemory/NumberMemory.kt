@@ -119,7 +119,9 @@ class NumberMemory : AppCompatActivity() {
                         nextFunc()
                         dialog.cancel()
                     }
-                    alert.show()
+                    val dialog = alert.create()
+                    dialog.window!!.attributes!!.windowAnimations = R.style.CustomAlertDialog
+                    dialog.show()
                     protectedExit = false
                 }
                 override fun onRewardedAdFailedToShow(adError: AdError) {
@@ -392,7 +394,9 @@ class NumberMemory : AppCompatActivity() {
                     protectedExit = false
                     dialog.cancel()
                 }
-                alert.show()
+                val dialog = alert.create()
+                dialog.window!!.attributes!!.windowAnimations = R.style.CustomAlertDialog
+                dialog.show()
             }
             else{
                 snackCreator.customToast(this, this, null, Toast.LENGTH_SHORT,
@@ -562,7 +566,7 @@ class NumberMemory : AppCompatActivity() {
         //return spannableString
     }*/
 
-    private val userStatusUpdater = UserStatusUpdater()
+    private val userStatusUpdater = UserStatus()
     override fun onPause() {
         super.onPause()
         userStatusUpdater.statusUpdater("OFFLINE")
