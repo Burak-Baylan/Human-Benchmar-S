@@ -89,22 +89,10 @@ class DrawerItemListeners (val ctx : Context, val viewReal : View, val activity 
                 }
 
                 R.id.myScores -> {
-                    try {
-                        val marketUri: Uri = Uri.parse("market://details?id=com.burak.humanbenchmarks")
-                        val marketIntent = Intent(Intent.ACTION_VIEW, marketUri)
-                        ctx.startActivity(marketIntent)
-                    } catch (e: ActivityNotFoundException) {
-                        val marketUri: Uri =
-                            Uri.parse("https://play.google.com/store/apps/details?id=com.burak.humanbenchmarks")
-                        val marketIntent = Intent(Intent.ACTION_VIEW, marketUri)
-                        ctx.startActivity(marketIntent)
-                    }
-                    //snackCreater.showToastCenter(ctx, "Soon!")
                     snackCreater.customToast(
                         activity, ctx, null, Toast.LENGTH_SHORT,
                         "SOON!", R.drawable.custom_toast_info, R.drawable.ic_info_image
                     )
-                    //sqlHistories.myHistories()
                 }
 
                 R.id.feedback -> {
@@ -235,7 +223,6 @@ class DrawerItemListeners (val ctx : Context, val viewReal : View, val activity 
                 activity, ctx, null, Toast.LENGTH_SHORT, "Log Out Success",
                 R.drawable.custom_toast_success, R.drawable.ic_success_image
             )
-            //snackCreater.createSuccessSnack("Log Out Success", viewReal)
         }
         nullLayoutReal.visibility = View.VISIBLE
         noNullLayoutReal.visibility = View.GONE

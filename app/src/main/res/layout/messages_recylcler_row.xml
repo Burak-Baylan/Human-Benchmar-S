@@ -25,16 +25,16 @@
             android:layout_marginEnd="3dp"
             android:layout_marginBottom="3dp"
             android:background="@drawable/offline_red"
-            app:layout_constraintBottom_toBottomOf="@+id/messagesPpImageView"
-            app:layout_constraintEnd_toEndOf="@+id/messagesPpImageView" />
+            app:layout_constraintBottom_toBottomOf="@+id/currentUserPpInMessage"
+            app:layout_constraintEnd_toEndOf="@+id/currentUserPpInMessage" />
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/messagesPpImageView"
+            android:id="@+id/currentUserPpInMessage"
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:layout_gravity="center|top"
             android:layout_margin="15dp"
-            android:src="@drawable/ach_icon_for_profile"
+            android:src="@drawable/questionmark"
             app:civ_border_color="#FFFFFF"
             app:civ_border_width="1dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -47,9 +47,9 @@
             android:layout_marginStart="10dp"
             android:gravity="center_vertical"
             android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="@+id/messagesPpImageView"
-            app:layout_constraintStart_toEndOf="@+id/messagesPpImageView"
-            app:layout_constraintTop_toTopOf="@+id/messagesPpImageView">
+            app:layout_constraintBottom_toBottomOf="@+id/currentUserPpInMessage"
+            app:layout_constraintStart_toEndOf="@+id/currentUserPpInMessage"
+            app:layout_constraintTop_toTopOf="@+id/currentUserPpInMessage">
 
             <TextView
                 android:id="@+id/messagesUsernameTextView"
@@ -62,7 +62,7 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/messagesLastMessageTextView"
+                android:id="@+id/emailTextViewInMessageRow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"

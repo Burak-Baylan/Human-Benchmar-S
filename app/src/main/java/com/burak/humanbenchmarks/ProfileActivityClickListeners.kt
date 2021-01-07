@@ -56,8 +56,6 @@ class ProfileActivityClickListeners(activity: Activity, context: Context, view: 
                 mActivity, mCtx, null, Toast.LENGTH_SHORT,
                 "SOON!", R.drawable.custom_toast_info, R.drawable.ic_info_image
             )
-            //snackbarCreater.showToastCenter(mCtx, "Soon!")
-            //sqlHistories.myHistories()
         }
     }
 
@@ -132,7 +130,6 @@ class ProfileActivityClickListeners(activity: Activity, context: Context, view: 
         val mLayout = LinearLayout(mCtx)
         mLayout.setPadding(30,5,30,5)
         mLayout.orientation = LinearLayout.VERTICAL
-
 
         changePasswordWithEmailEditTExt = EditText(mCtx)
         changePasswordWithEmailEditTExt.setBackgroundResource(R.drawable.custom_input_edittext)

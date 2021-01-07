@@ -77,7 +77,6 @@ class LeadersBoardAndAchievementsScreenDesign(val context: Context) {
         linearLayout.addView(linear2)
         linearLayout.addView(linear3)
         /******************************************************************************************/
-        //return linearLayout
     }
 
     fun createUsernameTextView() : TextView {

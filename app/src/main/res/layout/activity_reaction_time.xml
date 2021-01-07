@@ -247,20 +247,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0">
 
-        <Button
-            android:id="@+id/button5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/cust_button_return_menu"
-            android:drawableStart="@drawable/ic_share_white"
-            android:paddingStart="5dp"
-            android:paddingEnd="5dp"
-            android:text="SHARE"
-            android:textColor="#FFFFFF"
-            app:layout_constraintBottom_toTopOf="@+id/saveScoreButton"
-            app:layout_constraintEnd_toEndOf="@+id/saveScoreButton" />
-
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="90dp"

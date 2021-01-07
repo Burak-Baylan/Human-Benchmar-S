@@ -98,7 +98,6 @@ class NumberMemoryMenu : AppCompatActivity() {
                     "You must be logged in if you want to show all achievements.",
                     R.drawable.custom_toast_error, R.drawable.ic_error_image
                 )
-                //snackCreator.showToastCenter(this, "You must be logged in if you want to show all achievements.")
                 achievementsCounterText2.setBackgroundResource(R.drawable.achievements_background_null)
             }
         }
@@ -129,8 +128,6 @@ class NumberMemoryMenu : AppCompatActivity() {
                                     R.drawable.custom_toast_success,
                                     R.drawable.ic_success_image
                                 )
-                                //snackCreator.showToastShort(this, "Deleted")
-
                                 deleteMeOnLeaderBoardImageNumbersMemory.visibility = View.INVISIBLE
                             }.addOnFailureListener {
 
@@ -139,7 +136,6 @@ class NumberMemoryMenu : AppCompatActivity() {
                                 it.localizedMessage!!,
                                 R.drawable.custom_toast_error, R.drawable.ic_error_image
                             )
-                            //snackCreator.showToastShort(this, it.localizedMessage!!)
                         }
                     } catch (e: Exception) {
 
@@ -148,7 +144,6 @@ class NumberMemoryMenu : AppCompatActivity() {
                             "Could not be deleted.",
                             R.drawable.custom_toast_error, R.drawable.ic_error_image
                         )
-                        //snackCreator.showToastShort(this, "Could not be deleted.")
                     }
                 }
                 alert.setNegativeButton("Cancel") { dialog: DialogInterface, _: Int ->
@@ -259,7 +254,6 @@ class NumberMemoryMenu : AppCompatActivity() {
                     "If you want to see your own achievements, you must logged in.",
                     R.drawable.custom_toast_error, R.drawable.ic_error_image
                 )
-                //snackCreator.showToastCenter(this, "If you want to see your own achievements, you must logged in.")
             }
         }
     }
@@ -275,11 +269,8 @@ class NumberMemoryMenu : AppCompatActivity() {
         )
         /************************** INVISIBLE LEADER BOARD ********************************/
         deleteMeOnLeaderBoardImageNumbersMemory.visibility = View.INVISIBLE
-        //textView13.visibility = View.GONE
         textView16.visibility = View.GONE
         numbersMemoryTimeLeadersScroll.visibility = View.INVISIBLE
-        /*progressForLeaderRealNumbersMemory.visibility = View.INVISIBLE
-        tryConnectTextRealNumbersMemory.visibility = View.INVISIBLE*/
         /**********************************************************************************/
         /*************************** VISIBLE ACHIEVEMENTS *********************************/
         textView13.text = "Achievements"
@@ -307,8 +298,6 @@ class NumberMemoryMenu : AppCompatActivity() {
         textView13.visibility = View.VISIBLE
         textView16.visibility = View.VISIBLE
         numbersMemoryTimeLeadersScroll.visibility = View.VISIBLE
-        /*progressForLeaderRealNumbersMemory.refreshFab.isClickable = truevisibility = View.VISIBLE
-        tryConnectTextRealNumbersMemory.visibility = View.VISIBLE*/
         /**********************************************************************************/
         /************************** INVISIBLE ACHIEVEMENTS ********************************/
         textView13.text = "Leaders"

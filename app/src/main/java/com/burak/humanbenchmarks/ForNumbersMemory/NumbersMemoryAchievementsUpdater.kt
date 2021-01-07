@@ -46,9 +46,7 @@ class NumbersMemoryAchievementsUpdater (context : Context, activity: Activity, v
                 val getLayout = leadersBoardAndAchievementsScreenDesign.setLayout(title, message)
 
                 val alert = AlertDialog.Builder(mCtx, R.style.CustomAlertDialogForHistories)
-                //alert.setTitle(updateTitle)
                 alert.setView(getLayout)
-                //alert.show()
                 builder = alert.show()
 
                 val ring: MediaPlayer = MediaPlayer.create(mCtx, R.raw.ring)
@@ -60,7 +58,6 @@ class NumbersMemoryAchievementsUpdater (context : Context, activity: Activity, v
                     R.drawable.custom_toast_error, R.drawable.ic_error_image
                 )
                 firebaseManage.loadingScreenDestroyer(false)
-                //snackCreator.showToastCenter(mCtx, "NO UPDATED")
             }
         }
         else{
@@ -69,7 +66,6 @@ class NumbersMemoryAchievementsUpdater (context : Context, activity: Activity, v
                 R.drawable.custom_toast_error, R.drawable.ic_error_image
             )
             firebaseManage.loadingScreenDestroyer(false)
-            //snackCreator.showToastCenter(mCtx, "USER NULL")
         }
     }
 

@@ -9,21 +9,6 @@
     android:focusableInTouchMode="true"
     android:focusable="true">
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/showPhotosFab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="10dp"
-        android:clickable="true"
-        app:backgroundTint="#818181"
-        app:fabCustomSize="30dp"
-        app:layout_constraintBottom_toBottomOf="@+id/scrollViewForPhotos"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/scrollViewForPhotos"
-        app:srcCompat="@drawable/right_arrow" />
-
     <View
         android:id="@+id/view"
         android:layout_width="match_parent"
@@ -98,29 +83,8 @@
                 app:layout_constraintStart_toEndOf="@+id/ppImageInChat"
                 app:layout_constraintTop_toTopOf="@+id/ppImageInChat" />
 
-            <ImageView
-                android:id="@+id/imageView7"
-                android:layout_width="0.5dp"
-                android:layout_height="match_parent"
-                android:layout_marginStart="2dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:background="#656565"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/usernameTextInChat"
-                app:layout_constraintTop_toTopOf="parent" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.appcompat.widget.Toolbar>
-
-    <HorizontalScrollView
-        android:id="@+id/scrollViewForPhotos"
-        android:layout_width="250dp"
-        android:layout_height="56dp"
-        android:layout_marginEnd="10dp"
-        android:background="#AAAAAA"
-        app:layout_constraintBottom_toTopOf="@+id/messageEditText"
-        app:layout_constraintEnd_toStartOf="@+id/showPhotosFab" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/sendButton"

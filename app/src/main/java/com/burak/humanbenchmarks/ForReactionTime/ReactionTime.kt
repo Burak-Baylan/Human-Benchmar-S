@@ -375,5 +375,4 @@ class ReactionTime : AppCompatActivity() {
         super.onResume()
         userStatusUpdater.statusUpdater("ONLINE")
     }
-
 }

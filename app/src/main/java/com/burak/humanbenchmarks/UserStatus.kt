@@ -45,7 +45,7 @@ class UserStatus {
                         else if (onlineOrOfflineButton != null){
                             onlineOrOfflineButton.setBackgroundResource(R.drawable.offline_red)
                         }
-                        println("naburda: '$uid' OFFLINE")
+                        println("burda: '$uid' OFFLINE")
                     }
                     else if (status == "ONLINE"){
                         val onlineSpannable = SpannableString("ONLINE")
@@ -62,7 +62,7 @@ class UserStatus {
                         else if (onlineOrOfflineButton != null){
                             onlineOrOfflineButton.setBackgroundResource(R.drawable.online_green)
                         }
-                        println("naburda: '$uid' ONLINE")
+                        println("burda: '$uid' ONLINE")
                     }
                 }
                 else{
@@ -70,7 +70,7 @@ class UserStatus {
                 }
             }
             else{
-                println("errorda sourn var")
+                println("error")
             }
         }
     }

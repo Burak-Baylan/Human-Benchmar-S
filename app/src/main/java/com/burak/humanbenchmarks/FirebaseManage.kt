@@ -1180,7 +1180,6 @@ class FirebaseManage {
             "Uid" to idCurrent,
             "Username" to usernameGet
         )
-
         firebase.collection("Scores").document(idCurrent!!).set(userScores).addOnSuccessListener {
             //snackCreator.createSuccessSnack("", mView!!)
         }.addOnFailureListener {

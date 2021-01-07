@@ -73,8 +73,6 @@ class AchievementsControl(context: Context, activity: Activity, view: View) {
 
                     putText.text = "Achievements: $allAchievementsCounter/$howManyAchievements"
 
-                    //snackCreator.showToastTop(mCtx, "$allAchievementsCounter")
-
                     val h = TextView(mCtx)
                     h.text = "burada"
                     h.setTextColor(Color.rgb(255, 255, 255))
@@ -197,7 +195,6 @@ class AchievementsControl(context: Context, activity: Activity, view: View) {
                             achievementsControl.mActivity, achievementsControl.mCtx, null, Toast.LENGTH_SHORT,
                             e.localizedMessage!!, R.drawable.custom_toast_error, R.drawable.ic_error_image
                         )
-                        //achievementsControl.snackCreator.showToastShort(achievementsControl.mCtx, e.localizedMessage!!)
                     }
 
                     if (snapshot != null && snapshot.exists()) {

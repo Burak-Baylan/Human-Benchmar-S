@@ -69,6 +69,7 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/myHistoriesCard"
+                android:foreground="?android:attr/selectableItemBackground"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_rowWeight="1"
@@ -109,6 +110,7 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/myAchievementsCard"
+                android:foreground="?android:attr/selectableItemBackground"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_rowWeight="1"
@@ -148,6 +150,7 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/changePpCard"
+                android:foreground="?android:attr/selectableItemBackground"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_rowWeight="1"
@@ -186,6 +189,7 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/changeUsernameCard"
+                android:foreground="?android:attr/selectableItemBackground"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_rowWeight="1"
@@ -224,6 +228,7 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/changePasswordCard"
+                android:foreground="?android:attr/selectableItemBackground"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_rowWeight="1"
@@ -262,6 +267,7 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/changeEmailCard"
+                android:foreground="?android:attr/selectableItemBackground"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_rowWeight="1"
@@ -300,6 +306,7 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/deleteAccountCard"
+                android:foreground="?android:attr/selectableItemBackground"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_rowWeight="1"

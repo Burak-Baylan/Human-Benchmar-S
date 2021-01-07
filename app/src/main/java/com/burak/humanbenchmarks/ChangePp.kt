@@ -88,7 +88,6 @@ class ChangePp : AppCompatActivity() {
                         FirebaseStorage.getInstance().reference.child("images").child("$saveId.jpg")
                     uploadedPictureReference.downloadUrl.addOnSuccessListener { uri ->
                         val downloadUrl = uri.toString()
-                        //val postMap = hashMapOf<String,Any>("downloadUrl" to "as")
 
                         firestore.collection("Users").document(saveId!!).update("ppurl", downloadUrl)
                             .addOnCompleteListener { task ->
@@ -107,9 +106,6 @@ class ChangePp : AppCompatActivity() {
                                             "Profile Photo Changed.",
                                             R.drawable.custom_toast_success, R.drawable.ic_success_image
                                         )
-                                        /*snackCreator.showToastCenter(
-                                            this, "Profile Photo Changed."
-                                        )*/
                                         firebaseManage.loadingScreenDestroyer(false)
 
                                         val intent = Intent(this, MainActivity::class.java)
@@ -125,10 +121,6 @@ class ChangePp : AppCompatActivity() {
                                                         "Profile Photo Changed Failed!",
                                                         R.drawable.custom_toast_error, R.drawable.ic_error_image
                                                     )
-                                                    /*snackCreator.createFailSnack(
-                                                        "Profile Photo Change Failed!",
-                                                        viewReal
-                                                    )*/
                                                     firebaseManage.loadingScreenDestroyer(false)
                                             }
                                         }
@@ -141,10 +133,6 @@ class ChangePp : AppCompatActivity() {
                                     "Profile Photo Changed Failed!",
                                     R.drawable.custom_toast_error, R.drawable.ic_error_image
                                 )
-                                /*snackCreator.createFailSnack(
-                                    "Profile Photo Change Failed!",
-                                    viewReal
-                                )*/
                                 firebaseManage.loadingScreenDestroyer(false)
                             }
                         }
@@ -156,7 +144,6 @@ class ChangePp : AppCompatActivity() {
                         "Profile Photo Changed Failed!",
                         R.drawable.custom_toast_error, R.drawable.ic_error_image
                     )
-                    //snackCreator.createFailSnack("Profile Photo Change Failed!", viewReal)
                 }
             }
         }
@@ -167,7 +154,6 @@ class ChangePp : AppCompatActivity() {
                 "You must be connected to the Internet.",
                 R.drawable.custom_toast_error, R.drawable.ic_error_image
             )
-            //snackCreator.createFailSnack("You must be connected to the Internet.", viewReal)
         }
     }
 

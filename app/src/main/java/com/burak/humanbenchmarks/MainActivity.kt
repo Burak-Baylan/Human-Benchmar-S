@@ -37,6 +37,8 @@ import kotlinx.android.synthetic.main.nav_header.*
 
 open class MainActivity : AppCompatActivity() {
 
+    /** Burak BAYLAN 29.12.2020 **/
+
     private lateinit var toggle : ActionBarDrawerToggle
     private lateinit var nameTextReal:TextView
     private lateinit var emailTextReal:TextView

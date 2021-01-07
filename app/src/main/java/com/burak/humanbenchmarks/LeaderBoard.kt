@@ -66,38 +66,23 @@ class LeaderBoard : AppCompatActivity() {
                                 1 -> {
                                     leaderNullControl(usernameCurrent, averageScore, st1Username, st1Score, "ms"
                                     )
-                                    getReactionTimeProfilePhotos(st1Image, uidHere)
+                                    getProfilePhoto(st1Image, uidHere)
                                     counter++
                                 }
                                 2 -> {
                                     leaderNullControl(usernameCurrent, averageScore, st2Username, st2Score, "ms"
                                     )
-                                    getReactionTimeProfilePhotos(st2Image, uidHere)
+                                    getProfilePhoto(st1Image, uidHere)
                                     counter++
                                 }
                                 3 -> {
                                     leaderNullControl(usernameCurrent, averageScore, st3Username, st3Score, "ms"
                                     )
-                                    getReactionTimeProfilePhotos(st3Image, uidHere)
+                                    getProfilePhoto(st1Image, uidHere)
                                 }
                             }
                         }
                     }
-                }
-            }
-        }
-    }
-
-    private fun getReactionTimeProfilePhotos(imageView : ImageView, uid : String){
-
-        firebase.collection("ProfilePhotos").document(uid).addSnapshotListener{snapshot, e ->
-            if (e != null){
-                /** HATA **/
-            }
-            else{
-                if (snapshot != null && snapshot.exists()){
-                    val ppUrlHere = snapshot.get("ppurl") as String
-                    Picasso.get().load(ppUrlHere).into(imageView)
                 }
             }
         }
@@ -128,19 +113,19 @@ class LeaderBoard : AppCompatActivity() {
                                 1 -> {
                                     leaderNullControl(usernameCurrent, lastInit, st1UsernameText, st1ScoreNumbers, "digit"
                                     )
-                                    getNumbersMemoryProfilePhotos(st1ImageNumbersMemory, uidHere)
+                                    getProfilePhoto(st1ImageNumbersMemory, uidHere)
                                     counter++
                                 }
                                 2 -> {
                                     leaderNullControl(usernameCurrent, lastInit, st2UsernaneText, st2ScoreNumbers, "digit"
                                     )
-                                    getNumbersMemoryProfilePhotos(st2ImageNumbersMemory, uidHere)
+                                    getProfilePhoto(st2ImageNumbersMemory, uidHere)
                                     counter++
                                 }
                                 3 -> {
                                     leaderNullControl(usernameCurrent, lastInit, st3UsernameText, st3ScoreNumbers, "digit"
                                     )
-                                    getNumbersMemoryProfilePhotos(st3ImageNumbersMemory, uidHere)
+                                    getProfilePhoto(st3ImageNumbersMemory, uidHere)
                                 }
                             }
                         }
@@ -150,9 +135,9 @@ class LeaderBoard : AppCompatActivity() {
         }
     }
 
-    private fun getNumbersMemoryProfilePhotos(imageView : ImageView, uid : String){
+    private fun getProfilePhoto(imageView : ImageView, uid : String){
 
-        firebase.collection("ProfilePhotos").document(uid).addSnapshotListener{snapshot, e ->
+        firebase.collection("Users").document(uid).addSnapshotListener{snapshot, e ->
             if (e != null){
                 /** HATA **/
             }

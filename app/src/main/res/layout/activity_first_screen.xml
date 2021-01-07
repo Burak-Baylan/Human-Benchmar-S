@@ -37,14 +37,15 @@
         android:id="@+id/skipButtonFirstScreen"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
+        android:layout_marginTop="15dp"
         android:background="@drawable/cust_start_button_no_stroke"
         android:text="SKIP"
         android:textColor="#FFFFFF"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/textView29" />
+        app:layout_constraintEnd_toEndOf="@+id/signUpClick"
+        app:layout_constraintStart_toStartOf="@+id/signUpClick"
+        app:layout_constraintTop_toBottomOf="@+id/signUpClick" />
 
     <Button
         android:id="@+id/signUpClick"

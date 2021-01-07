@@ -1,5 +1,6 @@
 package com.burak.humanbenchmarks.Messages
 
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -8,7 +9,10 @@ import com.burak.humanbenchmarks.UserStatus
 import com.burak.humanbenchmarks.animationControl
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_messages.*
+import kotlinx.android.synthetic.main.activity_messages.currentUserPpInMessage
+import kotlinx.android.synthetic.main.messages_recylcler_row.*
 
 class Messages : AppCompatActivity() {
 
@@ -22,6 +26,7 @@ class Messages : AppCompatActivity() {
     private val userStatusArray : ArrayList<String> = ArrayList()
     private val uidArray : ArrayList<String> = ArrayList()
     private val ppUrlArray : ArrayList<String?> = ArrayList()
+    private val emailArray : ArrayList<String> = ArrayList()
 
     var adapter : MessagesRecyclerAdapter? = null
 
@@ -32,10 +37,27 @@ class Messages : AppCompatActivity() {
         animationControl.forOnCreate(savedInstanceState)
         messagesRowAnimControl = true
 
+        supportActionBar?.hide()
+        window.statusBarColor = Color.parseColor("#2E3239")
+
+
         getMessages()
 
-        adapter = MessagesRecyclerAdapter(usernameArray, userStatusArray, uidArray, ppUrlArray)
+        goBackButtonInMessageToolbar.setOnClickListener {
+            finish()
+        }
+
+        adapter = MessagesRecyclerAdapter(usernameArray, userStatusArray, uidArray, ppUrlArray, emailArray)
         messagesRecyclerView.adapter = adapter
+
+        val currentUserPpUrl = currentUser!!.photoUrl
+        if (currentUserPpUrl != null) {
+            Picasso.get().load(currentUserPpUrl).into(currentUserPpInMessage)
+        }
+        else{
+            currentUserPpInMessage.setImageResource(R.drawable.questionmark)
+        }
+
     }
 
     override fun onStart() {
@@ -85,6 +107,7 @@ class Messages : AppCompatActivity() {
                                 userStatusArray.add(status)
                                 uidArray.add(uid)
                                 ppUrlArray.add(ppUrl)
+                                emailArray.add(email)
                             }
                             adapter!!.notifyDataSetChanged()
                         }

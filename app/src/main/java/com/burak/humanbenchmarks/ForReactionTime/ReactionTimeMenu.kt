@@ -52,7 +52,6 @@ class ReactionTimeMenu : AppCompatActivity() {
 
         forLateInit()
         firebaseManage.getUser(nameText,viewReal,true)
-        //achievementsControl.loadAchievements(achievementsLinearLayout)
         listeners()
         netConnect()
 
@@ -81,7 +80,6 @@ class ReactionTimeMenu : AppCompatActivity() {
                     "You must be logged in if you want to show all achievements.",
                     R.drawable.custom_toast_error, R.drawable.ic_error_image
                 )
-                //snackCreater.showToastCenter(this, "You must be logged in if you want to show all achievements.")
 
                 achievementsCounterText.setBackgroundResource(R.drawable.achievements_background_null)
             }
@@ -135,7 +133,6 @@ class ReactionTimeMenu : AppCompatActivity() {
                             this, this, null, Toast.LENGTH_SHORT, "Deleted",
                             R.drawable.custom_toast_success, R.drawable.ic_success_image
                         )
-                        //snackCreater.createSuccessSnack("Deleted", viewReal)
 
                         deleteMeOnLeaderBoardImage.visibility = View.INVISIBLE
                     }.addOnFailureListener {
@@ -144,7 +141,6 @@ class ReactionTimeMenu : AppCompatActivity() {
                             this, this, null, Toast.LENGTH_SHORT, it.localizedMessage!!,
                             R.drawable.custom_toast_error, R.drawable.ic_error_image
                         )
-                        //snackCreater.createFailSnack(it.localizedMessage!!, viewReal)
                     }
                 }
                 catch (e : Exception){
@@ -153,7 +149,6 @@ class ReactionTimeMenu : AppCompatActivity() {
                         this, this, null, Toast.LENGTH_SHORT, "Could not be deleted.",
                         R.drawable.custom_toast_error, R.drawable.ic_error_image
                     )
-                    //snackCreater.createFailSnack("Could not be deleted.", viewReal)
                 }
             }
             alert.setNegativeButton("Cancel") {dialog : DialogInterface, _ : Int ->
@@ -194,12 +189,6 @@ class ReactionTimeMenu : AppCompatActivity() {
             connectionIconReactionTime.visibility = View.VISIBLE
             MainActivity.connectionImageAnimation(connectionIconReactionTime)
             underlinedText("Try Again", tryConnectTextReal)
-            /*snackCreater.customToast(
-                this, this, null, Toast.LENGTH_SHORT, "No Connection",
-                R.drawable.custom_toast_error, R.drawable.ic_error_image
-            )*/
-            //snackCreater.createFailSnack("No Connection",viewReal)
-            //loadingImage.setBackgroundResource(Drawable.(R.layout.custom_loading_screen))
         }
     }
 
@@ -237,11 +226,8 @@ class ReactionTimeMenu : AppCompatActivity() {
                     swapControl = false
                     /************************** INVISIBLE LEADER BOARD ********************************/
                     deleteMeOnLeaderBoardImage.visibility = View.INVISIBLE
-                    //textView14.visibility = View.GONE
                     textView15.visibility = View.GONE
                     reactionTimeLeadersScroll.visibility = View.INVISIBLE
-                    /*progressForLeaderRealNumbersMemory.visibility = View.INVISIBLE
-                tryConnectTextRealNumbersMemory.visibility = View.INVISIBLE*/
                     /*************************** VISIBLE ACHIEVEMENTS *********************************/
                     textView14.text = "Achievements"
                     achievementsScrollView.visibility = View.VISIBLE
@@ -251,11 +237,8 @@ class ReactionTimeMenu : AppCompatActivity() {
                     swapControl = true
                     /*************************** VISIBLE LEADER BOARD *********************************/
                     deleteMeOnLeaderBoardImage.visibility = View.VISIBLE
-                    //textView14.visibility = View.VISIBLE
                     textView15.visibility = View.VISIBLE
                     reactionTimeLeadersScroll.visibility = View.VISIBLE
-                    /*progressForLeaderRealNumbersMemory.refreshFab.isClickable = truevisibility = View.VISIBLE
-                tryConnectTextRealNumbersMemory.visibility = View.VISIBLE*/
                     /**********************************************************************************/
                     /************************** INVISIBLE ACHIEVEMENTS ********************************/
                     textView14.text = "Leaders"
@@ -271,7 +254,6 @@ class ReactionTimeMenu : AppCompatActivity() {
                     "If you want to see your own achievements, you must logged in.",
                     R.drawable.custom_toast_error, R.drawable.ic_error_image
                 )
-                //snackCreater.showToastCenter(this, "If you want to see your own achievements, you must logged in.")
             }
         }
 
@@ -281,7 +263,6 @@ class ReactionTimeMenu : AppCompatActivity() {
     private fun showFabMenu(){
         isFabOpen = true
         firstFabReactionTime.setImageResource(R.drawable.ic_up_arrow_reaction_time)
-
         swapFabReactionTime.animate().translationY(+resources.getDimension(R.dimen.standard_55))
         refreshFabReactionTime.animate().translationY(+resources.getDimension(R.dimen.standard_105))
     }

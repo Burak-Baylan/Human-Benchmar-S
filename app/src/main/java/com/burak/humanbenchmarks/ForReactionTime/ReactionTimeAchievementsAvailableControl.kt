@@ -47,9 +47,6 @@ class ReactionTimeAchievementsAvailableControl (val ctx : Context, val activity 
                 )
             }
         }
-        /*else{
-            snackbarCreater.showToastCenter(ctx,"20rounds var")
-        }*/
 
         // 10 saniyeden fazla
         if (tooSlowString == "false") {
@@ -65,9 +62,6 @@ class ReactionTimeAchievementsAvailableControl (val ctx : Context, val activity 
                     row20TextView, tooSlowTextView, tooLuckTextView, s1TextView, turtleTextView, robotOrTextView)
             }
         }
-        /*else{
-            snackbarCreater.showToastCenter(ctx,"tooSlow (10s) var")
-        }*/
 
         // 80ms'den az -SKOR-
         if (tooLuckString == "false") {

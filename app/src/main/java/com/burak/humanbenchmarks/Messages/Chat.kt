@@ -1,23 +1,12 @@
 package com.burak.humanbenchmarks.Messages
 
-import android.Manifest
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.graphics.Color
-import android.graphics.ImageDecoder
 import android.media.MediaPlayer
-import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.DisplayMetrics
-import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import com.burak.humanbenchmarks.PopupMessageCreator
 import com.burak.humanbenchmarks.R
 import com.burak.humanbenchmarks.UserStatus
 import com.google.firebase.Timestamp
@@ -36,7 +25,6 @@ class Chat : AppCompatActivity() {
     private val firebase = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
     private val currentUser = auth.currentUser
-    private val popupToast = PopupMessageCreator()
     private val currentUserId = currentUser!!.uid
 
     private lateinit var username : String
@@ -44,11 +32,7 @@ class Chat : AppCompatActivity() {
     private lateinit var status : String
     private lateinit var toUid : String
 
-    private var photoSelector = PhotoSelector(this)
-
     var adapter : ChatRecyclerAdapter? = null
-
-    var hebele = 0
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,8 +48,6 @@ class Chat : AppCompatActivity() {
 
         val displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
-        val screenHeight = displayMetrics.heightPixels
-        val screenWidth = displayMetrics.widthPixels
 
         if (ppurl != "nulla") {
             Picasso.get().load(ppurl).into(ppImageInChat)
@@ -73,13 +55,13 @@ class Chat : AppCompatActivity() {
 
         userStatus.addOnlineOrOfflineChangeListener(toUid, null, userStatusInChat)
 
-        profilePhotosUrlGetter()
 
         goBackButtonInChat.setOnClickListener {
             finish()
         }
         sendButton.setOnClickListener {
             val message = messageEditText.text.toString()
+            messageEditText.text.clear()
             if (message.isNotEmpty()) {
 
                 val uuid = UUID.randomUUID()
@@ -91,70 +73,31 @@ class Chat : AppCompatActivity() {
                     "documentId" to uuid.toString()
                 )
 
-
                 firebase.collection("Messages").document(currentUserId).collection(toUid).document(uuid.toString()).set(messageHasMap).addOnSuccessListener {
                     firebase.collection("Messages").document(toUid).collection(currentUserId).document(uuid.toString()).set(messageHasMap).addOnSuccessListener {
 
-                        val ring: MediaPlayer = MediaPlayer.create(this, R.raw.correct)
+                        val ring: MediaPlayer = MediaPlayer.create(this, R.raw.message_success)
                         ring.start()
                         messageEditText.text.clear()
                         chatRecyclerView.scrollToPosition(adapter!!.itemCount - 1)
-
                         println("mesaj: gitti")
 
                     }.addOnFailureListener {
                         firebase.collection("Messages").document(currentUserId).collection(toUid).document(uuid.toString()).delete().addOnCompleteListener {
                             println("mesaj: mesaj gidemedi ve eskisi silindi")
+                            messageEditText.setText(message)
                         }
                     }
                 }.addOnFailureListener{
                     println("mesaj: hata \n${it.localizedMessage}")
+                    messageEditText.setText(message)
                 }
-                /*popupToast.customToast(
-                    this, this, null, Toast.LENGTH_SHORT, message,
-                    R.drawable.custom_toast_info, R.drawable.ic_info_image
-                )*/
             }
         }
         listener(currentUserId, toUid)
 
-        adapter = ChatRecyclerAdapter(messageArray, usernameArray, documentIdArray, uidArray, fromOrTo, fromIdArray, toIdArray, timeArray)
+        adapter = ChatRecyclerAdapter(messageArray, usernameArray, uidArray, fromOrTo, timeArray)
         chatRecyclerView.adapter = adapter
-
-        /*scrollDownFab.visibility = View.INVISIBLE
-        var oldState = 0
-        chatRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener(){
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                val totalItemCount = recyclerView.layoutManager!!.itemCount
-                if (oldState < newState){
-                    println("kaydırdı: (newS: $newState, oldS: $oldState)")
-                    scrollDownFab.visibility = View.VISIBLE
-                    scrollDownFab.animate().translationX(+resources.getDimension(R.dimen.standard__155))
-                }
-                oldState = newState
-            }
-        })*/
-
-        var zort = false
-        showPhotosFab.setOnClickListener {
-
-            zort = if (!zort) {
-                showPhotosFab.animate().translationX(+(screenWidth - 10f))
-                true
-            } else{
-                showPhotosFab.animate().translationX(0f)
-                false
-            }
-            //chatRecyclerView.scrollToPosition(adapter!!.itemCount - 1)
-            println("scrollDownFab Clicked")
-            photoSelector.getPhotoWithScrollView(bitmapArray, photoCounter, scrollViewForPhotos)
-        }
-
-        ppImageInChat.setOnClickListener{
-            changeImage()
-        }
-
     }
 
     private val messageArray : ArrayList<String> = ArrayList()
@@ -198,7 +141,7 @@ class Chat : AppCompatActivity() {
                         }
                         val lastTime = "$hour:$minute"
 
-                        if (fromId == currentUserId){
+                        if (fromId == currentUserId){// From me
                             fromOrTo.add(true)
                         }
                         else{
@@ -222,10 +165,6 @@ class Chat : AppCompatActivity() {
         }
     }
 
-    private fun profilePhotosUrlGetter(){
-        //firebase.collection()
-    }
-
     override fun onResume() {
         userStatus.statusUpdater("ONLINE")
         super.onResume()
@@ -235,62 +174,4 @@ class Chat : AppCompatActivity() {
         userStatus.statusUpdater("OFFLINE")
         super.onPause()
     }
-
-    fun customToastCreatorForAdapter(message : String, background : Int, image: Int){
-        popupToast.customToast(this, this, null, Toast.LENGTH_SHORT, message, background, image)
-    }
-
-    private fun changeImage(){
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this,arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),1)
-        }
-        else{
-            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            startActivityForResult(intent,2)
-        }
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-
-        if (requestCode == 1){
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-                startActivityForResult(intent,2)
-            }
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    }
-
-    private var selectedPicture : Uri? = null
-    private var photoCounter = 0
-
-    private var bitmapArray : ArrayList<Bitmap> = ArrayList()
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == 2 && resultCode == RESULT_OK && data != null) {
-            selectedPicture = data.data
-            try {
-                if (selectedPicture != null) {
-                    val bitmap : Bitmap
-                    if (Build.VERSION.SDK_INT >= 28) {
-                        val source = ImageDecoder.createSource(contentResolver, selectedPicture!!)
-                        bitmap = ImageDecoder.decodeBitmap(source)
-                        ppImageInChat.setImageBitmap(bitmap)
-                    } else {
-                        bitmap =
-                            MediaStore.Images.Media.getBitmap(this.contentResolver, selectedPicture)
-                        ppImageInChat.setImageBitmap(bitmap)
-                    }
-                    ppImageInChat.borderWidth = 3
-                    photoCounter++
-                    bitmapArray.add(bitmap)
-
-                    //usernameTextInChat.text = "$photoCounter"
-
-                }
-            }
-            catch (e : Exception){e.printStackTrace()}
-        }
-        super.onActivityResult(requestCode, resultCode, data)
-    }
-
 }

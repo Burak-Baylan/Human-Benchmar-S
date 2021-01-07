@@ -58,8 +58,6 @@ class NumberMemory : AppCompatActivity() {
         var skipFastBool = false
     }
 
-    
-
     /** DİKKAT!! 0. BÖLÜM 1. BÖLÜMDÜR
      * YANİ LEVEL SAYISI levelCounter + 1'dir
      **/
@@ -125,7 +123,6 @@ class NumberMemory : AppCompatActivity() {
                     protectedExit = false
                 }
                 override fun onRewardedAdFailedToShow(adError: AdError) {
-                    //snackCreator.showToastCenter(this@NumberMemory, "$adError")
                     snackCreator.customToast(
                         activity, context, null, Toast.LENGTH_SHORT, "$adError", R.drawable.custom_toast_error, R.drawable.ic_error_image)
                     rewardedAd = createAndLoadRewardedAd(false)
@@ -141,7 +138,6 @@ class NumberMemory : AppCompatActivity() {
                 "Ad loading... Please wait a few seconds without doing anything.",
                 R.drawable.custom_toast_error, R.drawable.ic_error_image)
 
-            //snackCreator.showToastLong(this@NumberMemory, "Ad loading... Please wait a few seconds without doing anything.")
             rewardedAd = createAndLoadRewardedAd(true)
             Log.d("TAG", "The rewarded ad wasn't loaded yet.")
         }
@@ -159,11 +155,6 @@ class NumberMemory : AppCompatActivity() {
         preferences = getSharedPreferences("com.burak.humanbenchmarks", Context.MODE_PRIVATE)
 
         animationControl.forOnCreate(savedInstanceState)
-        /*if (savedInstanceState == null) // 1st time
-        {
-            this.overridePendingTransition(R.anim.anim_slide_in_left,
-                R.anim.anim_slide_out_left);
-        }*/
 
         rewardedAd = createAndLoadRewardedAd(false)
 
@@ -261,7 +252,6 @@ class NumberMemory : AppCompatActivity() {
                 }
                 else /** Yanlış Cevap **/
                 {
-                    //yanlışGirişinÜstünuÇizmeFonksiyonu(getRandomNumber, getInput)
 
                     allInvisible()
 
@@ -321,7 +311,7 @@ class NumberMemory : AppCompatActivity() {
             if (firebaseManage.internetControl(this)) {
                 val getLinkForShareApp = GetLinkForShareApp(this, viewReal, this)
                 getLinkForShareApp.share(
-                    "I can remember a $levelCounter digit number. What about you? Download this game if you want to try it!",
+                    "I can remember a $levelCounter digit number. What about you? Download this game if you want to try it!\nlink",
                     "Share Your Score"
                 )
             }
@@ -377,16 +367,13 @@ class NumberMemory : AppCompatActivity() {
                         }
                         firebase.collection("Scores").document(currentId!!).update("NumbersScore", levelCounter, "after18Count", after18Counter).addOnSuccessListener {
                             snackCreator.customToast(this, this, null, Toast.LENGTH_SHORT, "Score updated!", R.drawable.custom_toast_success, R.drawable.ic_success_image)
-                            //snackCreator.createSuccessSnack("Score updated!", viewReal)
                             protectedExit = false
                         }.addOnFailureListener {
                             snackCreator.customToast(this, this, null, Toast.LENGTH_SHORT, "Score update failed!", R.drawable.custom_toast_error, R.drawable.ic_error_image)
-                            //snackCreator.createFailSnack("Score update failed!", viewReal)
                             protectedExit = false
                         }
                     } else {
                         snackCreator.customToast(this, this, null, Toast.LENGTH_SHORT, "Internet connection required to save!", R.drawable.custom_toast_error, R.drawable.ic_error_image)
-                        //snackCreator.showToastCenter(this, "Internet connection required to save.")
                         protectedExit = false
                     }
                 }
@@ -402,7 +389,6 @@ class NumberMemory : AppCompatActivity() {
                 snackCreator.customToast(this, this, null, Toast.LENGTH_SHORT,
                 "You must log in if you want to save the score.", R.drawable.custom_toast_warning, R.drawable.ic_warning_image
                     )
-                //snackCreator.createFailSnack("You must log in if you want to save the score.", viewReal)
                 protectedExit = false
             }
         }
@@ -429,13 +415,12 @@ class NumberMemory : AppCompatActivity() {
         }
         startFunc()
         inputNumberEditText.setText("")
-        inputNumberEditText.setText("$getRandomNumber")
-        //rewardedAd = createAndLoadRewardedAd(false)
+        //inputNumberEditText.setText("$getRandomNumber")
         if (!rewardEarned) {// Eğer daha önce izlenmemişse göster!
             continueWithAdButton.visibility = View.VISIBLE
         }
         else if (rewardEarned) {// Eğer daha önce izlenmişse gösterme!
-            continueWithAdButton.visibility = View.INVISIBLE // 290 291 946 647 281 704
+            continueWithAdButton.visibility = View.INVISIBLE
         }
         if (levelCounter > 8) {
             showNumberRealTextView.textSize = 40f
@@ -446,11 +431,6 @@ class NumberMemory : AppCompatActivity() {
         if (levelCounter <= 8) {
             showNumberRealTextView.textSize = 50f
         }
-        /*}
-        else{
-            Toast.makeText(this, "Done", Toast.LENGTH_SHORT).show()
-            //snackCreator.showToastCenter(this, "bitti")
-        }*/
     }
 
     private fun startFunc(){

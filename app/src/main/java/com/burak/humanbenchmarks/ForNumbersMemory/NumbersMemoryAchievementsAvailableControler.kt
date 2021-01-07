@@ -29,7 +29,7 @@ class NumbersMemoryAchievementsAvailableControler (context : Context, activity :
         if (NumberMemory.skipFastBool){
             if (firebaseManage.internetControl(mActivity)) {
                 if (!impatientBool!!) {
-                    numbersMemoryAchievementsUpdater.updateTrueAnAchievements("impatient", "Impatient", "Congrats. You earned 'Brain Storm' achievement.")
+                    numbersMemoryAchievementsUpdater.updateTrueAnAchievements("impatient", "Impatient", "Congratulations You earned 'Impatient' achievement.")
                 }
                 NumberMemory.skipFastBool = false
             }
@@ -38,7 +38,7 @@ class NumbersMemoryAchievementsAvailableControler (context : Context, activity :
             /** ROOKIE **/
             if (firebaseManage.internetControl(mActivity)) {
                 if (!rookieBool!!) {
-                    numbersMemoryAchievementsUpdater.updateTrueAnAchievements("rookie", "Rookie", "Congrats. You earned 'Impatient' achievement.")
+                    numbersMemoryAchievementsUpdater.updateTrueAnAchievements("rookie", "Rookie", "Congratulations You earned 'Rookie' achievement.")
                 }
             }
         }
@@ -46,7 +46,7 @@ class NumbersMemoryAchievementsAvailableControler (context : Context, activity :
             /** SMART **/
             if (firebaseManage.internetControl(mActivity)) {
                 if (!smartBool!!) {
-                    numbersMemoryAchievementsUpdater.updateTrueAnAchievements("smart", "Smart", "Congrats. You earned 'Rookie' achievement.")
+                    numbersMemoryAchievementsUpdater.updateTrueAnAchievements("smart", "Smart", "Congratulations You earned 'Smart' achievement.")
                 }
             }
         }
@@ -54,7 +54,7 @@ class NumbersMemoryAchievementsAvailableControler (context : Context, activity :
             /** BRAIN STORM **/
             if (firebaseManage.internetControl(mActivity)) {
                 if (!brainStormBool!!) {
-                    numbersMemoryAchievementsUpdater.updateTrueAnAchievements("brainStorm", "Brain Storm", "Congrats. You earned 'Smart' achievement.")
+                    numbersMemoryAchievementsUpdater.updateTrueAnAchievements("brainStorm", "Brain Storm", "Congratulations You earned 'Brain Storm' achievement.")
                 }
             }
         }

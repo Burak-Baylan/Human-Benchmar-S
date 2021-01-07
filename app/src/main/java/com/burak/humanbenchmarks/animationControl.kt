@@ -10,11 +10,11 @@ class animationControl (val activity : Activity) {
 
     fun forOnCreate(savedInstanceState : Bundle?){
         onStartCount = 1
-        if (savedInstanceState == null) // 1st time
+        if (savedInstanceState == null)
         {
             activity.overridePendingTransition(R.anim.anim_slide_in_left,
                 R.anim.anim_slide_out_left)
-        } else // already created so reverse animation
+        } else
         {
             onStartCount = 2
         }
